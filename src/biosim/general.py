@@ -32,7 +32,9 @@ animal_const = {'herbivore': {'w_birth': 8.0,
                               'DeltaPhiMax': 10.0}}
 
 landscape_const = {'lowland': {'f_max': 800},
-                   'highland': {'f_max': 300}}
+                   'highland': {'f_max': 300},
+                   'water': {'f_max': 0},
+                   'desert': {'f_max': 0}}
 
 
 def getnestdict(dict, key1, key2):

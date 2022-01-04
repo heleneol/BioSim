@@ -32,6 +32,7 @@ animal_const = {'herbivore': {'w_birth' : 8.0 ,
 landscape_const = {'lowland': {'f_max': 800}
                    }
 
+
 def getnestdict(dict, key1, key2):
     try:
         return dict.get(key1, {}).get(key2)

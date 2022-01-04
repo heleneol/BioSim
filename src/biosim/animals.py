@@ -2,6 +2,7 @@
 Template for Animals class.
 """
 import random
+from general import animal_const and getnestdict
 
 animal_const = {'herbivore': {'w_birth' : 8.0 ,
                             'sigma_birth' : 1.5 ,

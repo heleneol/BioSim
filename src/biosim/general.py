@@ -37,9 +37,4 @@ landscape_const = {'lowland': {'f_max': 800},
                    'desert': {'f_max': 0}}
 
 
-def getnestdict(dict, key1, key2):
-    try:
-        return dict.get(key1, {}).get(key2)
-    except KeyError:
-        print('Keyvalue does not exist')
-        return None
+

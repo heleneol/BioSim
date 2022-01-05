@@ -39,7 +39,6 @@ class herbivore:
                 cls.parameters.update(new_params)
 
 
-
     def __init__(self, age=None, weight=None):
         self.age = age if age is not None else 0
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
@@ -73,6 +72,22 @@ class herbivore:
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
                 self.fitness = 1
+
+    def dies(self):
+        if self.weight < 0:
+            return True
+        else:
+            omega = self.parameters['omega']
+            return random.random() < (omega*(1 - self.fitness))
+
+    def gives_birth(self, birth_prob): # skal returnere True eller False
+
+
+
+
+
+
+
 
 class carnivore:
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,

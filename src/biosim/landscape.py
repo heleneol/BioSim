@@ -32,3 +32,21 @@ class Lowland:
     def regrowth(self):
 
         self.fodder = getnestdict(landscape_const, self.classname, 'f_max')
+
+    def reproduction(self):
+        def newborns(population):
+            if len(population) >= 2:
+                N = len(population)
+                for animal in population:
+                    zeta = animal.parameters['zeta']
+                    w_birth = animal.parameters['w_birth']
+                    sigma_birth = animal.parameters['sigma_birth']
+                    if animal.weight < zeta*(w_birth + sigma_birth):
+                        birth_prob = 0
+                    else:
+                        gamma = animal.parameters['gamma']
+                        birth_prob = gamma * animal.fitness * (N - 1)
+
+            return [Animal() for parent in population if parent.gives_birth(birth_prob)]
+
+        self.population.extend(newborns(self.population))

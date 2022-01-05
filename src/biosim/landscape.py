@@ -29,9 +29,6 @@ class Lowland:
             pass #?
 
 
-    def eat_fodder(self):
-        #Each herbuvore in sorted fitness list eats off available fodder and adds weight
+    def regrowth(self):
 
-
-
-# def regrow_fodder(self, self.year): Til senere under generell Landscape
+        self.fodder = getnestdict(landscape_const, self.classname, 'f_max')

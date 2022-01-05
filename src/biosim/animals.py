@@ -5,9 +5,9 @@ import random
 import math
 
 
-class herbivore:
+class Herbivore:
 
-    parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
+    parametres = {'w_birth': 8.0, 'sigma_birth': 1.5,
                     'beta': 0.9, 'eta': 0.05,
                     'a_half ': 40.0, 'phi_age': 0.6,
                     'w_half': 10.0, 'phi_weight': 0.1,
@@ -15,41 +15,20 @@ class herbivore:
                     'zeta': 3.5, 'xi': 1.2,
                     'omega': 0.4, 'F': 10.0,
                     'DeltaPhiMax': None}
-
     @classmethod
-    def set_parameters(cls, new_params):
-        """
-        set class parameters.
-
-        Parameters
-        ________
-        new_params: dict
-
-        Raises
-        ________
-        KeyError
-        """
-
-        for key in new_params:
-            if key not in cls.parameters:
+    def set_params(cls, new_parametres):
+        for key in new_parametres:
+            if key not in parametres.keys():
                 raise KeyError('Invalid parameter name: ' + key)
-
-        for key in cls.parameters:
-            if key in new_params:
-                cls.parameters.update(new_params)
-
-
 
     @classmethod
     def get_params(cls):
 
-        return cls.parameters
 
 
-
-    def __init__(self, age=None, weight=None):
+    def __init__(self, age=None, weight=None, parametres = None):
         self.age = age if age is not None else 0
-        random_weight = random.gauss(self.parameters.get('w_birth'), self.parameters.get('sigma_birth'))
+        random_weight = random.gauss(self.parametres.get('w_birth'), self.parametres.get('sigma_birth'))
         self.weight = weight if weight is not None else random_weight
         self.update_fitness()
 
@@ -58,8 +37,8 @@ class herbivore:
         self.age += years if years is not None else 1
 
     def update_weight(self, fooder):
-        beta = self.parameters.get('beta')
-        eta = self.parameters.get('eta')
+        beta = parametres.get('beta')
+        eta = parametres.get('eta')
         self.weight = (beta*fooder) - (eta*self.weight)
 
 
@@ -73,16 +52,16 @@ class herbivore:
         if self.weight <= 0:
             self.fitness = 0
         else:
-            a_half = self.parameters.get('a_half')
-            phi_age = self.parameters.get('phi_age')
-            w_half = self.parameters.get('w_half')
-            phi_weight = self.parameters.get('phi_weight')
+            a_half = parametres.get('a_half')
+            phi_age = parametres.get('phi_age')
+            w_half = parametres.get('w_half')
+            phi_weight = parametres.get('phi_weight')
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
                 self.fitness = 1
 
 class carnivore:
-    parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
+    parametres = {'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
                     'a_half ': 40.0, 'phi_age': 0.3,
                     'w_half': 4.0, 'phi_weight': 00.4,
@@ -92,11 +71,9 @@ class carnivore:
                     'DeltaPhiMax': 10.0}
 
 
-
-
-h1 = herbivore()
+h1 = Herbivore()
 for year in range(10):
     print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}, fitness {h1.fitness}')
     h1.update_age()
     h1.update_weight(fooder=13)
-    #h1.update_fitness()
+    h1.update_fitness()

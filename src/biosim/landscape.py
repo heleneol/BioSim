@@ -43,11 +43,11 @@ class Lowland:
     def __init__(self, fodder=None, ini_pop):
         self.classname = self.__class__.__name__
         self.fodder = fodder if fodder is not None else self.regrowth()
-        self.herb_pop = [] #Input herbivore population in a tile?
+        self.herb_pop = {} #Input herbivore population in a tile?
 
         for herb in ini_pop:
             if ini_pop['pop']['species'] is 'Herbivore':
-            self.herb_pop.
+            #self.herb_pop.append?
 
 
     def regrowth(self):
@@ -76,7 +76,7 @@ class Lowland:
 
     def aging(self):
 
-        for animal in herbi_pop:
+        for animal in self.herbi_pop:
             animal.update_age()
 
 

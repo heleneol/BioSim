@@ -2,36 +2,83 @@
 Template for Landscape class.
 """
 
-from .general import animal_const, landscape_const, getnestdict
+from .animals import *
 
 class Lowland:
     """
     Class representing Lowland squares on the island.
     """
 
-    def __init__(self, fodder=None, pop_herb=None):
+    fodder_param = {'Lowland': {'f_max': 800},
+                    'Highland': {'f_max': 300},
+                    'Desert': {'f_max': 0},
+                    'F': 10.0} #??
+
+    @classmethod
+    def set_parameters(cls, new_params):
+        """
+        set class parameters.
+
+        Parameters
+        ________
+        new_params: dict
+
+        Raises
+        ________
+        KeyError
+        """
+
+        for key in new_params:
+            if key not in cls.fodder_param:
+                raise KeyError('Invalid parameter name: ' + key)
+
+            elif key < 0:
+                raise ValueError('The fodder parameter must be a non-negative number')
+
+        for key in cls.fodder_param:
+            if key in new_params:
+                cls.fodder_param.update(new_params)
+
+
+    def __init__(self, fodder=None, ini_pop):
         self.classname = self.__class__.__name__
-        self.fodder = fodder if fodder is not None else getnestdict(landscape_const, self.classname, 'f_max')
-        # Needs revising ^
-        self.herbivore_population = #Input herbivore population in a tile?
+        self.fodder = fodder if fodder is not None else self.regrowth()
+        self.herb_pop = [] #Input herbivore population in a tile?
+
+        for herb in ini_pop:
+            if ini_pop['pop']['species'] is 'Herbivore':
+            self.herb_pop.
+
+
+    def regrowth(self):
+
+        self.fodder = self.fodder_param['classname']['f_max']
+
 
     def update_fodder(self):
-        herbivore_portion = getnestdict(animal_const, 'herbivore', 'F')
+        herbivore_portion = self.fodder_param['F']
 
         if self.fodder >= herbivore_portion:
             self.fodder -= herbivore_portion
 
         elif 0 < self.fodder < herbivore_portion:
-            self.fodder = 0
-            rest_fodder = self.fodder #? Restene av maten om det er under 10
-
-        else:
-            pass #?
+            self.fodder = 0 #? Eller prøve på at dyret spiser det som er igjen?
+            self.fodder -= self.fodder # Jeg er trøtt
 
 
-    def regrowth(self):
+    def herbs_eating(self):
+        self.regrowth()
+        #sorter herbivore liste
 
-        self.fodder = getnestdict(landscape_const, self.classname, 'f_max')
+        for herb in self.herb_pop:
+            self.update_weight(self.update_fodder())
+
+
+    def aging(self):
+
+        for animal in herbi_pop:
+            animal.update_age()
+
 
     def reproduction(self):
         def newborns(population):

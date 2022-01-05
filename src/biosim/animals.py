@@ -5,9 +5,9 @@ import random
 import math
 
 
-class herbivore:
+class Herbivore:
 
-    parametres = {  'w_birth': 8.0, 'sigma_birth': 1.5,
+    parametres = {'w_birth': 8.0, 'sigma_birth': 1.5,
                     'beta': 0.9, 'eta': 0.05,
                     'a_half ': 40.0, 'phi_age': 0.6,
                     'w_half': 10.0, 'phi_weight': 0.1,
@@ -15,11 +15,20 @@ class herbivore:
                     'zeta': 3.5, 'xi': 1.2,
                     'omega': 0.4, 'F': 10.0,
                     'DeltaPhiMax': None}
+    @classmethod
+    def set_params(cls, new_parametres):
+        for key in new_parametres:
+            if key not in parametres.keys():
+                raise KeyError('Invalid parameter name: ' + key)
 
-    def __init__(self, age=None, weight=None):
+    @classmethod
+    def get_params(cls):
 
+
+
+    def __init__(self, age=None, weight=None, parametres = None):
         self.age = age if age is not None else 0
-        random_weight = random.gauss(parametres.get('w_birth'), parametres.get('sigma_birth'))
+        random_weight = random.gauss(self.parametres.get('w_birth'), self.parametres.get('sigma_birth'))
         self.weight = weight if weight is not None else random_weight
         self.update_fitness()
 
@@ -52,7 +61,7 @@ class herbivore:
                 self.fitness = 1
 
 class carnivore:
-    parametres = {  'w_birth': 6.0, 'sigma_birth': 1.0,
+    parametres = {'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
                     'a_half ': 40.0, 'phi_age': 0.3,
                     'w_half': 4.0, 'phi_weight': 00.4,
@@ -62,9 +71,7 @@ class carnivore:
                     'DeltaPhiMax': 10.0}
 
 
-
-
-h1 = herbivore()
+h1 = Herbivore()
 for year in range(10):
     print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}, fitness {h1.fitness}')
     h1.update_age()

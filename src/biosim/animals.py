@@ -9,7 +9,7 @@ class herbivore:
 
     parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
                     'beta': 0.9, 'eta': 0.05,
-                    'a_half ': 40.0, 'phi_age': 0.6,
+                    'a_half': 40.0, 'phi_age': 0.6,
                     'w_half': 10.0, 'phi_weight': 0.1,
                     'mu': 0.25, 'gamma': 0.2,
                     'zeta': 3.5, 'xi': 1.2,
@@ -40,16 +40,9 @@ class herbivore:
 
 
 
-    @classmethod
-    def get_params(cls):
-
-        return cls.parameters
-
-
-
     def __init__(self, age=None, weight=None):
         self.age = age if age is not None else 0
-        random_weight = random.gauss(self.parameters.get('w_birth'), self.parameters.get('sigma_birth'))
+        random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
         self.weight = weight if weight is not None else random_weight
         self.update_fitness()
 
@@ -58,8 +51,8 @@ class herbivore:
         self.age += years if years is not None else 1
 
     def update_weight(self, fooder):
-        beta = self.parameters.get('beta')
-        eta = self.parameters.get('eta')
+        beta = self.parameters['beta']
+        eta = self.parameters['eta']
         self.weight = (beta*fooder) - (eta*self.weight)
 
 
@@ -73,10 +66,10 @@ class herbivore:
         if self.weight <= 0:
             self.fitness = 0
         else:
-            a_half = self.parameters.get('a_half')
-            phi_age = self.parameters.get('phi_age')
-            w_half = self.parameters.get('w_half')
-            phi_weight = self.parameters.get('phi_weight')
+            a_half = self.parameters['a_half']
+            phi_age = self.parameters['phi_age']
+            w_half = self.parameters['w_half']
+            phi_weight = self.parameters['phi_weight']
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
                 self.fitness = 1
@@ -99,4 +92,4 @@ for year in range(10):
     print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}, fitness {h1.fitness}')
     h1.update_age()
     h1.update_weight(fooder=13)
-    #h1.update_fitness()
+    h1.update_fitness()

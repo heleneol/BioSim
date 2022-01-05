@@ -3,7 +3,6 @@ Template for Animals class.
 """
 import random
 import math
-from general import animal_const, getnestdict
 
 
 class herbivore:
@@ -18,9 +17,9 @@ class herbivore:
                     'DeltaPhiMax': None}
 
     def __init__(self, age=None, weight=None):
-        self.classname = self.__class__.__name__
+
         self.age = age if age is not None else 0
-        random_weight = random.gauss(getnestdict(animal_const, self.classname, 'w_birth'), getnestdict(animal_const, self.classname, 'sigma_birth'))
+        random_weight = random.gauss(parametres.get('w_birth'), parametres.get('sigma_birth'))
         self.weight = weight if weight is not None else random_weight
         self.update_fitness()
 
@@ -29,27 +28,10 @@ class herbivore:
         self.age += years if years is not None else 1
 
     def update_weight(self, fooder):
-        beta = getnestdict(animal_const, self.classname, 'beta')
-        eta = getnestdict(animal_const, self.classname, 'eta')
+        beta = parametres.get('beta')
+        eta = parametres.get('eta')
         self.weight = (beta*fooder) - (eta*self.weight)
 
-#    def update_fitness(self):
-#        a_half = getnestdict(animal_const, self.classname, 'a_half')
-#        phi_age = getnestdict(animal_const, self.classname, 'phi_age')
-#        w_half = getnestdict(animal_const, self.classname, 'w_half')
-#        phi_weight = getnestdict(animal_const, self.classname, 'phi_weight')
-#
-#        q_pos = (1/(1 + math.exp(phi_age*(self.age - a_half))))
-#        q_neg = (1/(1 + math.exp(-phi_weight*(self.weight - w_half))))
-#
-#        if self.weight <= 0:
-#            self.fitness = 0
-#
-#        else:
-#            self.fitness = q_pos * q_neg
-#
-#        if self.fitness > 1:
-#            self.fitness = 1
 
     def update_fitness(self):
         def q(x, x_half, phi, sign):
@@ -61,36 +43,30 @@ class herbivore:
         if self.weight <= 0:
             self.fitness = 0
         else:
-            a_half = getnestdict(animal_const, self.classname, 'a_half')
-            phi_age = getnestdict(animal_const, self.classname, 'phi_age')
-            w_half = getnestdict(animal_const, self.classname, 'w_half')
-            phi_weight = getnestdict(animal_const, self.classname, 'phi_weight')
+            a_half = parametres.get('a_half')
+            phi_age = parametres.get('phi_age')
+            w_half = parametres.get('w_half')
+            phi_weight = parametres.get('phi_weight')
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
                 self.fitness = 1
 
 class carnivore:
     parametres = {  'w_birth': 6.0, 'sigma_birth': 1.0,
-                              'beta': 0.75,
-                              'eta': 0.125,
-                              'a_half ': 40.0,
-                              'phi_age': 0.3,
-                              'w_half': 4.0,
-                              'phi_weight': 00.4,
-                              'mu': 0.4,
-                              'gamma': 0.8,
-                              'zeta': 3.5,
-                              'xi': 1.1,
-                              'omega': 0.8,
-                              'F': 50.0,
-                              'DeltaPhiMax': 10.0}
+                    'beta': 0.75, 'eta': 0.125,
+                    'a_half ': 40.0, 'phi_age': 0.3,
+                    'w_half': 4.0, 'phi_weight': 00.4,
+                    'mu': 0.4, 'gamma': 0.8,
+                    'zeta': 3.5, 'xi': 1.1,
+                    'omega': 0.8, 'F': 50.0,
+                    'DeltaPhiMax': 10.0}
 
 
 
 
 h1 = herbivore()
 for year in range(10):
-    print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}')
+    print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}, fitness {h1.fitness}')
     h1.update_age()
     h1.update_weight(fooder=13)
     h1.update_fitness()

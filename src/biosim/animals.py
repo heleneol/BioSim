@@ -80,7 +80,11 @@ class herbivore:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
 
-    def gives_birth(self, birth_prob): # skal returnere True eller False
+    def gives_birth(self, preg_prob): # skal returnere True eller False
+
+        if preg.prob == 0:
+            return False
+
 
 
 

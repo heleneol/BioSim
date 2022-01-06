@@ -93,11 +93,17 @@ class Lowland:
                     w_birth = animal.parameters['w_birth']
                     sigma_birth = animal.parameters['sigma_birth']
                     if animal.weight < zeta*(w_birth + sigma_birth):
-                        birth_prob = 0
+                        preg_prob = 0
                     else:
                         gamma = animal.parameters['gamma']
-                        birth_prob = gamma * animal.fitness * (N - 1)
+                        preg_prob = gamma * animal.fitness * (N - 1)
 
-            return [Animal() for parent in population if parent.gives_birth(birth_prob)]
+            else:
+                preg_prob = 0
 
-        self.population.extend(newborns(self.population))
+            xi = animal.parameters['xi']
+
+            return [newborn for parent in population if parent.gives_birth(preg_prob) and parent.weight < xi*(newborn := Herbivore()).weight]
+
+        self.herb_pop.extend(newborns(self.herb_pop))
+

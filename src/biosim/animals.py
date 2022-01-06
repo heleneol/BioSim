@@ -5,7 +5,7 @@ import random
 import math
 
 
-class herbivore:
+class Herbivore:
 
     parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
                     'beta': 0.9, 'eta': 0.05,
@@ -89,7 +89,7 @@ class herbivore:
 
 
 
-class carnivore:
+class Carnivore:
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
                     'a_half ': 40.0, 'phi_age': 0.3,
@@ -102,9 +102,3 @@ class carnivore:
 
 
 
-h1 = herbivore()
-for year in range(10):
-    print(f'Year: {year}, age is {h1.age} and weight is {h1.weight}, fitness {h1.fitness}')
-    h1.update_age()
-    h1.update_weight(fooder=13)
-    h1.update_fitness()

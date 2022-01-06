@@ -7,6 +7,7 @@ import math
 
 class Herbivore:
 
+
     parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
                     'beta': 0.9, 'eta': 0.05,
                     'a_half': 40.0, 'phi_age': 0.6,

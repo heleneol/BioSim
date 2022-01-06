@@ -1,13 +1,14 @@
 """
 Template for Landscape class.
 """
-
+import random
 from animals import Herbivore
 
 class Lowland:
     """
     Class representing Lowland squares on the island.
     """
+    random.seed(123456)
 
     parametres = {'f_max': 41}
 
@@ -120,9 +121,5 @@ l1 = Lowland(ini_pop=ini_pop)
 print(len(l1.herb_pop))
 l1.reproduction()
 print(len(l1.herb_pop))
-
-
-
-
 
 

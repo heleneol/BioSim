@@ -43,35 +43,43 @@ class Lowland:
     def __init__(self, fodder=None, ini_pop):
         self.classname = self.__class__.__name__
         self.fodder = fodder if fodder is not None else self.regrowth()
-        self.herb_pop = {} #Input herbivore population in a tile?
+        self.herb_pop = []
+        #self.carn_pop = []
 
-        for herb in ini_pop:
+        for animal in ini_pop:
             if ini_pop['pop']['species'] is 'Herbivore':
             #self.herb_pop.append?
 
+            ini_herbs = [{'loc': (10, 10),
+                          'pop': [{'species': 'Herbivore',
+                                   'age': 5,
+                                   'weight': 20}
+                                  for _ in range(150)]}]
 
     def regrowth(self):
 
         self.fodder = self.fodder_param['classname']['f_max']
 
 
-    def update_fodder(self):
-        herbivore_portion = self.fodder_param['F']
-
-        if self.fodder >= herbivore_portion:
-            self.fodder -= herbivore_portion
-
-        elif 0 < self.fodder < herbivore_portion:
-            self.fodder = 0 #? Eller prøve på at dyret spiser det som er igjen?
-            self.fodder -= self.fodder # Jeg er trøtt
-
+    def update_fodder(self, herbivore_portion):
+        self.fodder -= herbivore_portion
 
     def herbs_eating(self):
         self.regrowth()
         #sorter herbivore liste
 
         for herb in self.herb_pop:
-            self.update_weight(self.update_fodder())
+
+            while self.fodder > 0:
+
+                herbivore_portion = herb.parameters['F']
+
+                if 0 < self.fodder < herbivore_portion:
+                    herbivore_portion = self.fodder
+
+
+                self.update_fodder(herbivore_portion)
+                herb.update_weight(herbivore_portion)
 
 
     def aging(self):

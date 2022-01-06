@@ -40,21 +40,17 @@ class Lowland:
                 cls.fodder_param.update(new_params)
 
 
-    def __init__(self, fodder=None, ini_pop):
+    def __init__(self, fodder=None, ini_pop=None):
         self.classname = self.__class__.__name__
         self.fodder = fodder if fodder is not None else self.regrowth()
-        self.herb_pop = []
+        self.herb_pop = ini_pop if ini_pop is not None else []
         #self.carn_pop = []
 
-        for animal in ini_pop:
-            if ini_pop['pop']['species'] is 'Herbivore':
-            #self.herb_pop.append?
 
-            ini_herbs = [{'loc': (10, 10),
-                          'pop': [{'species': 'Herbivore',
-                                   'age': 5,
-                                   'weight': 20}
-                                  for _ in range(150)]}]
+    def sort_by_fitness(self, herb_pop):
+
+        self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=True)
+
 
     def regrowth(self):
 

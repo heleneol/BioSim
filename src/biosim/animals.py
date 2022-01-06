@@ -54,6 +54,8 @@ class Herbivore:
         eta = self.parameters['eta']
         self.weight = (beta*fooder) - (eta*self.weight)
 
+    def post_birth_update_weight(self, xi_times_newborn_weight):
+        self.weight -= xi_times_newborn_weight
 
     def update_fitness(self):
         def q(x, x_half, phi, sign):
@@ -82,9 +84,10 @@ class Herbivore:
 
     def gives_birth(self, preg_prob): # skal returnere True eller False
 
-        if preg.prob == 0:
+        if preg_prob == 0:
             return False
-
+        else:
+            return random.random() < preg_prob
 
 
 

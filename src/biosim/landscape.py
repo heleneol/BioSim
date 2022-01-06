@@ -98,16 +98,30 @@ class Lowland:
             else:
                 preg_prob = 0
 
-            xi = animal.parameters['xi']
+            newborns = []
+            for parent in population:
+                if parent.gives_birth(preg_prob):
+                    xi = parent.parameters['xi']
+                    newborn = Herbivore()
+                    if parent.weight < xi*newborn.weight:
+                        newborns.append(newborn)
+                        parent.post_birth_update_weight(xi_times_newborn_weight= xi*newborn.weight)
+            print(newborns)
+            return newborns
 
-            return [newborn for parent in population if parent.gives_birth(preg_prob) and parent.weight < xi*(newborn := Herbivore()).weight]
 
         self.herb_pop.extend(newborns(self.herb_pop))
 
 
-ini_pop = [Herbivore() for herb in range(2)]
+ini_pop = [Herbivore() for herb in range(100)]
 
 l1 = Lowland(ini_pop=ini_pop)
+print(len(l1.herb_pop))
+l1.reproduction()
+print(len(l1.herb_pop))
+
+
+
 
 
 

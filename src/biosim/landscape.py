@@ -10,7 +10,7 @@ class Lowland:
     """
     random.seed(123456)
 
-    parametres = {'f_max': 41}
+    parameters = {'f_max': 41}
 
     @classmethod
     def set_parameters(cls, new_params):
@@ -27,15 +27,15 @@ class Lowland:
         """
 
         for key in new_params:
-            if key not in cls.parametres:
+            if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
             elif key < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
 
-        for key in cls.parametres:
+        for key in cls.parameters:
             if key in new_params:
-                cls.parametres.update(new_params)
+                cls.parameters.update(new_params)
 
 
     def __init__(self, fodder=None, ini_pop=None):
@@ -52,7 +52,7 @@ class Lowland:
 
     def regrowth(self):
 
-        self.fodder = self.parametres['f_max']
+        self.fodder = self.parameters['f_max']
 
 
     def update_fodder(self, herbivore_portion):
@@ -91,16 +91,16 @@ class Lowland:
                     w_birth = animal.parameters['w_birth']
                     sigma_birth = animal.parameters['sigma_birth']
                     if animal.weight > zeta*(w_birth + sigma_birth):
-                        preg_prob == 0
+                        preg_prob = 0
 
                     else:
                         gamma = animal.parameters['gamma']
                         preg_prob = gamma * animal.fitness * (N - 1)
 
             else:
-                preg_prob == 0
+                preg_prob = 0
 
-            newborns = []
+            newborns = [] # inn i reproduction ref?
             for parent in population:
                 if parent.gives_birth(preg_prob):
                     xi = parent.parameters['xi']
@@ -121,5 +121,4 @@ l1 = Lowland(ini_pop=ini_pop)
 print(len(l1.herb_pop))
 l1.reproduction()
 print(len(l1.herb_pop))
-
 

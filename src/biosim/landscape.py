@@ -33,7 +33,7 @@ class Landscape:
 
         cls.parameters.update(new_params)
 
-    def __init__(self, ini_pop=None):
+    def __init__(self, ini_pop=None, population=None):
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max'] # fodder if fodder is not None else 0
         self.herb_pop = ini_pop if ini_pop is not None else []
@@ -49,10 +49,20 @@ class Landscape:
 
         self.fodder = self.parameters['f_max']
 
-    def herbs_eating(self):
+    def herbivores_eating(self):
         """Herbivores consume fodder."""
 
         for herb in self.herb_pop:
+            if self.fodder > 0:
+                herbivore_portion = herb.herbivore_feeding(self.fodder)
+                self.fodder -= herbivore_portion
+            else:
+                break
+
+    def carnivores_eating(self):
+        """Herbivores consume fodder."""
+
+        for carn in self.carn_pop:
             if self.fodder > 0:
                 herbivore_portion = herb.herbivore_feeding(self.fodder)
                 self.fodder -= herbivore_portion
@@ -96,7 +106,7 @@ class Landscape:
             return sum/len(population)
         self.sort_by_fitness()
         print(f'gj. snitt før ={mean_weight(self.herb_pop)} ')
-        self.herbs_eating()
+        self.herbivores_eating()
         print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
         print(f'antall dyr før {len(self.herb_pop)}')
         self.reproduction()

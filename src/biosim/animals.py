@@ -5,16 +5,7 @@ import random
 import math
 
 
-class Herbivore:
-
-    parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
-                    'beta': 0.9, 'eta': 0.05,
-                    'a_half': 40.0, 'phi_age': 0.6,
-                    'w_half': 10.0, 'phi_weight': 0.1,
-                    'mu': 0.25, 'gamma': 0.2,
-                    'zeta': 3.5, 'xi': 1.2,
-                    'omega': 0.4, 'F': 10.0,
-                    'DeltaPhiMax': None}
+class Animals:
 
     @classmethod
     def set_parameters(cls, new_params):
@@ -37,6 +28,7 @@ class Herbivore:
         cls.parameters.update(new_params)
 
     def __init__(self, age=None, weight=None):
+        #self.classname = self.__class__.__name__, check gives birth
         self.age = age if age is not None else 0
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
         self.weight = weight if weight is not None else random_weight
@@ -59,18 +51,6 @@ class Herbivore:
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
                 self.fitness = 1
-
-    def herbivore_feeding(self, landscape_fodder):
-        appetite = self.parameters['F']
-        if 0 < landscape_fodder < appetite:
-            herbivore_portion = landscape_fodder
-        else:
-            herbivore_portion = appetite
-
-        self.weight += self.parameters['beta']*herbivore_portion
-        self.update_fitness()
-
-        return herbivore_portion
 
     def gives_birth(self, N):
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
@@ -113,6 +93,30 @@ class Herbivore:
             return random.random() < (omega*(1 - self.fitness))
 
 
+class Herbivore(Animals):
+
+    parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
+                    'beta': 0.9, 'eta': 0.05,
+                    'a_half': 40.0, 'phi_age': 0.6,
+                    'w_half': 10.0, 'phi_weight': 0.1,
+                    'mu': 0.25, 'gamma': 0.2,
+                    'zeta': 3.5, 'xi': 1.2,
+                    'omega': 0.4, 'F': 10.0,
+                    'DeltaPhiMax': None}
+
+    def herbivore_feeding(self, landscape_fodder):
+        appetite = self.parameters['F']
+        if 0 < landscape_fodder < appetite:
+            herbivore_portion = landscape_fodder
+        else:
+            herbivore_portion = appetite
+
+        self.weight += self.parameters['beta']*herbivore_portion
+        self.update_fitness()
+
+        return herbivore_portion
+
+
 class Carnivore:
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
@@ -123,6 +127,7 @@ class Carnivore:
                     'omega': 0.8, 'F': 50.0,
                     'DeltaPhiMax': 10.0}
 
+    def carnivore_feeding(self, landscape_fodder):
 
 
 

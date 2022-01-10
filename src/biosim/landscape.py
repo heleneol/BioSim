@@ -4,6 +4,7 @@ Template for Landscape class.
 import random
 from animals import Herbivore
 
+
 class Lowland:
     """
     Class representing Lowland squares on the island.
@@ -37,31 +38,26 @@ class Lowland:
             if key in new_params:
                 cls.parameters.update(new_params)
 
-
     def __init__(self, fodder=None, ini_pop=None):
         self.classname = self.__class__.__name__
         self.fodder = fodder if fodder is not None else 0
         self.herb_pop = ini_pop if ini_pop is not None else []
-        #self.carn_pop = []
-
+        # self.carn_pop = []
 
     def sort_by_fitness(self):
 
         self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=True)
 
-
     def regrowth(self):
 
         self.fodder = self.parameters['f_max']
-
 
     def update_fodder(self, herbivore_portion):
         self.fodder -= herbivore_portion
 
     def herbs_eating(self):
         self.regrowth()
-        #sorter herbivore liste
-
+        # sorter herbivore liste
         for herb in self.herb_pop:
             if self.fodder > 0:
 
@@ -74,16 +70,13 @@ class Lowland:
             else:
                 break
 
-
     def aging(self):
 
         for animal in self.herb_pop:
             animal.update_age()
 
-
-
     def reproduction(self):
-        def newborns(population):
+        def new_pop(population):
             if len(population) >= 2:
                 N = len(population)
                 for animal in population:
@@ -112,12 +105,12 @@ class Lowland:
             return newborns
 
 
-        self.herb_pop.extend(newborns(self.herb_pop))
+        self.herb_pop.extend(new_pop(self.herb_pop))
 
 
-ini_pop = [Herbivore() for herb in range(100)]
+ini_pops = [Herbivore() for herb in range(100)]
 
-l1 = Lowland(ini_pop=ini_pop)
+l1 = Lowland(ini_pop=ini_pops)
 print(len(l1.herb_pop))
 l1.reproduction()
 print(len(l1.herb_pop))

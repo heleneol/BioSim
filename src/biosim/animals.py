@@ -48,6 +48,14 @@ class Herbivore:
 
 
     def update_age(self, years=None):
+        """
+        Updates age of animal
+
+        Parameters
+        ----------
+        int:
+            number of years to age, 1 if None is spesified
+        """
         self.age += years if years is not None else 1
 
     def update_weight(self, fooder):

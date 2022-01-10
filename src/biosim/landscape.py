@@ -5,7 +5,7 @@ import random
 from animals import Herbivore
 
 
-class Landscape:
+class Lowland:
     """
     Class representing Lowland squares on the island.
     """
@@ -88,7 +88,7 @@ class Landscape:
             animal.metabolism()
 
     def population_death(self):
-        self.herb_pop = [animal for animal in self.herb_pop if animal.dies is not True]
+        self.herb_pop = [animal for animal in self.herb_pop if animal.dies() is not True]
 
     def anual_cycle(self):
         self.regrowth()
@@ -117,15 +117,14 @@ class Landscape:
 
 
 
-class Lowland(Landscape):
-    parameters = {'f_max': 41}
+
 
 
 ini_pops = [Herbivore() for herb in range(6)]
 
 l1 = Lowland(ini_pop=ini_pops)
 
-for year in range(5):
+for year in range(100):
     l1.anual_cycle()
 
 

@@ -72,17 +72,6 @@ class Herbivore:
 
         return herbivore_portion
 
-    def update_age(self, years=None):
-        """
-        Updates age of animal
-
-        Parameters
-        ----------
-        int:
-            number of years to age, 1 if None is spesified
-        """
-        self.age += years if years is not None else 1
-
     def gives_birth(self, N):
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
@@ -96,13 +85,23 @@ class Herbivore:
         else:
             return None
 
+    def update_age(self, years=None):
+        """
+        Updates age of animal
+
+        Parameters
+        ----------
+        int:
+            number of years to age, 1 if None is spesified
+        """
+        self.age += years if years is not None else 1
+
     def dies(self):
         if self.weight <= 0:
             return True
         else:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
-
 
 
 

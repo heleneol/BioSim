@@ -25,6 +25,7 @@ class Landscape:
         Raises
         ________
         KeyError
+        ValueError
         """
 
         for key in new_params:
@@ -33,7 +34,6 @@ class Landscape:
 
             elif key < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
-
 
         cls.parameters.update(new_params)
 
@@ -44,22 +44,25 @@ class Landscape:
         # self.carn_pop = []
 
     def sort_by_fitness(self):
+        """Sorts the herbivore population by descending fitness."""
 
         self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=True)
 
     def regrowth(self):
+        """Regrows fodder in Low- and Highlands."""
 
         self.fodder = self.parameters['f_max']
 
     def update_fodder(self, herbivore_portion):
+        """Updates fodder as herbivores eat."""
+
         self.fodder -= herbivore_portion
 
     def herbs_eating(self):
-        self.regrowth()
-        # sorter herbivore liste
+        """Herbivores consume fodder."""
+
         for herb in self.herb_pop:
             if self.fodder > 0:
-
                 herbivore_portion = herb.parameters['F']
 
                 if 0 < self.fodder < herbivore_portion:

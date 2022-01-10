@@ -57,13 +57,10 @@ class Herbivore:
         """
         self.age += years if years is not None else 1
 
-    def update_weight(self, fooder):
-        beta = self.parameters['beta']
-        eta = self.parameters['eta']
-        self.weight = (beta*fooder) - (eta*self.weight)
+    def herbivore_feeding(self, fodder):
 
-    def post_birth_update_weight(self, xi_times_newborn_weight):
-        self.weight -= xi_times_newborn_weight
+        self.weight = (self.parameters['beta']*fodder)
+        self.update_fitness()
 
     def update_fitness(self):
         def q(x, x_half, phi, sign):
@@ -90,7 +87,7 @@ class Herbivore:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
 
-    def gives_birth(self, N): # skal returnere True eller False
+    def gives_birth(self, N):
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
@@ -98,7 +95,6 @@ class Herbivore:
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return None
             else:
-                # decrease weight
                 self.weight -= self.parameters['xi'] * newborn.weight
                 return newborn
         else:

@@ -35,9 +35,8 @@ class Herbivore:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
-        for key in cls.parameters:
-            if key in new_params:
-                cls.parameters.update(new_params)
+
+        cls.parameters.update(new_params)
 
 
     def __init__(self, age=None, weight=None):
@@ -91,12 +90,19 @@ class Herbivore:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
 
-    def gives_birth(self, preg_prob): # skal returnere True eller False
+    def gives_birth(self, N): # skal returnere True eller False
+        preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
-        if preg_prob == 0:
-            return False
+        if random.random() < preg_prob:
+            newborn = Herbivore()
+            if self.weight < self.parameters['xi'] * newborn.weight:
+                return None
+            else:
+                # decrease weight
+                self.weight -= self.parameters['xi'] * newborn.weight
+                return newborn
         else:
-            return random.random() < preg_prob
+            return None
 
 
 
@@ -105,7 +111,9 @@ class Herbivore:
 
 
 
-class Carnivore:
+
+
+class Carnivore(Animal):
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
                     'a_half ': 40.0, 'phi_age': 0.3,
@@ -114,6 +122,9 @@ class Carnivore:
                     'zeta': 3.5, 'xi': 1.1,
                     'omega': 0.8, 'F': 50.0,
                     'DeltaPhiMax': 10.0}
+
+    def __init__(self):
+
 
 
 

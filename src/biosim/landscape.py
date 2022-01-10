@@ -5,7 +5,7 @@ import random
 from animals import Herbivore
 
 
-class Lowland:
+class Landscape:
     """
     Class representing Lowland squares on the island.
     """
@@ -34,13 +34,12 @@ class Lowland:
             elif key < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
 
-        for key in cls.parameters:
-            if key in new_params:
-                cls.parameters.update(new_params)
 
-    def __init__(self, fodder=None, ini_pop=None):
+        cls.parameters.update(new_params)
+
+    def __init__(self, ini_pop=None):
         self.classname = self.__class__.__name__
-        self.fodder = fodder if fodder is not None else 0
+        self.fodder = self.parameters['f_max'] # fodder if fodder is not None else 0
         self.herb_pop = ini_pop if ini_pop is not None else []
         # self.carn_pop = []
 
@@ -77,36 +76,22 @@ class Lowland:
 
     def reproduction(self):
         def new_pop(population):
-            if len(population) >= 2:
-                N = len(population)
-                for animal in population:
-                    zeta = animal.parameters['zeta']
-                    w_birth = animal.parameters['w_birth']
-                    sigma_birth = animal.parameters['sigma_birth']
-                    if animal.weight > zeta*(w_birth + sigma_birth):
-                        preg_prob = 0
-
-                    else:
-                        gamma = animal.parameters['gamma']
-                        preg_prob = gamma * animal.fitness * (N - 1)
-
-            else:
-                preg_prob = 0
-
-            newborns = [] # inn i reproduction ref?
+            N = len(population)
+            newborns = []
             for parent in population:
-                if parent.gives_birth(preg_prob):
-                    xi = parent.parameters['xi']
-                    newborn = Herbivore()
-                    if parent.weight > xi*newborn.weight:
-                        newborns.append(newborn)
-                        parent.post_birth_update_weight(xi_times_newborn_weight= xi*newborn.weight)
+                newborn = parent.gives_birth(N)
+
+                if newborn is not None:
+                    newborns.append(newborn)
             print(newborns)
             return newborns
 
 
         self.herb_pop.extend(new_pop(self.herb_pop))
 
+
+class Lowland(Landscape):
+    parameters = {'f_max': 41}
 
 ini_pops = [Herbivore() for herb in range(100)]
 

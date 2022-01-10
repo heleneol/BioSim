@@ -25,6 +25,7 @@ class Lowland:
         Raises
         ________
         KeyError
+        ValueError
         """
 
         for key in new_params:
@@ -45,14 +46,18 @@ class Lowland:
         # self.carn_pop = []
 
     def sort_by_fitness(self):
+        """Sorts the herbivore population by descending fitness."""
 
         self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=True)
 
     def regrowth(self):
+        """ Regrows fodder, f max, in Low- and Highlands."""
 
         self.fodder = self.parameters['f_max']
 
     def update_fodder(self, herbivore_portion):
+        """ Updates fodder available as herbivores eat."""
+
         self.fodder -= herbivore_portion
 
     def herbs_eating(self):
@@ -71,12 +76,13 @@ class Lowland:
                 break
 
     def aging(self):
+        """ Ages all animals by one year."""
 
         for animal in self.herb_pop:
             animal.update_age()
 
     def reproduction(self):
-        def new_pop(population):
+        def babies(population):
             if len(population) >= 2:
                 N = len(population)
                 for animal in population:
@@ -93,19 +99,19 @@ class Lowland:
             else:
                 preg_prob = 0
 
-            newborns = [] # inn i reproduction ref?
+            babies = [] # inn i reproduction ref?
             for parent in population:
                 if parent.gives_birth(preg_prob):
                     xi = parent.parameters['xi']
-                    newborn = Herbivore()
-                    if parent.weight > xi*newborn.weight:
-                        newborns.append(newborn)
-                        parent.post_birth_update_weight(xi_times_newborn_weight= xi*newborn.weight)
-            print(newborns)
-            return newborns
+                    baby = Herbivore()
+                    if parent.weight > xi*baby.weight:
+                        babies.append(baby)
+                        parent.post_birth_update_weight(xi_times_newborn_weight= xi*baby.weight)
+            print(babies)
+            return babies
 
 
-        self.herb_pop.extend(new_pop(self.herb_pop))
+        self.herb_pop.extend(babies(self.herb_pop))
 
 
 ini_pops = [Herbivore() for herb in range(100)]

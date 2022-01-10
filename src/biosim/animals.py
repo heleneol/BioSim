@@ -6,8 +6,9 @@ import math
 
 
 class Animals:
+    """ Docstring about this class """
 
-    @classmethod
+    @classmethod  # Hvordan organisere parameterne?
     def set_parameters(cls, new_params):
         """
         set class parameters.
@@ -28,18 +29,21 @@ class Animals:
         cls.parameters.update(new_params)
 
     def __init__(self, age=None, weight=None):
-        #self.classname = self.__class__.__name__, check gives birth
+        # self.classname = self.__class__.__name__, check gives birth
         self.age = age if age is not None else 0
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
-        self.weight = weight if weight is not None else random_weight
+        self.weight = weight if weight is not None else random_weight  # Kan vi ikke skrive =random_weight?
         self.update_fitness()
 
     def update_fitness(self):
+        """
+        Function calculating the fitness to animals based on weight and age.
+        """
         def q(x, x_half, phi, sign):
             if sign == 'pos':
-                return (1 / (1 + (math.exp(phi * (x - x_half)))))
+                return 1 / (1 + (math.exp(phi * (x - x_half))))
             elif sign == 'neg':
-                return (1 / (1 + (math.exp((-1) * phi * (x - x_half)))))
+                return 1 / (1 + (math.exp((-1) * phi * (x - x_half))))
 
         if self.weight <= 0:
             self.fitness = 0
@@ -53,6 +57,14 @@ class Animals:
                 self.fitness = 1
 
     def gives_birth(self, N):
+        """
+        Decides whether an animal gives birth.
+
+        Parameter
+        ----------
+        N: number of animals in a population
+
+        """
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
@@ -66,26 +78,31 @@ class Animals:
         else:
             return None
 
-    #def migrate(self):
-
+    # def migrate(self):
 
     def update_age(self, years=None):
         """
-        Updates age of animal
+        Updates age of animal.
 
         Parameters
         ----------
-        int:
-            number of years to age, 1 if None is spesified
+        years:
+            number of years to age, 1 if None is specified
         """
         self.age += years if years is not None else 1
         self.update_fitness()
 
     def metabolism(self):
+        """
+        Updates animal weight which is due to annual weightloss.
+        """
         self.weight -= self.parameters['eta']*self.weight
         self.update_fitness()
 
     def dies(self):
+        """
+        Decides whether an animal dies.
+        """
         if self.weight <= 0:
             return True
         else:
@@ -94,17 +111,27 @@ class Animals:
 
 
 class Herbivore(Animals):
+    """ Includes functions specific for herbivores on the island. """
 
-    parameters = {  'w_birth': 8.0, 'sigma_birth': 1.5,
-                    'beta': 0.9, 'eta': 0.05,
-                    'a_half': 40.0, 'phi_age': 0.6,
-                    'w_half': 10.0, 'phi_weight': 0.1,
-                    'mu': 0.25, 'gamma': 0.2,
-                    'zeta': 3.5, 'xi': 1.2,
-                    'omega': 0.4, 'F': 10.0,
-                    'DeltaPhiMax': None}
+    parameters = {'w_birth': 8.0, 'sigma_birth': 1.5,
+                  'beta': 0.9, 'eta': 0.05,
+                  'a_half': 40.0, 'phi_age': 0.6,
+                  'w_half': 10.0, 'phi_weight': 0.1,
+                  'mu': 0.25, 'gamma': 0.2,
+                  'zeta': 3.5, 'xi': 1.2,
+                  'omega': 0.4, 'F': 10.0,
+                  'DeltaPhiMax': None}
 
     def herbivore_feeding(self, landscape_fodder):
+        """
+        Decides how much food each herbivore gets, and updates weight and fitness accordingly.
+
+        Parameter
+        ----------
+        landscape_fodder:
+
+        """
+
         appetite = self.parameters['F']
         if 0 < landscape_fodder < appetite:
             herbivore_portion = landscape_fodder
@@ -118,19 +145,18 @@ class Herbivore(Animals):
 
 
 class Carnivore:
-    parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
-                    'beta': 0.75, 'eta': 0.125,
-                    'a_half ': 40.0, 'phi_age': 0.3,
-                    'w_half': 4.0, 'phi_weight': 00.4,
-                    'mu': 0.4, 'gamma': 0.8,
-                    'zeta': 3.5, 'xi': 1.1,
-                    'omega': 0.8, 'F': 50.0,
-                    'DeltaPhiMax': 10.0}
+    """ Includes functions specific for carnivores on the island. """
 
-    def carnivore_feeding(self, landscape_fodder):
+    parameters = {'w_birth': 6.0, 'sigma_birth': 1.0,
+                  'beta': 0.75, 'eta': 0.125,
+                  'a_half ': 40.0, 'phi_age': 0.3,
+                  'w_half': 4.0, 'phi_weight': 00.4,
+                  'mu': 0.4, 'gamma': 0.8,
+                  'zeta': 3.5, 'xi': 1.1,
+                  'omega': 0.8, 'F': 50.0,
+                  'DeltaPhiMax': 10.0}
 
-
-
-
-
-
+    def carnivore_feeding(self, herbivore_fodder):
+        """
+        Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
+        """

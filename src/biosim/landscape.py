@@ -53,7 +53,6 @@ class Landscape:
 
         self.fodder = self.parameters['f_max']
 
-
     def herbs_eating(self):
         """Herbivores consume fodder."""
 
@@ -63,7 +62,6 @@ class Landscape:
                 self.fodder -= herbivore_portion
             else:
                 break
-
 
     def aging(self):
 
@@ -81,7 +79,6 @@ class Landscape:
                     newborns.append(newborn)
             print(newborns)
             return newborns
-
 
         self.herb_pop.extend(new_pop(self.herb_pop))
 

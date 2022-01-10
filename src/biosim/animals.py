@@ -81,9 +81,13 @@ class Herbivore:
                 return None
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
+                self.update_fitness()
                 return newborn
         else:
             return None
+
+    #def migrate(self):
+
 
     def update_age(self, years=None):
         """
@@ -95,6 +99,11 @@ class Herbivore:
             number of years to age, 1 if None is spesified
         """
         self.age += years if years is not None else 1
+        self.update_fitness()
+
+    def metabolism(self):
+        self.weight -= self.parameters['eta']*self.weight
+        self.update_fitness()
 
     def dies(self):
         if self.weight <= 0:

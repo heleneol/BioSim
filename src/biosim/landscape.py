@@ -11,7 +11,7 @@ class Landscape:
     """
 
 
-    parameters = {'f_max': 41}
+    parameters = {'f_max': 800}
 
     @classmethod
     def set_parameters(cls, new_params):
@@ -63,11 +63,6 @@ class Landscape:
             else:
                 break
 
-    def aging(self):
-
-        for animal in self.herb_pop:
-            animal.update_age()
-
     def reproduction(self):
         def new_pop(population):
             N = len(population)
@@ -82,23 +77,56 @@ class Landscape:
 
         self.herb_pop.extend(new_pop(self.herb_pop))
 
+    def aging(self):
+
+        for animal in self.herb_pop:
+            animal.update_age()
+
+    def weight_loss(self):
+
+        for animal in self.herb_pop:
+            animal.metabolism()
+
+    def population_death(self):
+        self.herb_pop = [animal for animal in self.herb_pop if animal.dies is not True]
+
+    def anual_cycle(self):
+        self.regrowth()
+        print(f'fodder = {self.fodder}')
+        def mean_weight(population):
+            sum = 0
+            for animal in population:
+                sum += animal.weight
+            return sum/len(population)
+        self.sort_by_fitness()
+        print(f'gj. snitt før ={mean_weight(self.herb_pop)} ')
+        self.herbs_eating()
+        print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
+        print(f'antall dyr før {len(self.herb_pop)}')
+        self.reproduction()
+        print(f'antall dyr etter {len(self.herb_pop)}')
+        print(self.herb_pop[0].age)
+        self.aging()
+        print(self.herb_pop[0].age)
+        print(f'gj. snitt før ={mean_weight(self.herb_pop)} ')
+        self.weight_loss()
+        print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
+        print(f'antall dyr før {len(self.herb_pop)}')
+        self.population_death()
+        print(f'antall dyr etter {len(self.herb_pop)}')
+
+
 
 class Lowland(Landscape):
     parameters = {'f_max': 41}
 
+
 ini_pops = [Herbivore() for herb in range(6)]
 
 l1 = Lowland(ini_pop=ini_pops)
-l1.sort_by_fitness()
 
-for herb in l1.herb_pop:
-    print(herb.weight)
-
-l1.herbs_eating()
-
-for herb in l1.herb_pop:
-    print(herb.weight)
-
+for year in range(5):
+    l1.anual_cycle()
 
 
 

@@ -6,7 +6,7 @@ import math
 
 
 class Animals:
-    """ Docstring about this class """
+    """ Superclass for herbivores and carnivores """
 
     @classmethod  # Hvordan organisere parameterne?
     def set_parameters(cls, new_params):
@@ -111,7 +111,7 @@ class Animals:
 
 
 class Herbivore(Animals):
-    """ Includes functions specific for herbivores on the island. """
+    """ Subclass for herbivores. """
 
     parameters = {'w_birth': 8.0, 'sigma_birth': 1.5,
                   'beta': 0.9, 'eta': 0.05,
@@ -145,7 +145,7 @@ class Herbivore(Animals):
 
 
 class Carnivore:
-    """ Includes functions specific for carnivores on the island. """
+    """ Subclass for carnivores. """
 
     parameters = {'w_birth': 6.0, 'sigma_birth': 1.0,
                   'beta': 0.75, 'eta': 0.125,

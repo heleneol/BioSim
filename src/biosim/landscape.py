@@ -1,17 +1,13 @@
 """
 Template for Landscape class.
 """
-import random
 from animals import Herbivore
 
 
-class Lowland:
+class Landscape:
     """
-    Class representing Lowland squares on the island.
+    Parent class containing methods on population for different landtypes on the island.
     """
-
-
-    parameters = {'f_max': 800}
 
     @classmethod
     def set_parameters(cls, new_params):
@@ -90,7 +86,7 @@ class Lowland:
     def population_death(self):
         self.herb_pop = [animal for animal in self.herb_pop if animal.dies() is not True]
 
-    def anual_cycle(self):
+    def annual_cycle(self):
         self.regrowth()
         print(f'fodder = {self.fodder}')
         def mean_weight(population):
@@ -115,19 +111,33 @@ class Lowland:
         self.population_death()
         print(f'antall dyr etter {len(self.herb_pop)}')
 
+class Lowland(Landscape):
+    """
+    Class representing Lowland squares on the island.
+    """
+    parameters = {'f_max': 800}
 
+class Highland(Landscape):
+    """
+    Class representing Highland squares on the island.
+    """
+    parameters = {'f_max': 300}
 
+class Desert(Landscape):
+    """
+    Class representing Desert squares on the island.
+    """
+    parameters = {'f_max': 0}
 
-
+class Water(Landscape):
+    """
+    Class representing Ocean squares on the island.
+    """
 
 ini_pops = [Herbivore() for herb in range(6)]
 
 l1 = Lowland(ini_pop=ini_pops)
 
-for year in range(100):
-    l1.anual_cycle()
-
-
-
-
+for year in range(5):
+    l1.annual_cycle()
 

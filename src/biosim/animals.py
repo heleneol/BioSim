@@ -113,7 +113,6 @@ class Herbivore:
             return random.random() < (omega*(1 - self.fitness))
 
 
-
 class Carnivore:
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,

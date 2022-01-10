@@ -57,10 +57,17 @@ class Herbivore:
         """
         self.age += years if years is not None else 1
 
-    def herbivore_feeding(self, fodder):
+    def herbivore_feeding(self, landscape_fodder):
+        appetite = self.parameters['F']
+        if 0 < landscape_fodder < appetite:
+            herbivore_portion = landscape_fodder
+        else:
+            herbivore_portion = appetite
 
-        self.weight = (self.parameters['beta']*fodder)
+        self.weight += self.parameters['beta']*herbivore_portion
         self.update_fitness()
+
+        return herbivore_portion
 
     def update_fitness(self):
         def q(x, x_half, phi, sign):
@@ -107,9 +114,7 @@ class Herbivore:
 
 
 
-
-
-class Carnivore(Animal):
+class Carnivore:
     parameters = {  'w_birth': 6.0, 'sigma_birth': 1.0,
                     'beta': 0.75, 'eta': 0.125,
                     'a_half ': 40.0, 'phi_age': 0.3,
@@ -119,7 +124,7 @@ class Carnivore(Animal):
                     'omega': 0.8, 'F': 50.0,
                     'DeltaPhiMax': 10.0}
 
-    def __init__(self):
+
 
 
 

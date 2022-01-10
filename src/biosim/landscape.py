@@ -9,7 +9,7 @@ class Landscape:
     """
     Class representing Lowland squares on the island.
     """
-    random.seed(123456)
+
 
     parameters = {'f_max': 41}
 
@@ -53,24 +53,17 @@ class Landscape:
 
         self.fodder = self.parameters['f_max']
 
-    def update_fodder(self, herbivore_portion):
-        """Updates fodder as herbivores eat."""
-
-        self.fodder -= herbivore_portion
 
     def herbs_eating(self):
         """Herbivores consume fodder."""
 
         for herb in self.herb_pop:
             if self.fodder > 0:
-                herbivore_portion = herb.parameters['F']
-
-                if 0 < self.fodder < herbivore_portion:
-                    herbivore_portion = self.fodder
-                self.update_fodder(herbivore_portion)
-                herb.update_weight(herbivore_portion)
+                herbivore_portion = herb.herbivore_feeding(self.fodder)
+                self.fodder -= herbivore_portion
             else:
                 break
+
 
     def aging(self):
 
@@ -96,10 +89,21 @@ class Landscape:
 class Lowland(Landscape):
     parameters = {'f_max': 41}
 
-ini_pops = [Herbivore() for herb in range(100)]
+ini_pops = [Herbivore() for herb in range(6)]
 
 l1 = Lowland(ini_pop=ini_pops)
-print(len(l1.herb_pop))
-l1.reproduction()
-print(len(l1.herb_pop))
+l1.sort_by_fitness()
+
+for herb in l1.herb_pop:
+    print(herb.weight)
+
+l1.herbs_eating()
+
+for herb in l1.herb_pop:
+    print(herb.weight)
+
+
+
+
+
 

@@ -3,7 +3,7 @@ Template for Landscape class.
 """
 import random
 
-from animals import Herbivore
+from animals import Herbivore, Carnivore
 
 
 class Landscape:
@@ -35,11 +35,11 @@ class Landscape:
 
         cls.parameters.update(new_params)
 
-    def __init__(self, ini_pop=None, population=None):
+    def __init__(self, ini_pop=None, carn_pop =None):
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max'] # fodder if fodder is not None else 0
         self.herb_pop = ini_pop if ini_pop is not None else []
-        # self.carn_pop = []
+        self.carn_pop = carn_pop if carn_pop is not None else []
 
     def sort_herbs_by_fitness(self, decreasing):
         """Sorts the herbivore population by descending fitness."""
@@ -67,12 +67,18 @@ class Landscape:
         random.shuffle(self.carn_pop)
 
         for carn in self.carn_pop:
-            self.sort_herbs_by_fitness(decreasing=False)
-            if self.fodder > 0:
-                herbivore_portion = herb.herbivore_feeding(self.fodder)
-                self.fodder -= herbivore_portion
+
+            if len(self.herb_pop) > 0 and carn.appetite > 0:
+                self.sort_herbs_by_fitness(decreasing=False)
+                survivers = []
+                for herb in self.herb_pop:
+                    if carn.carnivore_feeding(herb) == None:
+                        survivers.append(herb)
+                self.herb_pop = survivers
             else:
                 break
+
+            carn.regain_appetite()
 
     def reproduction(self):
         def new_pop(population):
@@ -113,6 +119,9 @@ class Landscape:
         print(f'gj. snitt før ={mean_weight(self.herb_pop)} ')
         self.herbivores_eating()
         print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
+        print(f'antall dyr før spising{len(self.herb_pop)}')
+        self.carnivores_eating()
+        print(f'antall dyr etter spising{len(self.herb_pop)}')
         print(f'antall dyr før {len(self.herb_pop)}')
         self.reproduction()
         print(f'antall dyr etter {len(self.herb_pop)}')
@@ -149,10 +158,12 @@ class Water(Landscape):
     Class representing Ocean squares on the island.
     """
 
-ini_pops = [Herbivore() for herb in range(6)]
+ini_pops = [Herbivore() for herb in range(20)]
+carnivores = [Carnivore() for carn in range(10)]
 
-l1 = Lowland(ini_pop=ini_pops)
+l1 = Lowland(ini_pop=ini_pops, carn_pop=carnivores)
 
 for year in range(5):
     l1.annual_cycle()
+
 

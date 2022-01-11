@@ -156,16 +156,30 @@ class Carnivore(Animals):
                   'omega': 0.8, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
-    def carnivore_feeding(self, herbivore_fodder):
+    def __init__(self):
+        self.regain_appetite()
+
+
+    def regain_appetite(self):
+        self.appetite = self.parameters['F']
+
+    def carnivore_feeding(self, herb):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
         """
-        appetite = self.parameters['F']
+        if self.fitness < herb.fitness:
+            return None
 
-herbivores = [Herbivore() for herb in range(10)]
+        delta_phi = self.fitness - herb.fitness
+        if 0 < delta_phi < self.parameters['DeltaPhiMax']:
+            prey_prob = delta_phi / self.parameters['DeltaPhiMax']
+        else:
+            prey_prob = 1
 
-carnivores = [Carnivore() for carn in range(10)]
-
-for carn in carnivores:
-    print(carn.weight)
+        if random.random() < prey_prob:
+            self.appetite -= herb.weight
+            self.weight += self.parameters['Beta']*herb.weight
+            self.update_fitness()
+        else:
+            return None
 

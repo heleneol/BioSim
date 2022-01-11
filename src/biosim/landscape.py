@@ -68,19 +68,22 @@ class Landscape:
 
         for carn in self.carn_pop:
             #print(f'Carn fitness {carn.fitness}')
+            carn.regain_appetite()
 
             if len(self.herb_pop) > 0 and carn.appetite > 0:
                 self.sort_herbs_by_fitness(decreasing=False)
                 survivers = []
+
                 for herb in self.herb_pop:
                     #print(f'Herbs fitness {herb.fitness}')
-                    if carn.carnivore_feeding(herb) is None:
-                        survivers.append(herb)
-                self.herb_pop = survivers
-            else:
-                break
 
-            carn.regain_appetite()
+                    if carn.carnivore_feeding(herb) is True:
+                        survivers.append(herb)
+                self.herb_pop = survivers.copy()
+
+            else:
+                continue
+
 
     def reproduction(self):
         def new_pop(population):
@@ -125,10 +128,10 @@ class Landscape:
         self.herbivores_eating()
         #print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
         #print(f'gj. snitt før carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr før spising{len(self.carn_pop)}')
+        print(f'antall dyr før spising{len(self.herb_pop)}')
         self.carnivores_eating()
         #print(f'gj. snitt etter carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr etter spising{len(self.carn_pop)}')
+        print(f'antall dyr etter spising{len(self.herb_pop)}')
         #print(f'antall dyr før herb {len(self.herb_pop)}')
         #print(f'antall dyr før carn {len(self.carn_pop)}')
         self.reproduction()

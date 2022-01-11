@@ -32,7 +32,7 @@ class Animals:
         self.classname = self.__class__.__name__
         self.age = age if age is not None else 0
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
-        self.weight = weight if weight is not None else random_weight  # Kan vi ikke skrive =random_weight?
+        self.weight = weight if weight is not None else random_weight
         self.update_fitness()
 
     def update_fitness(self):
@@ -172,7 +172,7 @@ class Carnivore(Animals):
         """
         if self.fitness <= herb.fitness:
             #print('Carnivore fitness is too low')
-            return None
+            return True
 
         delta_phi = self.fitness - herb.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
@@ -186,6 +186,8 @@ class Carnivore(Animals):
             self.appetite -= herb.weight
             self.weight += self.parameters['beta']*herb.weight
             self.update_fitness()
+            return False
+
         else:
             #print('unsuccessfull hunt')
-            return None
+            return True

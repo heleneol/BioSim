@@ -158,7 +158,7 @@ class Carnivore(Animals):
 
     def __init__(self):
         self.regain_appetite()
-
+        super().__init__(age=None, weight=None)
 
     def regain_appetite(self):
         self.appetite = self.parameters['F']

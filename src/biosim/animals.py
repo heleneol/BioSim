@@ -144,12 +144,12 @@ class Herbivore(Animals):
         return herbivore_portion
 
 
-class Carnivore:
+class Carnivore(Animals):
     """ Subclass for carnivores. """
 
     parameters = {'w_birth': 6.0, 'sigma_birth': 1.0,
                   'beta': 0.75, 'eta': 0.125,
-                  'a_half ': 40.0, 'phi_age': 0.3,
+                  'a_half': 40.0, 'phi_age': 0.3,
                   'w_half': 4.0, 'phi_weight': 00.4,
                   'mu': 0.4, 'gamma': 0.8,
                   'zeta': 3.5, 'xi': 1.1,
@@ -160,3 +160,12 @@ class Carnivore:
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
         """
+        appetite = self.parameters['F']
+
+herbivores = [Herbivore() for herb in range(10)]
+
+carnivores = [Carnivore() for carn in range(10)]
+
+for carn in carnivores:
+    print(carn.weight)
+

@@ -1,6 +1,8 @@
 """
 Template for Landscape class.
 """
+import random
+
 from animals import Herbivore
 
 
@@ -39,10 +41,10 @@ class Landscape:
         self.herb_pop = ini_pop if ini_pop is not None else []
         # self.carn_pop = []
 
-    def sort_by_fitness(self):
+    def sort_herbs_by_fitness(self, decreasing):
         """Sorts the herbivore population by descending fitness."""
 
-        self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=True)
+        self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=decreasing)
 
     def regrowth(self):
         """Regrows fodder in Low- and Highlands."""
@@ -62,7 +64,10 @@ class Landscape:
     def carnivores_eating(self):
         """Herbivores consume fodder."""
 
+        random.shuffle(self.carn_pop)
+
         for carn in self.carn_pop:
+            self.sort_herbs_by_fitness(decreasing=False)
             if self.fodder > 0:
                 herbivore_portion = herb.herbivore_feeding(self.fodder)
                 self.fodder -= herbivore_portion
@@ -104,7 +109,7 @@ class Landscape:
             for animal in population:
                 sum += animal.weight
             return sum/len(population)
-        self.sort_by_fitness()
+        self.sort_herbs_by_fitness(decreasing=True)
         print(f'gj. snitt før ={mean_weight(self.herb_pop)} ')
         self.herbivores_eating()
         print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')

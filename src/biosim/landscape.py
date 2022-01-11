@@ -35,9 +35,9 @@ class Landscape:
 
         cls.parameters.update(new_params)
 
-    def __init__(self, ini_pop=None, carn_pop =None):
+    def __init__(self, ini_pop=None, carn_pop=None):
         self.classname = self.__class__.__name__
-        self.fodder = self.parameters['f_max'] # fodder if fodder is not None else 0
+        self.fodder = self.parameters['f_max']
         self.herb_pop = ini_pop if ini_pop is not None else []
         self.carn_pop = carn_pop if carn_pop is not None else []
 
@@ -67,7 +67,7 @@ class Landscape:
         random.shuffle(self.carn_pop)
 
         for carn in self.carn_pop:
-            #print(f'Carn fitness {carn.fitness}')
+
             carn.regain_appetite()
 
             if len(self.herb_pop) > 0 and carn.appetite > 0:
@@ -75,7 +75,6 @@ class Landscape:
                 survivers = []
 
                 for herb in self.herb_pop:
-                    #print(f'Herbs fitness {herb.fitness}')
 
                     if carn.carnivore_feeding(herb) is True:
                         survivers.append(herb)
@@ -83,7 +82,6 @@ class Landscape:
 
             else:
                 continue
-
 
     def reproduction(self):
         def new_pop(population):
@@ -118,36 +116,37 @@ class Landscape:
 
     def annual_cycle(self):
         self.regrowth()
-        #def mean_weight(population):
+        # def mean_weight(population):
         #    sum = 0
         #    for animal in population:
         #        sum += animal.weight
         #    return sum/len(population)
         self.sort_herbs_by_fitness(decreasing=True)
-        #print(f'gj. snitt før herb ={mean_weight(self.herb_pop)} ')
+        # print(f'gj. snitt før herb ={mean_weight(self.herb_pop)} ')
         self.herbivores_eating()
-        #print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
-        #print(f'gj. snitt før carn ={mean_weight(self.carn_pop)}')
+        # print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
+        # print(f'gj. snitt før carn ={mean_weight(self.carn_pop)}')
         print(f'antall dyr før spising{len(self.herb_pop)}')
         self.carnivores_eating()
-        #print(f'gj. snitt etter carn ={mean_weight(self.carn_pop)}')
+        # print(f'gj. snitt etter carn ={mean_weight(self.carn_pop)}')
         print(f'antall dyr etter spising{len(self.herb_pop)}')
-        #print(f'antall dyr før herb {len(self.herb_pop)}')
-        #print(f'antall dyr før carn {len(self.carn_pop)}')
+        # print(f'antall dyr før herb {len(self.herb_pop)}')
+        # print(f'antall dyr før carn {len(self.carn_pop)}')
         self.reproduction()
-        #print(f'antall dyr etter herb {len(self.herb_pop)}')
-        #print(f'antall dyr etter carn {len(self.carn_pop)}')
-        #print(self.carn_pop[0].age)
+        # print(f'antall dyr etter herb {len(self.herb_pop)}')
+        # print(f'antall dyr etter carn {len(self.carn_pop)}')
+        # print(self.carn_pop[0].age)
         self.aging()
-        #print(self.carn_pop[0].age)
-        #print(f'gj. snitt før ={mean_weight(self.carn_pop)} ')
+        # print(self.carn_pop[0].age)
+        # print(f'gj. snitt før ={mean_weight(self.carn_pop)} ')
         self.weight_loss()
-        #print(f'gj. snitt etter ={mean_weight(self.carn_pop)} ')
-        #print(f'antall dyr før {len(self.herb_pop)}')
-        #print(f'antall dyr før carn {len(self.carn_pop)}')
+        # print(f'gj. snitt etter ={mean_weight(self.carn_pop)} ')
+        # print(f'antall dyr før {len(self.herb_pop)}')
+        # print(f'antall dyr før carn {len(self.carn_pop)}')
         self.population_death()
-        #print(f'antall dyr etter {len(self.herb_pop)}')
-        #print(f'antall dyr etter carn {len(self.carn_pop)}')
+        # print(f'antall dyr etter {len(self.herb_pop)}')
+        # print(f'antall dyr etter carn {len(self.carn_pop)}')
+
 
 class Lowland(Landscape):
     """
@@ -155,11 +154,13 @@ class Lowland(Landscape):
     """
     parameters = {'f_max': 800}
 
+
 class Highland(Landscape):
     """
     Class representing Highland squares on the island.
     """
     parameters = {'f_max': 300}
+
 
 class Desert(Landscape):
     """
@@ -167,18 +168,19 @@ class Desert(Landscape):
     """
     parameters = {'f_max': 0}
 
+
 class Water(Landscape):
     """
     Class representing Ocean squares on the island.
     """
+
 
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
 l1 = Lowland(ini_pop=ini_pops, carn_pop=carnivores)
 
-#l1.carnivores_eating()
+# l1.carnivores_eating()
 
 for year in range(10):
     l1.annual_cycle()
-

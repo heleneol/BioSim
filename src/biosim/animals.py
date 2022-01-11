@@ -171,7 +171,6 @@ class Carnivore(Animals):
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
         """
         if self.fitness <= herb.fitness:
-            #print('Carnivore fitness is too low')
             return True
 
         delta_phi = self.fitness - herb.fitness
@@ -180,8 +179,6 @@ class Carnivore(Animals):
         else:
             prey_prob = 1
 
-        #print(prey_prob)
-
         if random.random() < prey_prob:
             self.appetite -= herb.weight
             self.weight += self.parameters['beta']*herb.weight
@@ -189,5 +186,4 @@ class Carnivore(Animals):
             return False
 
         else:
-            #print('unsuccessfull hunt')
             return True

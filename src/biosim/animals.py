@@ -29,7 +29,7 @@ class Animals:
         cls.parameters.update(new_params)
 
     def __init__(self, age=None, weight=None):
-        # self.classname = self.__class__.__name__, check gives birth
+        self.classname = self.__class__.__name__
         self.age = age if age is not None else 0
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
         self.weight = weight if weight is not None else random_weight  # Kan vi ikke skrive =random_weight?
@@ -56,7 +56,7 @@ class Animals:
             if self.fitness > 1:
                 self.fitness = 1
 
-    def gives_birth(self, N):
+    def gives_birth(self, N, species):
         """
         Decides whether an animal gives birth.
 
@@ -68,7 +68,10 @@ class Animals:
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
-            newborn = Herbivore()
+            if species == 'Herbivore':
+                newborn = Herbivore()
+            else:
+                newborn = Carnivore()
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return None
             else:
@@ -177,6 +180,7 @@ class Carnivore(Animals):
         else:
             prey_prob = 1
 
+        #print(prey_prob)
 
         if random.random() < prey_prob:
             self.appetite -= herb.weight
@@ -185,4 +189,3 @@ class Carnivore(Animals):
         else:
             #print('unsuccessfull hunt')
             return None
-

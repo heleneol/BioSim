@@ -94,6 +94,7 @@ class Landscape:
 
         self.herb_pop.extend(new_pop(self.herb_pop))
 
+
     def aging(self):
 
         for animal in self.herb_pop:
@@ -163,7 +164,8 @@ carnivores = [Carnivore() for carn in range(10)]
 
 l1 = Lowland(ini_pop=ini_pops, carn_pop=carnivores)
 
-for year in range(5):
+
+for year in range(30):
     l1.annual_cycle()
 
 

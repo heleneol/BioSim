@@ -56,7 +56,7 @@ class Animals:
             if self.fitness > 1:
                 self.fitness = 1
 
-    def gives_birth(self, N, species):
+    def gives_birth(self, N):
         """
         Decides whether an animal gives birth.
 
@@ -68,7 +68,7 @@ class Animals:
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
-            if species == 'Herbivore':
+            if self.classname == 'Herbivore':
                 newborn = Herbivore()
             else:
                 newborn = Carnivore()
@@ -187,3 +187,8 @@ class Carnivore(Animals):
 
         else:
             return True
+
+
+
+
+

@@ -86,10 +86,9 @@ class Landscape:
     def reproduction(self):
         def new_pop(population):
             N = len(population)
-            species = population[0].classname
             newborns = []
             for parent in population:
-                newborn = parent.gives_birth(N, species)
+                newborn = parent.gives_birth(N)
 
                 if newborn is not None:
                     newborns.append(newborn)
@@ -126,18 +125,18 @@ class Landscape:
         self.herbivores_eating()
         # print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
         # print(f'gj. snitt før carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr før spising{len(self.herb_pop)}')
+        print(f'antall dyr før spising{len(self.carn_pop)}')
         self.carnivores_eating()
         # print(f'gj. snitt etter carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr etter spising{len(self.herb_pop)}')
+        print(f'antall dyr etter spising{len(self.carn_pop)}')
         # print(f'antall dyr før herb {len(self.herb_pop)}')
         # print(f'antall dyr før carn {len(self.carn_pop)}')
         self.reproduction()
         # print(f'antall dyr etter herb {len(self.herb_pop)}')
         # print(f'antall dyr etter carn {len(self.carn_pop)}')
-        # print(self.carn_pop[0].age)
+        print(self.carn_pop[0].age)
         self.aging()
-        # print(self.carn_pop[0].age)
+        print(self.carn_pop[0].age)
         # print(f'gj. snitt før ={mean_weight(self.carn_pop)} ')
         self.weight_loss()
         # print(f'gj. snitt etter ={mean_weight(self.carn_pop)} ')
@@ -146,7 +145,7 @@ class Landscape:
         self.population_death()
         # print(f'antall dyr etter {len(self.herb_pop)}')
         # print(f'antall dyr etter carn {len(self.carn_pop)}')
-
+        return len(self.herb_pop), len(self.carn_pop)
 
 class Lowland(Landscape):
     """
@@ -178,9 +177,13 @@ class Water(Landscape):
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
-l1 = Lowland(ini_pop=ini_pops, carn_pop=carnivores)
+l1 = Lowland(carn_pop=carnivores)
 
 # l1.carnivores_eating()
 
+herb_count = []
+carn_count = []
 for year in range(10):
-    l1.annual_cycle()
+    herb_sum, carn_sum = l1.annual_cycle()
+    herb_count.append(herb_sum)
+    carn_count.append(carn_count)

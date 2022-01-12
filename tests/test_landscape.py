@@ -112,8 +112,23 @@ def test_carnivores_eating():
         D.carnivores_eating()
         assert D.get_num_herbs() <= herb_pop_before_hunting
 
-#def test_reproduction():
 
+def test_reproduction():
+    herb_pop = [Herbivore() for herb in range(250)]
+    carn_pop = [Carnivore() for carn in range(5)]
+    H = Highland(herb_pop,carn_pop)
+
+    herb_count_old = H.get_num_herbs()
+    carn_count_old = H.get_num_carns()
+
+    for _ in range(20):
+        H.reproduction()
+        herb_count = H.get_num_herbs()
+        carn_count = H.get_num_carns()
+        assert herb_count >= herb_count_old and carn_count >= carn_count_old
+        herb_count_old, carn_count_old = herb_count, carn_count
+
+#def test_reproduction_statisticly
 def test_aging():
     def get_mean_age(population):
         return sum([animal.age for animal in population]) / len(population)

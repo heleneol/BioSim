@@ -64,6 +64,7 @@ class Animals:
             if self.fitness > 1:
                 # noinspection PyAttributeOutsideInit
                 self.fitness = 1
+
     def regain_appetite(self):
         # noinspection PyAttributeOutsideInit
         self.appetite = self.parameters['F']
@@ -94,7 +95,7 @@ class Animals:
         else:
             return None
 
-    # def migrate(self):
+    # def migrate(self): ObsObs pass på at alle age-r riktig når de migrerer.
 
     def update_age(self, years=None):
         """
@@ -125,8 +126,9 @@ class Animals:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
 
-    def set_weight(self, new_weight ):
+    def set_weight(self, new_weight):
         self.weight = new_weight
+
 
 class Herbivore(Animals):
     """ Subclass for herbivores. """
@@ -173,8 +175,6 @@ class Carnivore(Animals):
                   'omega': 0.8, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
-
-
     def carnivore_feeding(self, herb):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
@@ -196,8 +196,4 @@ class Carnivore(Animals):
 
         else:
             return True
-
-
-
-
 

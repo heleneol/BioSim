@@ -7,7 +7,7 @@ SEED = 12345678  # random seed for tests
 ALPHA = 0.01  # significance level for statistical tests
 
 @pytest.fixture
-def set_herbivore_parametres(request):
+def set_herbivore_parameters(request):
     """
     Fixture setting class parameters on Herbivore.
 
@@ -26,13 +26,13 @@ def set_herbivore_parametres(request):
         request.param is the parameter dictionary to be passed to
         Herbivore.set_parameters()
     """
-    default_parametres = Herbivore.parameters.copy()
-    Herbivore.set_parameters(request.params)
+    default_parameters = Herbivore.parameters.copy()
+    Herbivore.set_parameters(request.param)
     yield
-    Herbivore.set_parameters(default_parametres)
+    Herbivore.set_parameters(default_parameters)
 
 @pytest.fixture
-def set_carnivore_parametres(request):
+def set_carnivore_parameters(request):
     """
     Fixture setting class parameters on Carnivore.
 
@@ -51,10 +51,10 @@ def set_carnivore_parametres(request):
         request.param is the parameter dictionary to be passed to
         Carnivore.set_params()
     """
-    default_parametres = Carnivore.parameters.copy()
+    default_parameters = Carnivore.parameters.copy()
     Carnivore.set_parameters(request.param)
     yield
-    Carnivore.set_parameters(default_parametres)
+    Carnivore.set_parameters(default_parameters)
 
 
 
@@ -69,22 +69,22 @@ def test_animal_aging():
 
 def test_value_error_of_age_and_weight():
     with pytest.raises(ValueError, match = 'Animal age has to be >= 0'):
-        Herbivore(age = -5)
+        Herbivore(age=-5)
 
     with pytest.raises(ValueError, match = 'Animal weight has to be >= 0'):
-        Carnivore(weight= 0)
+        Carnivore(weight=0)
 
 def test_deat_by_to_low_weight():
     #denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
     herb = Herbivore()
     carn = Carnivore()
-    herb.set_weight(new_weight = -2)
-    carn.set_weight(new_weight= 0)
+    herb.set_weight(new_weight=-2)
+    carn.set_weight(new_weight=0)
     assert herb.dies()
     assert carn.dies()
 
-@pytest.mark.parametrize('set_herbivore_parametres', [{'omega': 100}], indirect=True)
-def test_death_by_higher_omega(set_herbivore_parametres):
+@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 100}], indirect=True)
+def test_death_by_higher_omega(set_herbivore_parameters):
     herb = Herbivore()
     assert herb.parameters['omega'] == 100
 
@@ -107,3 +107,13 @@ def test_fitness_no_weight():
     for _ in range(50):
         herb.update_fitness()
         assert herb.fitness == 0
+
+#def test_metabolism():
+
+
+# Test gives_birth(). Test when N<2 it returns None, if self.weight<xi*newborn.weight returns None
+
+# Test metabolism
+
+# Test feeding herbivores
+# ... and feeding carnivores

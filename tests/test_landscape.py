@@ -126,6 +126,17 @@ def test_aging():
     assert get_mean_age(L.herb_pop) < herb_age_before
     assert get_mean_age(L.carn_pop) == 1
 
+def generate_herb_pop(age, weight, num_herbs):
+    """write None for age and weight if you dont want to spesify"""
+    return [Herbivore(age=age, weight=weight) for herb in range(num_herbs)]
+def generate_carn_pop(age, weight, num_carns):
+    """write None for age and weight if you dont want to spesify"""
+    return [Carnivore(age=age, weight=weight) for carn in range(num_carns)]
+
+
+
+
+
 
 
 

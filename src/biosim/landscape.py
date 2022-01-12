@@ -63,8 +63,9 @@ class Landscape:
 
     def herbivores_eating(self):
         """Herbivores consume fodder."""
-
+        self.sort_herbs_by_fitness(decreasing=True)
         for herb in self.herb_pop:
+            herb.regain_appetite()
             if self.fodder > 0:
                 herbivore_portion = herb.herbivore_feeding(self.fodder)
                 self.fodder -= herbivore_portion
@@ -73,11 +74,9 @@ class Landscape:
 
     def carnivores_eating(self):
         """Carnivores consume herbivores."""
-
         random.shuffle(self.carn_pop)
 
         for carn in self.carn_pop:
-
             carn.regain_appetite()
 
             if len(self.herb_pop) > 0 and carn.appetite > 0:
@@ -109,18 +108,14 @@ class Landscape:
         self.carn_pop.extend(new_pop(self.carn_pop))
 
     def aging(self):
-
         for herb in self.herb_pop:
             herb.update_age()
-
         for carn in self.carn_pop:
             carn.update_age()
 
     def weight_loss(self):
-
         for herb in self.herb_pop:
             herb.metabolism()
-
         for carn in self.carn_pop:
             carn.metabolism()
 
@@ -130,36 +125,14 @@ class Landscape:
 
     def annual_cycle(self):
         self.regrowth()
-        # def mean_weight(population):
-        #    sum = 0
-        #    for animal in population:
-        #        sum += animal.weight
-        #    return sum/len(population)
         self.sort_herbs_by_fitness(decreasing=True)
-        # print(f'gj. snitt før herb ={mean_weight(self.herb_pop)} ')
         self.herbivores_eating()
-        # print(f'gj. snitt etter ={mean_weight(self.herb_pop)} ')
-        # print(f'gj. snitt før carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr før spising{len(self.carn_pop)}')
         self.carnivores_eating()
-        # print(f'gj. snitt etter carn ={mean_weight(self.carn_pop)}')
-        print(f'antall dyr etter spising{len(self.carn_pop)}')
-        # print(f'antall dyr før herb {len(self.herb_pop)}')
-        # print(f'antall dyr før carn {len(self.carn_pop)}')
         self.reproduction()
-        # print(f'antall dyr etter herb {len(self.herb_pop)}')
-        # print(f'antall dyr etter carn {len(self.carn_pop)}')
-        print(self.carn_pop[0].age)
         self.aging()
-        print(self.carn_pop[0].age)
-        # print(f'gj. snitt før ={mean_weight(self.carn_pop)} ')
         self.weight_loss()
-        # print(f'gj. snitt etter ={mean_weight(self.carn_pop)} ')
-        # print(f'antall dyr før {len(self.herb_pop)}')
-        # print(f'antall dyr før carn {len(self.carn_pop)}')
         self.population_death()
-        # print(f'antall dyr etter {len(self.herb_pop)}')
-        # print(f'antall dyr etter carn {len(self.carn_pop)}')
+
 
 
 class Lowland(Landscape):

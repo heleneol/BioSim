@@ -133,6 +133,7 @@ def test_no_population_no_birth():
     assert carn.gives_birth(N=1) is None
 
 # Test gives_birth():
+# kanskje en statistisk test som sjekker om fordelingen er som forventet
 # Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
 
 def test_animal_metabolism():

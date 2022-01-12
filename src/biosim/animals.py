@@ -30,10 +30,18 @@ class Animals:
 
     def __init__(self, age=None, weight=None):
         self.classname = self.__class__.__name__
+
         self.age = age if age is not None else 0
+        if self.age < 0:
+            raise ValueError('Animal age has to be >= 0')
+
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
         self.weight = weight if weight is not None else random_weight
+        if self.weight <= 0:
+            raise ValueError('Animal weight has to be >= 0')
+
         self.update_fitness()
+        self.regain_appetite()
 
     def update_fitness(self):
         """
@@ -56,6 +64,9 @@ class Animals:
             if self.fitness > 1:
                 # noinspection PyAttributeOutsideInit
                 self.fitness = 1
+    def regain_appetite(self):
+        # noinspection PyAttributeOutsideInit
+        self.appetite = self.parameters['F']
 
     # noinspection PyPep8Naming
     def gives_birth(self, N):
@@ -114,6 +125,8 @@ class Animals:
             omega = self.parameters['omega']
             return random.random() < (omega*(1 - self.fitness))
 
+    def set_weight(self, new_weight ):
+        self.weight = new_weight
 
 class Herbivore(Animals):
     """ Subclass for herbivores. """
@@ -137,11 +150,10 @@ class Herbivore(Animals):
 
         """
 
-        appetite = self.parameters['F']
-        if 0 < landscape_fodder < appetite:
+        if 0 < landscape_fodder < self.appetite:
             herbivore_portion = landscape_fodder
         else:
-            herbivore_portion = appetite
+            herbivore_portion = self.appetite
 
         self.weight += self.parameters['beta']*herbivore_portion
         self.update_fitness()
@@ -161,13 +173,7 @@ class Carnivore(Animals):
                   'omega': 0.8, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
-    def __init__(self):
-        self.regain_appetite()
-        super().__init__(age=None, weight=None)
 
-    def regain_appetite(self):
-        # noinspection PyAttributeOutsideInit
-        self.appetite = self.parameters['F']
 
     def carnivore_feeding(self, herb):
         """

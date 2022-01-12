@@ -24,10 +24,10 @@ def set_herbivore_parametres(request):
     request
         Request object automatically provided by pytest.
         request.param is the parameter dictionary to be passed to
-        Herbivore.set_params()
+        Herbivore.set_parameters()
     """
     default_parametres = Herbivore.parameters.copy()
-    Herbivore.set_parameters(request.param)
+    Herbivore.set_parameters(request.params)
     yield
     Herbivore.set_parameters(default_parametres)
 
@@ -52,9 +52,9 @@ def set_carnivore_parametres(request):
         Carnivore.set_params()
     """
     default_parametres = Carnivore.parameters.copy()
-    Carnivore.set_parametres(request.param)
+    Carnivore.set_parameters(request.param)
     yield
-    Carnivore.set_parametres(default_parametres)
+    Carnivore.set_parameters(default_parametres)
 
 
 
@@ -90,6 +90,11 @@ def test_deat_by_high_omega(set_herbivore_parametres):
     for _ in range(50):
         assert herb.dies()
 
-def test_update_fitness():
+def test_fitness_by_ahalf():
+    herb = Herbivore()
+    herb.update_age(years=herb.parameters['a_half'])
+    herb.set_weight(new_weight=herb.parameters['w_half'])
 
-
+    for _ in range(50):
+        herb.update_fitness()
+        assert herb.fitness == 1/4

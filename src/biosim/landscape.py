@@ -3,7 +3,7 @@ Template for Landscape class.
 """
 import random
 
-from animals import Herbivore, Carnivore
+from .animals import Herbivore, Carnivore
 
 
 class Landscape:
@@ -30,16 +30,26 @@ class Landscape:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
-            elif key < 0:
+            elif new_params[key] < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
 
         cls.parameters.update(new_params)
 
-    def __init__(self, ini_pop=None, carn_pop=None):
+    def __init__(self, herb_pop=None, carn_pop=None):
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max']
-        self.herb_pop = ini_pop if ini_pop is not None else []
+        self.herb_pop = herb_pop if herb_pop is not None else []
         self.carn_pop = carn_pop if carn_pop is not None else []
+
+    def get_num_herbs(self):
+        """Return number of herbivores in Landscapecell."""
+
+        return len(self.herb_pop)
+
+    def get_num_carns(self):
+        """Return number of carnivores in Landscapecell."""
+
+        return len(self.carn_pop)
 
     def sort_herbs_by_fitness(self, decreasing):
         """Sorts the herbivore population by descending fitness."""
@@ -100,14 +110,18 @@ class Landscape:
 
     def aging(self):
 
-        for herb, carn in zip(self.herb_pop, self.carn_pop):
+        for herb in self.herb_pop:
             herb.update_age()
+
+        for carn in self.carn_pop:
             carn.update_age()
 
     def weight_loss(self):
 
-        for herb, carn in zip(self.herb_pop, self.carn_pop):
+        for herb in self.herb_pop:
             herb.metabolism()
+
+        for carn in self.carn_pop:
             carn.metabolism()
 
     def population_death(self):
@@ -146,7 +160,6 @@ class Landscape:
         self.population_death()
         # print(f'antall dyr etter {len(self.herb_pop)}')
         # print(f'antall dyr etter carn {len(self.carn_pop)}')
-        return len(self.herb_pop), len(self.carn_pop)
 
 
 class Lowland(Landscape):
@@ -175,7 +188,7 @@ class Water(Landscape):
     """
     Class representing Ocean squares on the island.
     """
-
+'''
 
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
@@ -189,4 +202,4 @@ carn_count = []
 for year in range(10):
     herb_sum, carn_sum = l1.annual_cycle()
     herb_count.append(herb_sum)
-    carn_count.append(carn_count)
+    carn_count.append(carn_count)'''

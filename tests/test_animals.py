@@ -1,5 +1,5 @@
 import pytest
-from src.biosim.animals import Herbivore, Carnivore
+from src.biosim.animals import *
 
 
 # Overall parameters for probabilistic tests

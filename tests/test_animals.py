@@ -101,24 +101,45 @@ def test_fitness_by_halfvalues():
     herb.update_age(years=herb.parameters['a_half'])
     herb.set_weight(new_weight=herb.parameters['w_half'])
 
+    carn = Carnivore()
+    carn.update_age(years=carn.parameters['a_half'])
+    carn.set_weight(new_weight=carn.parameters['w_half'])
+
     for _ in range(50):
         herb.update_fitness()
+        carn.update_fitness()
         assert herb.fitness == 1/4
+        assert carn.fitness == 1/4
 
 
 def test_fitness_no_weight():
     herb = Herbivore()
+    carn = Carnivore()
     herb.set_weight(new_weight=0)
+    carn.set_weight(new_weight=0)
 
     for _ in range(50):
         herb.update_fitness()
+        carn.update_fitness()
         assert herb.fitness == 0
+        assert carn.fitness == 0
 
+
+#Tror denne er unødvendig, siden denne teknisk sett tester formel og ikke kode:
+def test_no_population_no_birth():
+    herb = Herbivore()
+    carn = Carnivore()
+    assert herb.gives_birth(N=1) is None
+    assert carn.gives_birth(N=1) is None
+
+# Test gives_birth():
+# Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
 
 def test_animal_metabolism():
     herb = Herbivore()
-    carn = Carnivore()
     h_weight_before = herb.weight
+
+    carn = Carnivore()
     c_weight_before = carn.weight
 
     for _ in range(50):
@@ -127,7 +148,21 @@ def test_animal_metabolism():
         assert herb.weight < h_weight_before
         assert carn.weight < c_weight_before
 
-# Test gives_birth(). Test when N<2 it returns None, if self.weight<xi*newborn.weight returns None
 
-# Test feeding herbivores
-# ... and feeding carnivores
+
+# Hva må vi egentlig teste i herb_feeding?
+def test_herb_weightchange_fodder():
+    herb = Herbivore()
+    weight_before = herb.weight
+
+    herb.herbivore_feeding(landscape_fodder=herb.appetite)
+    assert herb.weight == weight_before + (herb.parameters['beta'] * herb.appetite)
+
+
+def test_herb_fitnesschange_fodder():
+    herb = Herbivore()
+    fitness_before = herb.fitness
+
+    herb.herbivore_feeding(landscape_fodder=herb.appetite)
+    assert herb.fitness > fitness_before
+

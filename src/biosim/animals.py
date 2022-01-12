@@ -8,7 +8,7 @@ import math
 class Animals:
     """ Superclass for herbivores and carnivores """
 
-    @classmethod  # Hvordan organisere parameterne?
+    @classmethod
     def set_parameters(cls, new_params):
         """
         set class parameters.
@@ -25,6 +25,10 @@ class Animals:
         for key in new_params:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
+
+        #for value in new_params:
+        #    if value < 0:
+        #        raise ValueError('All parameter values need to be a non-negative value')
 
         cls.parameters.update(new_params)
 

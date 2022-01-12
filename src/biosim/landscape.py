@@ -85,6 +85,7 @@ class Landscape:
 
     def reproduction(self):
         def new_pop(population):
+            # noinspection PyPep8Naming
             N = len(population)
             newborns = []
             for parent in population:
@@ -147,10 +148,12 @@ class Landscape:
         # print(f'antall dyr etter carn {len(self.carn_pop)}')
         return len(self.herb_pop), len(self.carn_pop)
 
+
 class Lowland(Landscape):
     """
     Class representing Lowland squares on the island.
     """
+
     parameters = {'f_max': 800}
 
 

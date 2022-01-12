@@ -54,8 +54,10 @@ class Animals:
             phi_weight = self.parameters['phi_weight']
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
             if self.fitness > 1:
+                # noinspection PyAttributeOutsideInit
                 self.fitness = 1
 
+    # noinspection PyPep8Naming
     def gives_birth(self, N):
         """
         Decides whether an animal gives birth.
@@ -164,6 +166,7 @@ class Carnivore(Animals):
         super().__init__(age=None, weight=None)
 
     def regain_appetite(self):
+        # noinspection PyAttributeOutsideInit
         self.appetite = self.parameters['F']
 
     def carnivore_feeding(self, herb):

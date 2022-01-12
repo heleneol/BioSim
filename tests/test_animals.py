@@ -84,13 +84,14 @@ def test_deat_by_to_low_weight():
     assert carn.dies()
 
 @pytest.mark.parametrize('set_herbivore_parametres', [{'omega': 100}], indirect=True)
-def test_deat_by_high_omega(set_herbivore_parametres):
+def test_death_by_higher_omega(set_herbivore_parametres):
     herb = Herbivore()
     assert herb.parameters['omega'] == 100
+
     for _ in range(50):
         assert herb.dies()
 
-def test_fitness_by_ahalf():
+def test_fitness_by_halfvalues():
     herb = Herbivore()
     herb.update_age(years=herb.parameters['a_half'])
     herb.set_weight(new_weight=herb.parameters['w_half'])
@@ -98,3 +99,11 @@ def test_fitness_by_ahalf():
     for _ in range(50):
         herb.update_fitness()
         assert herb.fitness == 1/4
+
+def test_fitness_no_weight():
+    herb = Herbivore()
+    herb.set_weight(new_weight=0)
+
+    for _ in range(50):
+        herb.update_fitness()
+        assert herb.fitness == 0

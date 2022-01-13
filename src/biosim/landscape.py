@@ -70,7 +70,7 @@ class Landscape:
                 herbivore_portion = herb.herbivore_feeding(self.fodder)
                 self.fodder -= herbivore_portion
             else:
-                break
+                continue
 
     def carnivores_eating(self):
         """Carnivores consume herbivores."""
@@ -81,13 +81,13 @@ class Landscape:
 
             if len(self.herb_pop) > 0 and carn.appetite > 0:
                 self.sort_herbs_by_fitness(decreasing=False)
-                survivers = []
+                survivors = []
 
                 for herb in self.herb_pop:
 
                     if carn.carnivore_feeding(herb) is True:
-                        survivers.append(herb)
-                self.herb_pop = survivers.copy()
+                        survivors.append(herb)
+                self.herb_pop = survivors.copy()
 
             else:
                 continue

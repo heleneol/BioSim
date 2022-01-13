@@ -26,9 +26,9 @@ class Animals:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
-        # for value in new_params:
-        #    if value < 0:
-        #        raise ValueError('All parameter values need to be a non-negative value')
+        for value in new_params:
+            if new_params[value] < 0:
+                raise ValueError('All parameter values need to be positive')  # Er dette sant?
 
         cls.parameters.update(new_params)
 

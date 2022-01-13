@@ -138,7 +138,7 @@ def test_aging():
     L = Lowland(herb_pop, carn_pop)
     herb_age_before = get_mean_age(L.herb_pop)
     L.aging()
-    assert get_mean_age(L.herb_pop) < herb_age_before
+    assert get_mean_age(L.herb_pop) > herb_age_before
     assert get_mean_age(L.carn_pop) == 1
 
 def generate_herb_pop(age, weight, num_herbs):

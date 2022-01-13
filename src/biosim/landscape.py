@@ -161,6 +161,8 @@ class Water(Landscape):
     """
     Class representing Ocean squares on the island.
     """
+    parameters = {'f_max': 0}
+
 '''
 
 ini_pops = [Herbivore() for herb in range(100)]
@@ -175,4 +177,5 @@ carn_count = []
 for year in range(10):
     herb_sum, carn_sum = l1.annual_cycle()
     herb_count.append(herb_sum)
-    carn_count.append(carn_count)'''
+    carn_count.append(carn_count)
+'''

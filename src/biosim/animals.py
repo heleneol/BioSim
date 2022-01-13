@@ -26,7 +26,7 @@ class Animals:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
-        #for value in new_params:
+        # for value in new_params:
         #    if value < 0:
         #        raise ValueError('All parameter values need to be a non-negative value')
 
@@ -200,4 +200,3 @@ class Carnivore(Animals):
 
         else:
             return True
-

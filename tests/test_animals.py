@@ -60,6 +60,7 @@ def set_carnivore_parameters(request):
 
 
 def test_animal_aging():
+    """Testing that Herbivores and Carnivores age with 1 year."""
     herb = Herbivore()
     carn = Carnivore()
     for n in range(10):
@@ -70,21 +71,24 @@ def test_animal_aging():
 
 
 def test_value_error_of_age_and_weight():
-    with pytest.raises(ValueError, match = 'Animal age has to be >= 0'):
+    """Testing ValueError is raised for error in age and weight."""
+    with pytest.raises(ValueError, match='Animal age has to be >= 0'):
         Herbivore(age=-5)
 
-    with pytest.raises(ValueError, match = 'Animal weight has to be >= 0'):
+    with pytest.raises(ValueError, match='Animal weight has to be >= 0'):
         Carnivore(weight=0)
 
 
-def test_deat_by_to_low_weight():
-    #denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
+def test_death_by_too_low_weight():
+    # denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
     herb = Herbivore()
     carn = Carnivore()
     herb.set_weight(new_weight=-2)
     carn.set_weight(new_weight=0)
     assert herb.dies()
     assert carn.dies()
+
+# Muligens ikke god, synes vi kan spørre om tid:
 
 
 @pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 100}], indirect=True)
@@ -125,7 +129,7 @@ def test_fitness_no_weight():
         assert carn.fitness == 0
 
 
-#Tror denne er unødvendig, siden denne teknisk sett tester formel og ikke kode:
+# Tror denne er unødvendig, siden denne teknisk sett tester formel og ikke kode:
 def test_no_population_no_birth():
     herb = Herbivore()
     carn = Carnivore()
@@ -135,6 +139,7 @@ def test_no_population_no_birth():
 # Test gives_birth():
 # kanskje en statistisk test som sjekker om fordelingen er som forventet
 # Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
+
 
 def test_animal_metabolism():
     herb = Herbivore()
@@ -148,7 +153,6 @@ def test_animal_metabolism():
         carn.metabolism()
         assert herb.weight < h_weight_before
         assert carn.weight < c_weight_before
-
 
 
 # Hva må vi egentlig teste i herb_feeding?
@@ -166,4 +170,3 @@ def test_herb_fitnesschange_fodder():
 
     herb.herbivore_feeding(landscape_fodder=herb.appetite)
     assert herb.fitness > fitness_before
-

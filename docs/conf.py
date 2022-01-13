@@ -10,16 +10,17 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.insert(0, os.path.abspath('../src'))
+autoclass_content = 'both'
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'Biosim'
-copyright = '2022, Johannes Fjeldså'
-author = 'Johannes Fjeldså'
+copyright = '2022, Johannes Fjeldså, Helene Drennan Olsen'
+author = 'Johannes Fjeldså, Helene Drennan Olsen'
 
 
 # -- General configuration ---------------------------------------------------
@@ -57,3 +58,4 @@ html_static_path = ['_static']
 
 
 # -- Extension configuration -------------------------------------------------
+latex_elements = {'papersize': 'a4paper'}

@@ -3,8 +3,6 @@ import scipy.stats as stats
 
 from src.biosim.animals import *
 
-
-
 # Overall parameters for probabilistic tests
 SEED = 12345678  # random seed for tests
 ALPHA = 0.01  # significance level for statistical tests
@@ -61,6 +59,7 @@ def set_carnivore_parameters(request):
     Carnivore.set_parameters(default_parameters)
 
 # Fixture for Herbivore og Carnivore? Siden vi bruker dem i så mange tester.
+
 
 def test_input_param():
     """ Testing input of new parameters """
@@ -157,24 +156,25 @@ def test_no_population_no_birth():
     assert herb.gives_birth(N=1) is None
     assert carn.gives_birth(N=1) is None
 
-# Test gives_birth():
-@pytest.mark.parametrize('set_carnivore_parameters', [{'preg_prob': 0.4}], indirect=True)
-def test_birthrate_z_test(set_carnivore_parameters):
+
+# Burde sette inn bestemte verdier.
+@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 0.4}], indirect=True)
+def test_dies_z_test(set_herbivore_parameters):
     random.seed(SEED)
     num = 100
-    p = Carnivore.get_param()['preg_prob']
 
-    c = Carnivore
-    n = sum(c.gives_birth() for _ in range(num))
+    h = Herbivore()
+    p = h.parameters['omega'] * (1 - h.fitness)
+    n = sum(h.dies() for _ in range(num)) # True == 1, False == 0
 
     mean = num * p
-    var = num * p * (1-p)
+    var = math.sqrt(num * p * (1 - p))
     # noinspection PyPep8Naming
-    Z = (n - mean) / math.sqrt(var)
-    phi = 2 * stats.norm.cdf(-abs)
-
+    Z = (n - mean) / var
+    phi = 2 * stats.norm.cdf(-abs(Z))
     assert phi > ALPHA
 
+# Test gives_birth():
 # kanskje en statistisk test som sjekker om fordelingen er som forventet
 # Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
 

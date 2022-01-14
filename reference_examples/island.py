@@ -2,6 +2,7 @@ from src.biosim.landscape import Lowland, Highland, Desert, Water
 from src.biosim.landscape import Herbivore
 import textwrap
 
+
 class Island:
 
     parametres = {'L': Lowland(),
@@ -9,21 +10,21 @@ class Island:
                   'D': Desert(),
                   'W': Water()}
 
-    def __init__(self, geogr ):
-        self.createmap(geogr)
+    def __init__(self, geogr):
+        self.map = self.createmap(geogr)
 
-    def createmap(self, geogr = None):
+    def createmap(self, geogr=None):
         geogr = geogr.split(sep='\n') if geogr is not None else str
-        map = {}
+        island_map = {}
         for row, string in enumerate(geogr, start=1):
             for column, letter in enumerate(string, start=1):
                 if letter in self.parametres.keys():
                     key = (row, column)
                     value = self.parametres[letter]
-                    map[key] = value
+                    island_map[key] = value
                 else:
                     raise ValueError('Invalid habitat type', letter)
-        self.map = map
+        return island_map
 
     def place_population(self, ini_pop):
         for indx, population in enumerate(ini_pop):
@@ -34,27 +35,29 @@ class Island:
     def island_migration(self):
 
         for location in self.map:
-            neighbouring_landscaps = {'north':,
-                                      'south':,
-                                      'east':,
-                                      'west':}
+            neighbouring_landscaps = {'north': '(x, y-1)',
+                                      'south': '(x, y+1)',
+                                      'east':  '(x+1, y)',
+                                      'west':  '(x-1, y)'}
             location.animal_migration(neighbouring_landscaps)
+
+        for location in self.map:
+            location.add_migrators_to_pop()
 
 
 geogr = """\
            WWW
            WLW
            WWW"""
-geogr = textwrap.dedent(geogr)
 
-i = Island(geogr)
+
+i = Island(textwrap.dedent(geogr))
 
 ini_herbs = [{'loc': (2, 2),
-              'pop': [{ 'species': 'Herbivore',
-                        'age': 5,
-                        'weight': 20}
-                        for _ in range(2)]}]
+              'pop': [{'species': 'Herbivore',
+                    'age': 5,
+                    'weight': 20}
+                    for _ in range(2)]}]
 
 i.place_population(ini_pop=ini_herbs)
 print(i.map[(2, 2)].herb_pop)
-i.anual_cycle()

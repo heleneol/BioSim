@@ -1,6 +1,6 @@
 import pytest
-from src.biosim.landscape import *
-from src.biosim.animals import *
+from src.biosim.landscape import Lowland, Highland, Water, Desert
+from src.biosim.animals import Herbivore, Carnivore
 
 
 @pytest.fixture
@@ -155,3 +155,9 @@ def generate_herb_pop(age, weight, num_herbs):
 def generate_carn_pop(age, weight, num_carns):
     """write None for age and weight if you dont want to spesify"""
     return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
+
+def test_add_population():
+    generate_herb_pop(age=5, num_carns = 20)
+    w = Water()
+    with pytest.raises(ValueError):
+        w.add_population()

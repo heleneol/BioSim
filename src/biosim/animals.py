@@ -86,10 +86,9 @@ class Animals:
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
-            if self.classname == 'Herbivore':
-                newborn = Herbivore()
-            else:
-                newborn = Carnivore()
+
+            newborn = type(self)()
+
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return None
             else:
@@ -99,7 +98,7 @@ class Animals:
         else:
             return None
 
-    def migrate(self): #ObsObs pass på at alle age-r riktig når de migrerer.
+    def migrate(self):
         if random.random() < self.parameters['mu']*self.fitness:
             return True
         else:

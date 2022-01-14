@@ -1,5 +1,5 @@
-from src.biosim.landscape import Lowland, Highland, Desert, Water
-from src.biosim.landscape import Herbivore
+from landscape import Lowland, Highland, Desert, Water
+
 import textwrap
 
 
@@ -33,12 +33,25 @@ class Island:
                 self.map[loc].add_population(ini_pop[indx].get('pop'))
 
     def island_migration(self):
+        def get_coordinate(location, celestrial_direction):
+            location = list(location)
+            if celestrial_direction == 'north':
+                location[1] += 1
+                return tuple(location)
+            elif celestrial_direction == 'south':
+                location[1] -= 1
+            elif celestrial_direction == 'east':
+                location[0] += 1
+            elif celestrial_direction == 'west':
+                location[0] -= 1
+            else:
+                raise KeyError('Celestrial direction misspelled')
 
         for location in self.map:
-            neighbouring_landscaps = {'north': '(x, y-1)',
-                                      'south': '(x, y+1)',
-                                      'east':  '(x+1, y)',
-                                      'west':  '(x-1, y)'}
+            neighbouring_landscaps = {'north': self.map[get_coordinate(location, 'north')],
+                                      'south': self.map[get_coordinate(location, 'south')],
+                                      'east':  self.map[get_coordinate(location, 'east')],
+                                      'west':  self.map[get_coordiante(location, 'west')]}
             location.animal_migration(neighbouring_landscaps)
 
         for location in self.map:
@@ -61,3 +74,4 @@ ini_herbs = [{'loc': (2, 2),
 
 i.place_population(ini_pop=ini_herbs)
 print(i.map[(2, 2)].herb_pop)
+i.island_migration()

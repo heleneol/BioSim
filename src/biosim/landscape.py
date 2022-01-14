@@ -3,7 +3,7 @@ Template for Landscape class.
 """
 import random
 
-from .animals import Herbivore, Carnivore
+from animals import Herbivore, Carnivore
 
 
 class Landscape:
@@ -42,24 +42,26 @@ class Landscape:
         self.migrating_herbs = []
         self.carn_pop = carn_pop if carn_pop is not None else []
         self.migrater_carns = []
+        self.habitability = True if type(self) is not Water else False
 
-    def add_population(self, population):
+    def add_population(self, population): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
         '''
         parametres
         ----------
         population: list of dicts counatining animal info
         '''
-
-        for animal in population:
-            age = animal['age']
-            weight = animal['weight']
-            if animal['species'] == 'Herbivore':
-                self.herb_pop.append(Herbivore(age=age, weight=weight))
-            elif animal['species'] == 'Carnivore':
-                self.carn_pop.append(Carnivore(age=age, weight=weight))
-            else:
-                raise KeyError('Species must be either Herbivore or Carnivore')
-
+        if self.habitability is True:
+            for animal in population:
+                age = animal['age']
+                weight = animal['weight']
+                if animal['species'] == 'Herbivore':
+                    self.herb_pop.append(Herbivore(age=age, weight=weight))
+                elif animal['species'] == 'Carnivore':
+                    self.carn_pop.append(Carnivore(age=age, weight=weight))
+                else:
+                    raise KeyError('Species must be either Herbivore or Carnivore')
+        else:
+            raise ValueError('population can not be placed in water')
     def get_num_herbs(self):
         """Return number of herbivores in Landscapecell."""
 
@@ -130,7 +132,7 @@ class Landscape:
         """
         parametres
         ----------
-        neighbouring_landscaps : dict, keys: celestial direction, values: landscape
+        neighbouring_landscaps : dict, keys: celestial direction, values: class object (landscape)
         """
         celestrial_directions = ['north', 'south', 'east', 'west']
         stay_put_herbs = []

@@ -136,16 +136,17 @@ class Landscape:
         """
         celestrial_directions = ['north', 'south', 'east', 'west']
 
-
+        staying_herbs = []
         for herb in self.herb_pop:
             if herb.migrate() is True:
-                migration_cell = neighbouring_landscaps[random.choice(celestrial_directions)]
+                random_direction = random.choice(celestrial_directions)
+                migration_cell = neighbouring_landscaps[random_direction]
                 if migration_cell == 'Water':
-                    return False
+                    staying_herbs.append(herb)
                 else:
-                    return True
+                    # oppsamling av dyr med info om hvor de skal
             else:
-                return False
+                staying_herbs.append(herb)
 
 
         '''for carn in self.carn_pop:

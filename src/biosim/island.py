@@ -43,12 +43,13 @@ class Island:
             if cell.classname == 'Water':
                 continue
             else:
-                neighbouring_landscaps = {'north': self.map[(loc[0]-1,loc[1])].classname,
+                north = self.map[(loc[0]-1,loc[1])]
+                neighbouring_landscaps = {'north': north.classname,
                                           'south': self.map[(loc[0]+1,loc[1])].classname,
                                           'east':  self.map[(loc[0], loc[1]+1)].classname,
                                           'west':  self.map[(loc[0], loc[1]-1)].classname}
 
-
+            north.migrating_herbs
 
         '''for location in self.map:
             location.add_migrators_to_pop()'''

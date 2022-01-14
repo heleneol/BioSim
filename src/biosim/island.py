@@ -1,4 +1,4 @@
-from landscape import Lowland, Highland, Desert, Water
+from biosim.landscape import Lowland, Highland, Desert, Water
 
 import textwrap
 
@@ -18,6 +18,12 @@ class Island:
         island_map = {}
         for row, string in enumerate(geogr, start=1):
             for column, letter in enumerate(string, start=1):
+                if row== 0 or row == len(geogr):
+                    if letter!="W":
+                        raise ValueError('Cells at the border has to water')
+                if column == 0 or column == len(string):
+                    if letter != 'W':
+                        raise ValueError('Cells at the border has to water')
                 if letter in self.parametres.keys():
                     key = (row, column)
                     value = self.parametres[letter]
@@ -33,26 +39,16 @@ class Island:
                 self.map[loc].add_population(ini_pop[indx].get('pop'))
 
     def island_migration(self):
-        def get_coordinate(location, celestrial_direction):
-            location = list(location)
-            if celestrial_direction == 'north':
-                location[1] += 1
-                return tuple(location)
-            elif celestrial_direction == 'south':
-                location[1] -= 1
-            elif celestrial_direction == 'east':
-                location[0] += 1
-            elif celestrial_direction == 'west':
-                location[0] -= 1
+        for location,cell in self.map.items():
+            if cell.classname == "water":
+                continue
             else:
-                raise KeyError('Celestrial direction misspelled')
+                neighbouring_landscaps = {'north': self.map[get_coordinate(location, 'north')],
+                                          'south': self.map[get_coordinate(location, 'south')],
+                                          'east':  self.map[get_coordinate(location, 'east')],
+                                          'west':  self.map[get_coordiante(location, 'west')]}
 
-        for location in self.map:
-            neighbouring_landscaps = {'north': self.map[get_coordinate(location, 'north')],
-                                      'south': self.map[get_coordinate(location, 'south')],
-                                      'east':  self.map[get_coordinate(location, 'east')],
-                                      'west':  self.map[get_coordiante(location, 'west')]}
-            location.animal_migration(neighbouring_landscaps)
+                cell.animal_migration(neighbouring_landscaps)
 
         for location in self.map:
             location.add_migrators_to_pop()
@@ -74,4 +70,3 @@ ini_herbs = [{'loc': (2, 2),
 
 i.place_population(ini_pop=ini_herbs)
 print(i.map[(2, 2)].herb_pop)
-i.island_migration()

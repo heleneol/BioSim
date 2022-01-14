@@ -29,10 +29,16 @@ class Island:
         for indx, population in enumerate(ini_pop):
             loc = ini_pop[indx].get('loc')
             if loc in self.map.keys():
-                print(self.map[loc].get_num_herbs())
+                self.map[loc].add_population(ini_pop[indx].get('pop'))
 
+    def island_migration(self):
 
-
+        for location in self.map:
+            neighbouring_landscaps = {'north':,
+                                      'south':,
+                                      'east':,
+                                      'west':}
+            location.animal_migration(neighbouring_landscaps)
 
 
 geogr = """\
@@ -50,4 +56,5 @@ ini_herbs = [{'loc': (2, 2),
                         for _ in range(2)]}]
 
 i.place_population(ini_pop=ini_herbs)
-i.map[(2, 2)].herb_pop
+print(i.map[(2, 2)].herb_pop)
+i.anual_cycle()

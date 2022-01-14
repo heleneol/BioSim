@@ -39,7 +39,26 @@ class Landscape:
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max']
         self.herb_pop = herb_pop if herb_pop is not None else []
+        self.migrating_herbs = []
         self.carn_pop = carn_pop if carn_pop is not None else []
+        self.migrater_carns = []
+
+    def add_population(self, population):
+        '''
+        parametres
+        ----------
+        population: list of dicts counatining animal info
+        '''
+
+        for animal in population:
+            age = animal['age']
+            weight = animal['weight']
+            if animal['species'] == 'Herbivore':
+                self.herb_pop.append(Herbivore(age=age, weight=weight))
+            elif animal['species'] == 'Carnivore':
+                self.carn_pop.append(Carnivore(age=age, weight=weight))
+            else:
+                raise KeyError('Species must be either Herbivore or Carnivore')
 
     def get_num_herbs(self):
         """Return number of herbivores in Landscapecell."""
@@ -107,6 +126,44 @@ class Landscape:
         self.herb_pop.extend(new_pop(self.herb_pop))
         self.carn_pop.extend(new_pop(self.carn_pop))
 
+    def animal_migration(self, neighbouring_landscaps):
+        """
+        parametres
+        ----------
+        neighbouring_landscaps : dict, keys: celestial direction, values: landscape
+        """
+        celestrial_directions = ['north', 'south', 'east', 'west']
+        stay_put_herbs = []
+        for herb in self.herb_pop:
+            if herb.migrate() is True:
+                migration_cell = neighbouring_landscaps[random.choice(celestrial_directions)]
+                if migration_cell.classname == 'Water':
+                    stay_put_herbs.append(herb)
+                else:
+                    migration_cell.migrating_herbs.append(herb)
+            else:
+                stay_put_herbs.append(herb)
+        self.herb_pop = stay_put_herbs
+
+        stay_put_carns = []
+        for carn in self.carn_pop:
+            if carn.migrate() is True:
+                migration_cell=neighbouring_landscaps[random.choice(celestrial_directions)]
+                if migration_cell.classname == 'Water':
+                    stay_put_carns.append(carn)
+                else:
+                    migration_cell.migrating_carns.append(carn)
+            else:
+                stay_put_carns.append(carn)
+        self.carn_pop = stay_put_carns
+
+
+    def add_migraters_to_pop(self):
+        self.herb_pop.extend(self.migrating_herbs)
+        self.migrating_herbs.clear()
+        self.carn_pop.extend(self.migrater_carns)
+        self.migrater_carns.clear()
+
     def aging(self):
         for herb in self.herb_pop:
             herb.update_age()
@@ -129,6 +186,7 @@ class Landscape:
         self.herbivores_eating()
         self.carnivores_eating()
         self.reproduction()
+        #migration
         self.aging()
         self.weight_loss()
         self.population_death()

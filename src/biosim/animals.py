@@ -99,7 +99,11 @@ class Animals:
         else:
             return None
 
-    # def migrate(self): ObsObs pass på at alle age-r riktig når de migrerer.
+    def migrate(self): #ObsObs pass på at alle age-r riktig når de migrerer.
+        if random.random() < self.parameters['mu']*self.fitness:
+            return True
+        else:
+            return False
 
     def update_age(self, years=None):
         """

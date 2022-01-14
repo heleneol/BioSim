@@ -135,16 +135,16 @@ class Landscape:
         neighbouring_landscaps : dict, keys: celestial direction, values: class object (landscape)
         """
         celestrial_directions = ['north', 'south', 'east', 'west']
-        stay_put_herbs = []
+
         for herb in self.herb_pop:
             if herb.migrate() is True:
                 migration_cell = neighbouring_landscaps[random.choice(celestrial_directions)]
-                if migration_cell.classname == 'Water':
-                    stay_put_herbs.append(herb)
+                if migration_cell == 'Water':
+                    False
                 else:
-                    migration_cell.migrating_herbs.append(herb)
+                    True
             else:
-                stay_put_herbs.append(herb)
+                False
         self.herb_pop = stay_put_herbs
 
         stay_put_carns = []

@@ -39,14 +39,14 @@ class Island:
                 self.map[loc].add_population(ini_pop[indx].get('pop'))
 
     def island_migration(self):
-        for location,cell in self.map.items():
+        for loc,cell in self.map.items():
             if cell.classname == "water":
                 continue
             else:
-                neighbouring_landscaps = {'north': self.map[get_coordinate(location, 'north')],
-                                          'south': self.map[get_coordinate(location, 'south')],
-                                          'east':  self.map[get_coordinate(location, 'east')],
-                                          'west':  self.map[get_coordiante(location, 'west')]}
+                neighbouring_landscaps = {'north': self.map[(loc[0]-1,loc[1])].classname,
+                                          'south': self.map[(loc[0]+1,loc[1])].classname,
+                                          'east':  self.map[(loc[0], loc[1]+1)].classname,
+                                          'west':  self.map[(loc[0], loc[1]-1)].classname}
 
                 cell.animal_migration(neighbouring_landscaps)
 

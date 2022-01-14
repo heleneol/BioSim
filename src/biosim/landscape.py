@@ -135,19 +135,19 @@ class Landscape:
         neighbouring_landscaps : dict, keys: celestial direction, values: class object (landscape)
         """
         celestrial_directions = ['north', 'south', 'east', 'west']
-
+        migrators = {'north': [], 'south': [], 'east': [], 'west': []}
         staying_herbs = []
         for herb in self.herb_pop:
             if herb.migrate() is True:
                 random_direction = random.choice(celestrial_directions)
                 migration_cell = neighbouring_landscaps[random_direction]
-                if migration_cell == 'Water':
+                if migration_cell.classname == 'Water':
                     staying_herbs.append(herb)
                 else:
-                    # oppsamling av dyr med info om hvor de skal
+                    migrators[random_direction].append(herb)
             else:
                 staying_herbs.append(herb)
-
+        self.herb_pop = staying_herbs
 
         '''for carn in self.carn_pop:
             if carn.migrate() is True:
@@ -160,6 +160,13 @@ class Landscape:
                 stay_put_carns.append(carn)
         self.carn_pop = stay_put_carns'''
 
+    def register_for_asylum(self, migrator):
+        if type(migrator) is Herbivore:
+            self.migrating_herbs.append(migrator)
+        elif type(migrator) is Carnivore:
+            self.migrater_carns.append(migrator)
+        else:
+            raise ValueError('*** Intruderalarm ***')
 
     def add_migraters_to_pop(self):
         self.herb_pop.extend(self.migrating_herbs)

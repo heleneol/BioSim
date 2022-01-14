@@ -40,7 +40,7 @@ class Island:
 
     def island_migration(self):
         for loc,cell in self.map.items():
-            if cell.classname == "water":
+            if cell.classname == 'Water':
                 continue
             else:
                 neighbouring_landscaps = {'north': self.map[(loc[0]-1,loc[1])].classname,
@@ -48,16 +48,17 @@ class Island:
                                           'east':  self.map[(loc[0], loc[1]+1)].classname,
                                           'west':  self.map[(loc[0], loc[1]-1)].classname}
 
-                cell.animal_migration(neighbouring_landscaps)
 
-        for location in self.map:
-            location.add_migrators_to_pop()
+
+        '''for location in self.map:
+            location.add_migrators_to_pop()'''
 
 
 geogr = """\
-           WWW
-           WLW
-           WWW"""
+           WWWWW
+           WLLLW
+           WLLLW
+           WWWWW"""
 
 
 i = Island(textwrap.dedent(geogr))
@@ -66,7 +67,7 @@ ini_herbs = [{'loc': (2, 2),
               'pop': [{'species': 'Herbivore',
                     'age': 5,
                     'weight': 20}
-                    for _ in range(2)]}]
+                    for _ in range(40)]}]
 
 i.place_population(ini_pop=ini_herbs)
-print(i.map[(2, 2)].herb_pop)
+i.island_migration()

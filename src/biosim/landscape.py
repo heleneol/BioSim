@@ -136,28 +136,28 @@ class Landscape:
         """
         celestrial_directions = ['north', 'south', 'east', 'west']
 
+
         for herb in self.herb_pop:
             if herb.migrate() is True:
                 migration_cell = neighbouring_landscaps[random.choice(celestrial_directions)]
                 if migration_cell == 'Water':
-                    False
+                    return False
                 else:
-                    True
+                    return True
             else:
-                False
-        self.herb_pop = stay_put_herbs
+                return False
 
-        stay_put_carns = []
-        for carn in self.carn_pop:
+
+        '''for carn in self.carn_pop:
             if carn.migrate() is True:
                 migration_cell=neighbouring_landscaps[random.choice(celestrial_directions)]
                 if migration_cell.classname == 'Water':
                     stay_put_carns.append(carn)
                 else:
-                    migration_cell.migrating_carns.append(carn)
+                    
             else:
                 stay_put_carns.append(carn)
-        self.carn_pop = stay_put_carns
+        self.carn_pop = stay_put_carns'''
 
 
     def add_migraters_to_pop(self):

@@ -1,4 +1,7 @@
-a = (1,2)
-b = list(a)
-b[1] += 1
-print(b)
+class Bananklase:
+    def __init__(self, antall_bananer):
+        self.bananer = antall_bananer
+
+    def
+for bananer in self.bananer:
+    if celle.

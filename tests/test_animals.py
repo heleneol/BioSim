@@ -59,10 +59,16 @@ def set_carnivore_parameters(request):
     Carnivore.set_parameters(default_parameters)
 
 # Fixture for Herbivore og Carnivore? Siden vi bruker dem i så mange tester.
+# @pytest.fixture(autouse=True)
+# def herb_example():
+#     herbivore = [Herbivore(age=blablabla
+#return herbivore
 
 
 def test_input_param():
-    """ Testing input of new parameters """
+    """
+    Testing that input of new parameter values is possible.
+    """
     new_params = {'w_birth': 7.0,
                   'beta': 0.80}
 
@@ -72,7 +78,9 @@ def test_input_param():
 
 
 def test_wrong_param():
-    """ Testing raising errors when input parameters are erroneous. """
+    """
+    Testing that errors are raised when input parameters are erroneous.
+    """
     with pytest.raises(KeyError):
         Herbivore.set_parameters({'wbirth': 7.0})
 
@@ -81,16 +89,31 @@ def test_wrong_param():
 
 
 def test_value_error_of_age_and_weight():
-    """ Testing whether ValueError is raised for error in input age and weight."""
-    with pytest.raises(ValueError, match='Animal age has to be >= 0'):
+    """
+    Testing whether ValueError is raised for error in input age and weight.
+    """
+    with pytest.raises(ValueError):
         Herbivore(age=-5)
 
-    with pytest.raises(ValueError, match='Animal weight has to be >= 0'):
+    with pytest.raises(ValueError):
         Carnivore(weight=0)
 
 
+def test_fitness_value():
+    """
+    Makes sure the fitness function returns a value from 0 to 1.
+    """
+    herb = Herbivore()
+
+    for _ in range(50):
+        herb.update_fitness()
+        assert 0 <= herb.fitness <= 1
+
+# Slette?:
 def test_fitness_no_weight():
-    """ Testing if the animals weight is zero, the fitness is also zero. """
+    """
+    When the animal's weight is zero, the fitness is also zero.
+    """
     carn = Carnivore()
     carn.set_weight(new_weight=0)
 
@@ -99,27 +122,35 @@ def test_fitness_no_weight():
         assert carn.fitness == 0
 
 
-def test_fitness_by_halfvalues():
-    herb = Herbivore()
+# Could we write 1/4 here?
+def test_fitness_values():
+    """
+    Testing that the animal fitness is correctly calculated.
+    """
+    herb = Herbivore(age=5, weight=10)
     herb.update_age(years=herb.parameters['a_half'])
     herb.set_weight(new_weight=herb.parameters['w_half'])
 
-    for _ in range(50):
-        herb.update_fitness()
-        assert herb.fitness == 1/4
-
-
-def test_fitness_value():
-    """ Testing fitness is between 0 and 1. """
-    herb = Herbivore()
+    q_pos = 1 / (1 + (math.exp(herb.parameters['phi_age'] * (herb.age - herb.parameters['a_half']))))
+    q_neg = 1 / (1 + (math.exp((-1) * herb.parameters['phi_weight'] * (herb.weight - herb.parameters['w_half']))))
 
     for _ in range(50):
         herb.update_fitness()
-        assert 0 <= herb.fitness <= 1
+        assert herb.fitness == q_pos * q_neg
+
+
+def test_not_migrate(mocker):
+    carn = Carnivore()
+    mocker.patch('random.random', return_value=1)
+
+    for _ in range(10):
+        assert carn.migrate() is False
 
 
 def test_animal_aging():
-    """ Testing that Herbivores and Carnivores age with 1 year. """
+    """
+    Testing that Herbivores and Carnivores age with 1 year.
+    """
     herb = Herbivore()
     carn = Carnivore()
     for n in range(10):
@@ -131,30 +162,30 @@ def test_animal_aging():
 
 def test_death_by_too_low_weight():
     # denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
-    herb = Herbivore()
     carn = Carnivore()
-    herb.set_weight(new_weight=-2)
     carn.set_weight(new_weight=0)
-    assert herb.dies()
     assert carn.dies()
 
 
-#@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 100}], indirect=True)
-#def test_death_by_higher_omega(set_herbivore_parameters):
-#    herb = Herbivore()
-#    assert herb.parameters['omega'] == 100
-#
+#@pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 0.0}], indirect=True)
+#def test_no_birth(set_carnivore_parameters):
+    """
+    If gamma is zero, the birth probability (gamma * fitness * (num - 1)), will be zero.
+    Hence, gives_birth() will not return any new animals.
+    """
+#    carn = Carnivore()
+#    num = 100
+
 #    for _ in range(50):
-#        assert herb.dies()
-# Synes vi kan ditche denne testen ^.
+#        carn.gives_birth(N=num)
+#    assert
 
-
-# Tror denne er unødvendig, siden denne teknisk sett tester formel og ikke kode:
-def test_no_population_no_birth():
-    herb = Herbivore()
-    carn = Carnivore()
-    assert herb.gives_birth(N=1) is None
-    assert carn.gives_birth(N=1) is None
+#def test_certain_birth(mocker):
+#    carn = Carnivore()
+#    mocker.patch('random.random', return_value=0)
+#
+#    for _ in range(5):
+#        assert carn.gives_birth()
 
 
 # Burde sette inn bestemte verdier.
@@ -180,6 +211,9 @@ def test_dies_z_test(set_herbivore_parameters):
 
 
 def test_animal_metabolism():
+    """
+    Testing each animal loses weight with the metabolism function.
+    """
     herb = Herbivore()
     h_weight_before = herb.weight
 
@@ -193,7 +227,18 @@ def test_animal_metabolism():
         assert carn.weight < c_weight_before
 
 
-# Hva må vi egentlig teste i herb_feeding?
+def test_certain_death(mocker):
+    """
+    Using mocker to set random.random as 0.
+    """
+    herb = Herbivore()
+    mocker.patch('random.random', return_value=0)
+    for _ in range(10):
+        assert herb.dies() # Trenger ikke is true her?
+
+
+
+# Hva må vi egentlig teste i herb_feeding?:
 def test_herb_weightchange_fodder():
     herb = Herbivore()
     weight_before = herb.weight

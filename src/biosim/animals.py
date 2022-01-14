@@ -28,7 +28,7 @@ class Animals:
 
         for key in new_params:
             if new_params[key] < 0:
-                raise ValueError('All parameter values need to be positive')  # Er dette sant?
+                raise ValueError('All parameter values need to be positive')
 
         cls.parameters.update(new_params)
 
@@ -50,6 +50,8 @@ class Animals:
     def update_fitness(self):
         """
         Function calculating the fitness to animals based on weight and age.
+
+        Input funksjon her som vanskelig dokumentasjon
         """
         def q(x, x_half, phi, sign):
             if sign == 'pos':
@@ -65,6 +67,13 @@ class Animals:
             w_half = self.parameters['w_half']
             phi_weight = self.parameters['phi_weight']
             self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
+            # Alternativt:
+            # q_pos = 1 / (1 + (math.exp(phi_age * (self.age - a_half))))
+            # q_neg = 1 / (1 + (math.exp((-1) * phi_weight * (self.weight - w_half))))
+
+            # self.fitness = q_pos * q_neg
+
+            # Trenger ikke denne fordi den kan ikke bli over 1???
             if self.fitness > 1:
                 # noinspection PyAttributeOutsideInit
                 self.fitness = 1

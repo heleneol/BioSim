@@ -41,14 +41,14 @@ class Landscape:
         self.herb_pop = herb_pop if herb_pop is not None else []
         self.migrating_herbs = []
         self.carn_pop = carn_pop if carn_pop is not None else []
-        self.migrater_carns = []
+        self.migrating_carns = []
         self.habitability = True if type(self) is not Water else False
 
     def add_population(self, population): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
         '''
-        parametres
+        parameters
         ----------
-        population: list of dicts counatining animal info
+        population: list of dicts counting animal info
         '''
         if self.habitability is True:
             for animal in population:
@@ -61,29 +61,26 @@ class Landscape:
                 else:
                     raise KeyError('Species must be either Herbivore or Carnivore')
         else:
-            raise ValueError('population can not be placed in water')
-    def get_num_herbs(self):
-        """Return number of herbivores in Landscapecell."""
+            raise ValueError('Population cannot be placed in water')
 
+    def get_num_herbs(self):
+        """Return number of herbivores in Landscape-cell."""
         return len(self.herb_pop)
 
     def get_num_carns(self):
-        """Return number of carnivores in Landscapecell."""
-
+        """Return number of carnivores in Landscape-cell."""
         return len(self.carn_pop)
 
     def sort_herbs_by_fitness(self, decreasing):
         """Sorts the herbivore population by descending fitness."""
-
         self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=decreasing)
 
     def regrowth(self):
         """Regrows fodder in Low- and Highlands."""
-
         self.fodder = self.parameters['f_max']
 
     def herbivores_eating(self):
-        """Herbivores consume fodder."""
+        """Herbivores consume fodder by descending fitness."""
         self.sort_herbs_by_fitness(decreasing=True)
         for herb in self.herb_pop:
             herb.regain_appetite()
@@ -94,18 +91,16 @@ class Landscape:
                 continue
 
     def carnivores_eating(self):
-        """Carnivores consume herbivores."""
+        """Carnivores, in random order, consume herbivores."""
         random.shuffle(self.carn_pop)
 
         for carn in self.carn_pop:
             carn.regain_appetite()
-
             if len(self.herb_pop) > 0 and carn.appetite > 0:
                 self.sort_herbs_by_fitness(decreasing=False)
                 survivors = []
 
                 for herb in self.herb_pop:
-
                     if carn.carnivore_feeding(herb) is True:
                         survivors.append(herb)
                 self.herb_pop = survivors.copy()
@@ -143,7 +138,7 @@ class Landscape:
         if type(migrator) is Herbivore:
             self.migrating_herbs.append(migrator)
         elif type(migrator) is Carnivore:
-            self.migrater_carns.append(migrator)
+            self.migrating_carns.append(migrator)
         else:
             raise ValueError('*** Intruderalarm ***')
 
@@ -152,8 +147,8 @@ class Landscape:
         self.herb_pop.extend(self.migrating_herbs)
         print(len(self.herb_pop))
         self.migrating_herbs.clear()
-        self.carn_pop.extend(self.migrater_carns)
-        self.migrater_carns.clear()
+        self.carn_pop.extend(self.migrating_carns)
+        self.migrating_carns.clear()
 
     def aging(self):
         for herb in self.herb_pop:

@@ -128,37 +128,16 @@ class Landscape:
         self.herb_pop.extend(new_pop(self.herb_pop))
         self.carn_pop.extend(new_pop(self.carn_pop))
 
-    def animal_migration(self, neighbouring_landscaps):
-        """
-        parametres
-        ----------
-        neighbouring_landscaps : dict, keys: celestial direction, values: class object (landscape)
-        """
-        celestrial_directions = ['north', 'south', 'east', 'west']
-        migrators = {'north': [], 'south': [], 'east': [], 'west': []}
+    def animal_migration(self):
+        migrators = []
         staying_herbs = []
         for herb in self.herb_pop:
             if herb.migrate() is True:
-                random_direction = random.choice(celestrial_directions)
-                migration_cell = neighbouring_landscaps[random_direction]
-                if migration_cell.classname == 'Water':
-                    staying_herbs.append(herb)
-                else:
-                    migrators[random_direction].append(herb)
+                migrators.append(herb)
             else:
                 staying_herbs.append(herb)
         self.herb_pop = staying_herbs
-
-        '''for carn in self.carn_pop:
-            if carn.migrate() is True:
-                migration_cell=neighbouring_landscaps[random.choice(celestrial_directions)]
-                if migration_cell.classname == 'Water':
-                    stay_put_carns.append(carn)
-                else:
-                    
-            else:
-                stay_put_carns.append(carn)
-        self.carn_pop = stay_put_carns'''
+        return migrators
 
     def register_for_asylum(self, migrator):
         if type(migrator) is Herbivore:
@@ -169,7 +148,9 @@ class Landscape:
             raise ValueError('*** Intruderalarm ***')
 
     def add_migraters_to_pop(self):
+        print(len(self.herb_pop))
         self.herb_pop.extend(self.migrating_herbs)
+        print(len(self.herb_pop))
         self.migrating_herbs.clear()
         self.carn_pop.extend(self.migrater_carns)
         self.migrater_carns.clear()
@@ -201,8 +182,8 @@ class Landscape:
         self.weight_loss()
         self.population_death()
 
-
-
+    def print(self, animal):
+        print(animal.weight)
 class Lowland(Landscape):
     """
     Class representing Lowland squares on the island.

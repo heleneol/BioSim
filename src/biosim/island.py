@@ -1,7 +1,7 @@
-from biosim.landscape import Lowland, Highland, Desert, Water
+from biosim.landscape import Landscape,Lowland, Highland, Desert, Water
 
 import textwrap
-
+import random
 
 class Island:
 
@@ -37,25 +37,34 @@ class Island:
             loc = ini_pop[indx].get('loc')
             if loc in self.map.keys():
                 self.map[loc].add_population(ini_pop[indx].get('pop'))
+            else:
+                ValueError('')
 
     def island_migration(self):
         for loc,cell in self.map.items():
+            print(loc)
             if cell.classname == 'Water':
                 continue
             else:
-                neighbouring_landscaps = {'north': self.map[(loc[0]-1,loc[1])],
-                                          'south': self.map[(loc[0]+1,loc[1])],
-                                          'east':  self.map[(loc[0], loc[1]+1)],
-                                          'west':  self.map[(loc[0], loc[1]-1)]}
-                migraters = cell.animal_migration(neighbouring_landscaps)
-                for direction,migrating_pop in migraters:
-                    for animal in migrating_pop:
-                        neighbouring_landscaps[direction].register_for_assylum(migrator=animal)
+                neighbouring_landscaps = [self.map[(loc[0]-1,loc[1])],
+                                          self.map[(loc[0]+1,loc[1])],
+                                          self.map[(loc[0], loc[1]+1)],
+                                          self.map[(loc[0], loc[1]-1)]]
+                migraters = cell.animal_migration()
+                for animal in migraters:
+                    migration_cell = random.choice(neighbouring_landscaps)
+                    if migration_cell.classname == 'Water':
+                        print('vaaaannnn')
+                        cell.herb_pop.append(animal)
+                    else:
+                        print('hade')
+                        migration_cell.register_for_asylum(migrator=animal)
 
-
-
-        '''for location in self.map:
-            location.add_migrators_to_pop()'''
+        #for location, cell in self.map.items():
+         #   if cell.classname == 'Water':
+         #       continue
+         #   else:
+        #        cell.add_migraters_to_pop()
 
 
 geogr = """\
@@ -74,4 +83,6 @@ ini_herbs = [{'loc': (2, 2),
                     for _ in range(40)]}]
 
 i.place_population(ini_pop=ini_herbs)
+
 i.island_migration()
+

@@ -1,4 +1,4 @@
-from biosim.landscape import Landscape,Lowland, Highland, Desert, Water
+from biosim.landscape import Lowland, Highland, Desert, Water
 
 import textwrap
 import random
@@ -82,6 +82,7 @@ class Island:
         for loc,cell in self.map.items():
             herbs_per_cell[loc] = cell.get_num_herbs()
         return herbs_per_cell
+
     def get_number_carns(self):
         carns_per_cell = {}
         for loc, cell in self.map.items():
@@ -119,6 +120,12 @@ class Island:
                     else:
                         cell.add_migraters_to_pop()
 
+    def anual_cycle(self):
+        for cell in self.map.values():
+            cell.pre_migration_cycle()
+        self.island_migration()
+        for cell in self.map.values():
+            cell.post_migration_cycle()
 
 geogr = """\
            WWWWW
@@ -161,7 +168,7 @@ def print_carns_per_cell(i):
 print_herbs_per_cell(i)
 print_carns_per_cell(i)
 for year in range(10):
-    i.island_migration()
+    i.anual_cycle()
 print_carns_per_cell(i)
 print_herbs_per_cell(i)
 

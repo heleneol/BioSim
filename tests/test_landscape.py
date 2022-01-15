@@ -1,5 +1,5 @@
 from src.biosim.landscape import Lowland, Highland, Water, Desert
-from src.biosim.animals import Herbivore, Carnivore
+from src.biosim.animals import *
 
 import pytest
 import random
@@ -175,3 +175,8 @@ def test_add_population():
     w = Water()
     with pytest.raises(ValueError):
         w.add_population()
+
+def test_animal_migration():
+    l = Lowland()
+    l.herb_pop = generate_herb_pop(age=5, num_carns=20)
+    assert len(l.herb_pop) == 20

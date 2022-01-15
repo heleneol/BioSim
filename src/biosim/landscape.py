@@ -3,7 +3,7 @@ Template for Landscape class.
 """
 import random
 
-from animals import Herbivore, Carnivore
+from biosim.animals import Herbivore, Carnivore
 
 
 class Landscape:
@@ -174,13 +174,14 @@ class Landscape:
         self.herb_pop = [animal for animal in self.herb_pop if animal.dies() is not True]
         self.carn_pop = [animal for animal in self.carn_pop if animal.dies() is not True]
 
-    def annual_cycle(self):
+    def pre_migration_cycle(self):
         self.regrowth()
         self.sort_herbs_by_fitness(decreasing=True)
         self.herbivores_eating()
         self.carnivores_eating()
         self.reproduction()
-        #migration
+
+    def post_migration_cycle(self):
         self.aging()
         self.weight_loss()
         self.population_death()

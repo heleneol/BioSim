@@ -186,7 +186,7 @@ class Carnivore(Animals):
                   'w_half': 4.0, 'phi_weight': 00.4,
                   'mu': 0.4, 'gamma': 0.8,
                   'zeta': 3.5, 'xi': 1.1,
-                  'omega': 0.8, 'F': 50.0,
+                  'omega': 1.0, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
     def carnivore_feeding(self, herb):

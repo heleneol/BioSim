@@ -170,8 +170,16 @@ class Landscape:
             carn.metabolism()
 
     def population_death(self):
-        self.herb_pop = [animal for animal in self.herb_pop if animal.dies() is not True]
-        self.carn_pop = [animal for animal in self.carn_pop if animal.dies() is not True]
+        surviving_herbs = []
+        surviving_carns = []
+        for herb in self.herb_pop:
+            if herb.dies() is not True:
+                surviving_herbs.append(herb)
+        for carn in self.carn_pop:
+            if carn.dies() is not True:
+                surviving_carns.append(carn)
+        self.herb_pop = surviving_herbs
+        self.carn_pop = surviving_carns
 
     def pre_migration_cycle(self):
         self.regrowth()

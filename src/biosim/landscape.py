@@ -132,8 +132,6 @@ class Landscape:
             else:
                 staying_herbs.append(herb)
         self.herb_pop = staying_herbs
-        print(len(migrators))
-        print(len(staying_herbs))
         return migrators
 
     def register_for_asylum(self, migrator):

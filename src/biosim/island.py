@@ -120,17 +120,18 @@ class Island:
                     else:
                         cell.add_migraters_to_pop()
 
-    def anual_cycle(self):
+    def pre_migration_anual_cycle(self):
         for cell in self.map.values():
             cell.pre_migration_cycle()
-        self.island_migration()
+
+    def post_migration_anual_cycle(self):
         for cell in self.map.values():
             cell.post_migration_cycle()
 
 geogr = """\
            WWWWW
-           WLLLW
-           WLLLW
+           WLWLW
+           WLWLW
            WWWWW"""
 
 
@@ -143,7 +144,7 @@ ini_pop = [{'loc': (2,2),
                     'age': 5,
                     'weight': 20}
                     for _ in range(50)]},
-           {'loc': (2,4),
+           {'loc': (3,4),
             'pop': [{'species': 'Carnivore',
                     'age': 5,
                     'weight': 20}
@@ -165,10 +166,31 @@ def print_carns_per_cell(i):
     for loc, count in carns_per_cell.items():
         print(loc, ':', count)
 
-print_herbs_per_cell(i)
-print_carns_per_cell(i)
-for year in range(10):
-    i.anual_cycle()
-print_carns_per_cell(i)
-print_herbs_per_cell(i)
+for indx,year in enumerate(range(5), start=1):
 
+    print(f'Begining of year {indx}')
+    print('****************')
+    print_herbs_per_cell(i)
+    print_carns_per_cell(i)
+
+    i.pre_migration_anual_cycle()
+
+    print('Pre migration')
+    print('*************')
+
+    print_herbs_per_cell(i)
+    print_carns_per_cell(i)
+
+    i.island_migration()
+
+    print('Post migration')
+    print('*************')
+    print_herbs_per_cell(i)
+    print_carns_per_cell(i)
+
+    i.post_migration_anual_cycle()
+
+    print('End of year')
+    print('*************')
+    print_herbs_per_cell(i)
+    print_carns_per_cell(i)

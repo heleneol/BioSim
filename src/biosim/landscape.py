@@ -115,8 +115,7 @@ class Landscape:
             newborns = []
             for parent in population:
                 newborn = parent.gives_birth(N)
-
-                if newborn is not False:
+                if newborn is not None:
                     newborns.append(newborn)
             return newborns
 
@@ -176,7 +175,6 @@ class Landscape:
 
     def pre_migration_cycle(self):
         self.regrowth()
-        self.sort_herbs_by_fitness(decreasing=True)
         self.herbivores_eating()
         self.carnivores_eating()
         self.reproduction()

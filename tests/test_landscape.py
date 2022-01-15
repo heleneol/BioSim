@@ -134,15 +134,15 @@ def test_carnivores_eating():
 def test_reproduction():
     herb_pop = [Herbivore() for herb in range(250)]
     carn_pop = [Carnivore() for carn in range(5)]
-    H = Highland(herb_pop, carn_pop)
+    h = Highland(herb_pop, carn_pop)
 
-    herb_count_old = H.get_num_herbs()
-    carn_count_old = H.get_num_carns()
+    herb_count_old = h.get_num_herbs()
+    carn_count_old = h.get_num_carns()
 
     for _ in range(20):
-        H.reproduction()
-        herb_count = H.get_num_herbs()
-        carn_count = H.get_num_carns()
+        h.reproduction()
+        herb_count = h.get_num_herbs()
+        carn_count = h.get_num_carns()
         assert herb_count >= herb_count_old and carn_count >= carn_count_old
         herb_count_old, carn_count_old = herb_count, carn_count
 
@@ -171,12 +171,26 @@ def generate_carn_pop(age, weight, num_carns):
     return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
 
 def test_add_population():
-    generate_herb_pop(age=5, num_carns = 20)
+    herb_pop = [{'species': 'Herbivore',
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(150)]
     w = Water()
     with pytest.raises(ValueError):
-        w.add_population()
+        w.add_population(herb_pop)
 
 def test_animal_migration():
     l = Lowland()
-    l.herb_pop = generate_herb_pop(age=5, num_carns=20)
-    assert len(l.herb_pop) == 20
+    l.herb_pop = generate_herb_pop(age=5, weight = None, num_herbs=20)
+    l.carn_pop = generate_carn_pop(age=5, weight = None, num_carns=10)
+    num_herbs_old = l.get_num_herbs()
+    num_carns_old = l.get_num_carns()
+    migrators_herb, migrators_carn = l.animal_migration()
+    if num_herbs_old > l.get_num_herbs():
+        assert len(migrators_herb) > 0
+    else:
+        assert len(migrators_herb) == 0
+    if num_carns_old > l.get_num_carns():
+        assert len(migrators_carn) > 0
+    else:
+        assert len(migrators_carn) == 0

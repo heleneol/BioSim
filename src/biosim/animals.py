@@ -95,9 +95,7 @@ class Animals:
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
 
         if random.random() < preg_prob:
-
             newborn = type(self)()
-
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return None
             else:

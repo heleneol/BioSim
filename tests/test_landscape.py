@@ -58,6 +58,9 @@ def set_highland_parameters(request):
 
 
 def test_landscape_construction():
+    """
+
+    """
     number_herb = 50
     number_carn = 10
     herb_pop = [Herbivore(age=5) for _ in range(number_herb)]

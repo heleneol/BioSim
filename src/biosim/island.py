@@ -97,7 +97,7 @@ class Island:
                               self.map[(loc[0], loc[1]+1)],
                               self.map[(loc[0], loc[1]-1)]]
 
-                migrators_herb,migrators_carn = cell.animal_migration()
+                migrators_herb, migrators_carn = cell.animal_migration()
 
                 for herb in migrators_herb:
                     migration_cell = random.choice(neighbours)
@@ -105,6 +105,7 @@ class Island:
                         cell.migrating_herbs.append(herb)
                     else:
                         migration_cell.register_for_asylum(migrator=herb)
+
                 for carn in migrators_carn:
                     migration_cell = random.choice(neighbours)
                     if migration_cell.classname == 'Water':

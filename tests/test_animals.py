@@ -227,8 +227,8 @@ def test_death_by_too_low_weight():
     assert carn.dies()
 
 
-@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 0.6}], indirect=True)
-def test_dies_z_test(set_herbivore_parameters):
+@pytest.mark.parametrize('set_carnivore_parameters', [{'omega': 0.6}], indirect=True)
+def test_dies_z_test(set_carnivore_parameters):
     """
     Binomial Z-test on the dies()-function with herbivores.
 
@@ -242,15 +242,19 @@ def test_dies_z_test(set_herbivore_parameters):
     random.seed(SEED)
     num = 100
 
-    h = Herbivore(age=100)
-    p = h.parameters['omega']  # * (1 - h.fitness)
-    n = sum(h.dies() for _ in range(num)) # True == 1, False == 0
+    #h = Herbivore()
+    c = Carnivore()
+    p = c.parameters['omega'] * (1 - c.fitness)
+    #p = h.parameters['omega'] * (1 - h.fitness)
+    n = sum(c.dies() for _ in range(num))  # True == 1, False == 0
 
     mean = num * p
     var = math.sqrt(num * p * (1 - p))
     # noinspection PyPep8Naming
     Z = (n - mean) / var
+    print(Z)
     phi = 2 * stats.norm.cdf(-abs(Z))
+    print(phi)
     assert phi > ALPHA
 
 # Test gives_birth():

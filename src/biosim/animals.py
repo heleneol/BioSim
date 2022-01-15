@@ -1,25 +1,23 @@
 """
-Template for Animals class.
+Module implementing animals on the island.
 """
+
 import random
 import math
 
 
 class Animals:
-    """ Superclass for herbivores and carnivores """
+    """
+    Superclass for herbivores and carnivores.
+    """
 
     @classmethod
     def set_parameters(cls, new_params):
         """
         set class parameters.
 
-        Parameters
-        ________
-        new_params: dict
-
-        Raises
-        ________
-        KeyError
+        :param new_params: new parameter values.
+        :type new_params: dict
         """
 
         for key in new_params:
@@ -33,6 +31,14 @@ class Animals:
         cls.parameters.update(new_params)
 
     def __init__(self, age=None, weight=None):
+        """
+        Initializing the animal class.
+
+        :param age: age of animal
+        :type age: int
+        :param weight: weight of animal
+        :type weight: int
+        """
         self.classname = self.__class__.__name__
 
         self.age = age if age is not None else 0
@@ -49,16 +55,17 @@ class Animals:
 
     def update_fitness(self):
         """
-        Function calculating the fitness to animals based on weight and age.
+        Function calculating the fitness of animals based on weight and age. If weight is 0, fitness is 0, else
 
-        Input funksjon her som vanskelig dokumentasjon
+        .. math::
+        q^{+}(a, a_{\\frac{1}{2}}, \\phi_{age}) \\times q^{-}(w, w_{\\frac{1}{2}}, \\phi_{weight})
+
+        where
+
+        q^{\\pm}(x, x_{\\frac{1}{2}}, \\phi) = \\frac{1}{1 + e^{\\pm \\phi(x-x_{\\frac{1}{2}})}}
+
+        Fitness will always be between 0 and 1.
         """
-        def q(x, x_half, phi, sign):
-            if sign == 'pos':
-                return 1 / (1 + (math.exp(phi * (x - x_half))))
-            elif sign == 'neg':
-                return 1 / (1 + (math.exp((-1) * phi * (x - x_half))))
-
         if self.weight <= 0:
             self.fitness = 0
         else:
@@ -66,12 +73,11 @@ class Animals:
             phi_age = self.parameters['phi_age']
             w_half = self.parameters['w_half']
             phi_weight = self.parameters['phi_weight']
-            self.fitness = (q(self.age, a_half, phi_age, 'pos') * q(self.weight, w_half, phi_weight, 'neg'))
-            # Alternativt:
-            # q_pos = 1 / (1 + (math.exp(phi_age * (self.age - a_half))))
-            # q_neg = 1 / (1 + (math.exp((-1) * phi_weight * (self.weight - w_half))))
 
-            # self.fitness = q_pos * q_neg
+            q_pos = 1 / (1 + (math.exp(phi_age * (self.age - a_half))))
+            q_neg = 1 / (1 + (math.exp((-1) * phi_weight * (self.weight - w_half))))
+
+            self.fitness = q_pos * q_neg
 
             # Trenger ikke denne fordi den kan ikke bli over 1?
             if self.fitness > 1:
@@ -79,17 +85,22 @@ class Animals:
                 self.fitness = 1
 
     def regain_appetite(self):
+        """
+        An animals appetite is set to the animal's parameter 'F' when function is called upon.
+        """
         # noinspection PyAttributeOutsideInit
         self.appetite = self.parameters['F']
 
     # noinspection PyPep8Naming
     def gives_birth(self, N):
         """
-        Decides whether an animal gives birth.
+        Decides whether an animal gives birth. The probability of giving birth to an offspring in a year
+        is 0 if the weight is :math:``\\omega < \\xi(w_{birth} + \\sigma_{birth})``.
+        Else the probability is :math:``\\gamma \\times \\phi \\times \\(N-1)``
 
-        Parameter
-        ----------
-        N: number of animals in a population
+        :param N: number of animals of the same species in a cell.
+        :return: newborn of class Herbivore or Carnivore, if animal is born
+                 None, if no animal is born.
 
         """
         preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
@@ -98,14 +109,23 @@ class Animals:
             newborn = type(self)()
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return None
+
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
                 self.update_fitness()
                 return newborn
+
         else:
             return None
 
     def migrate(self):
+        """
+        Function determines if animals migrate or not.
+        An animal moves with a probability of :math:``\\mu\\phi``.
+
+        :return: True, if animal migrates.
+                 False, if animal does not migrate.
+        """
         if random.random() < self.parameters['mu']*self.fitness:
             return True
         else:
@@ -113,26 +133,30 @@ class Animals:
 
     def update_age(self, years=None):
         """
-        Updates age of animal.
+        Updates age of animal, and updates fitness accordingly.
 
-        Parameters
-        ----------
-        years:
-            number of years to age, 1 if None is specified
+        :param years: number of years the animal ages.
+        :type years: int or None
         """
         self.age += years if years is not None else 1
+        print(f'This is years {type(years)}')
         self.update_fitness()
 
     def metabolism(self):
         """
-        Updates animal weight which is due to annual weightloss.
+        Updates animal weight which is due to annual weightloss, :math:``\\eta \\times weight``,
+        and updates fitness accordingly.
         """
         self.weight -= self.parameters['eta']*self.weight
         self.update_fitness()
 
     def dies(self):
         """
-        Decides whether an animal dies.
+        Decides whether an animal dies. An animal dies with certainty if their weight is 0,
+        or with a probability of :math:``\\omega(1-\\phi)``.
+
+        :return: True, if animal dies.
+        :return: False, if animal does not die.
         """
         if self.weight <= 0:
             return True
@@ -141,11 +165,16 @@ class Animals:
             return random.random() < (omega*(1 - self.fitness))
 
     def set_weight(self, new_weight):
+        """
+        Function allowing to enter new weight to animal when function is called upon.
+        """
         self.weight = new_weight
 
 
 class Herbivore(Animals):
-    """ Subclass for herbivores. """
+    """
+    Subclass for herbivores.
+    """
 
     parameters = {'w_birth': 8.0, 'sigma_birth': 1.5,
                   'beta': 0.9, 'eta': 0.05,
@@ -158,12 +187,10 @@ class Herbivore(Animals):
 
     def herbivore_feeding(self, landscape_fodder):
         """
-        Decides how much food each herbivore gets, and updates weight and fitness accordingly.
+        Decides how much fodder each herbivore gets, and updates weight and fitness accordingly.
 
-        Parameter
-        ----------
-        landscape_fodder:
-
+        :param landscape_fodder: int, amount of fodder available for herbivore.
+        :return: float, the herbivore's portion.
         """
 
         if 0 < landscape_fodder < self.appetite:
@@ -175,6 +202,10 @@ class Herbivore(Animals):
         self.update_fitness()
 
         return herbivore_portion
+
+    def print_stuff(self):
+        print(f'this is fitness {type(self.fitness)}')
+        print(f'this is weight {type(self.weight)}')
 
 
 class Carnivore(Animals):
@@ -189,24 +220,31 @@ class Carnivore(Animals):
                   'omega': 1.0, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
-    def carnivore_feeding(self, herb):
+    def carnivore_feeding(self, herbivore):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
         """
-        if self.fitness <= herb.fitness:
+        if self.fitness <= herbivore.fitness:
             return True
 
-        delta_phi = self.fitness - herb.fitness
+        delta_phi = self.fitness - herbivore.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
             prey_prob = delta_phi / self.parameters['DeltaPhiMax']
         else:
             prey_prob = 1
 
         if random.random() < prey_prob:
-            self.appetite -= herb.weight
-            self.weight += self.parameters['beta']*herb.weight
+            self.appetite -= herbivore.weight
+            self.weight += self.parameters['beta']*herbivore.weight
             self.update_fitness()
             return False
 
         else:
             return True
+
+
+herb = Herbivore(age = 5, weight = 10)
+herb.update_age(years=3)
+herb.print_stuff()
+herb.herbivore_feeding(landscape_fodder=800)
+herb.gives_birth(N=10)

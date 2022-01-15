@@ -50,7 +50,6 @@ class Landscape:
         ----------
         population: list of dicts counting animal info
         '''
-        print(f'add_population runned')
         if self.habitability is True:
             for animal in animals:
                 age = animal['age']

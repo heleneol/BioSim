@@ -41,9 +41,10 @@ class Island:
                 if column == 0 or column == len(string):
                     if letter != 'W':
                         raise ValueError('Cells at the border have to be water')
+
                 if letter in self.parameters.keys():
                     key = (row, column)
-                    value = self.parameters[letter]
+                    value = type(self.parameters[letter])()
                     island_map[key] = value
                 else:
                     raise ValueError('Invalid habitat type', letter)
@@ -68,14 +69,11 @@ class Island:
         -----------
         ValueError: if the location is not included in the map's keys
         """
-        for index, population in enumerate(populations):
-            loc = populations[index].get('loc')
+        for population in populations:
+            loc = population['loc']
             if loc in self.map.keys():
-
-                cell = self.map[loc
-                animals = population['pop']
-                print(animals)
-                cell.add_population(animals)
+                cell = self.map[loc]
+                cell.add_population(population['pop'])
             else:
                 raise ValueError(f'The stated location {loc} is outside the map boundaries')
 
@@ -87,7 +85,6 @@ class Island:
 
     def island_migration(self):
         for loc, cell in self.map.items():
-            print(f'{loc} : number of herbs is {cell.get_num_herbs()}')
             if cell.classname == 'Water':
                 continue
             else:
@@ -121,20 +118,22 @@ geogr = """\
 
 i = Island(textwrap.dedent(geogr))
 
-
 #i.check_map(geogr)
 
 ini_herbs = [{'loc': (2,2),
               'pop': [{'species': 'Herbivore',
                     'age': 5,
                     'weight': 20}
-                    for _ in range(3)]}]
+                    for _ in range(50)]}]
 
 i.place_population(populations=ini_herbs)
-herbs_per_cell = i.get_number_herbs()
+def print_herbs_per_cell(i):
+    herbs_per_cell = i.get_number_herbs()
+    for loc, count in herbs_per_cell.items():
+        print(loc, ':', count)
 
-for loc, count in herbs_per_cell.items():
-    print(loc, ':', count)
-
-#i.island_migration()
+print_herbs_per_cell(i)
+for year in range(10):
+    i.island_migration()
+print_herbs_per_cell(i)
 

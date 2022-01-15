@@ -32,6 +32,11 @@ class Island:
         ValueError, is raised when habitat letter is erroneous on the map.
         """
         geogr = geogr.split(sep='\n') if geogr is not None else str
+
+        row_lenghts = {len(row) for row in geogr}
+        if len(row_lenghts) != 1:
+            raise ValueError('The map has to be square. All rows does not contain the same amount of landscaps')
+
         island_map = {}
         for row, string in enumerate(geogr, start=1):
             for column, letter in enumerate(string, start=1):
@@ -49,13 +54,6 @@ class Island:
                 else:
                     raise ValueError('Invalid habitat type', letter)
         return island_map
-
-    #def check_map(self, geogr=None):
-    #    row_length = [len(row) for row in ]
-
-    #    for row in :
-    #        if len(row) != len(row_length[0]):
-    #            raise ValueError("All rows in the map have to be of equal length")
 
     def place_population(self, populations):
         """
@@ -139,6 +137,7 @@ geogr = """\
 
 i = Island(textwrap.dedent(geogr))
 
+'''
 #i.check_map(geogr)
 
 ini_pop = [{'loc': (2,2),
@@ -162,7 +161,7 @@ def print_carns_per_cell(i):
     carns_per_cell = i.get_number_carns()
     for loc, count in carns_per_cell.items():
         print(loc, ':', count)
-
+''''''
 for indx,year in enumerate(range(30), start=1):
 
     print(f'Begining of year {indx}')
@@ -191,3 +190,4 @@ for indx,year in enumerate(range(30), start=1):
     print('*************')
     print_herbs_per_cell(i)
     #print_carns_per_cell(i)
+'''

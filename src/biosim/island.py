@@ -56,28 +56,38 @@ class Island:
     #        if len(row) != len(row_length[0]):
     #            raise ValueError("All rows in the map have to be of equal length")
 
-    def place_population(self, ini_pop):
+    def place_population(self, populations):
         """
         Places a population on the map based on its stated location.
 
         parameters
         -----------
-        ini_pop: a list with population.
+        populations: a list with population info
 
         raises
         -----------
         ValueError: if the location is not included in the map's keys
         """
-        for index, population in enumerate(ini_pop):
-            loc = ini_pop[index].get('loc')
+        for index, population in enumerate(populations):
+            loc = populations[index].get('loc')
             if loc in self.map.keys():
-                self.map[loc].add_population(ini_pop[index].get('pop'))
+
+                cell = self.map[loc
+                animals = population['pop']
+                print(animals)
+                cell.add_population(animals)
             else:
-                ValueError(f'The stated {loc} is outside the map boundaries!')
+                raise ValueError(f'The stated location {loc} is outside the map boundaries')
+
+    def get_number_herbs(self):
+        herbs_per_cell = {}
+        for loc,cell in self.map.items():
+            herbs_per_cell[loc] = cell.get_num_herbs()
+        return herbs_per_cell
 
     def island_migration(self):
         for loc, cell in self.map.items():
-            print(loc)
+            print(f'{loc} : number of herbs is {cell.get_num_herbs()}')
             if cell.classname == 'Water':
                 continue
             else:
@@ -91,10 +101,8 @@ class Island:
                 for animal in migrators:
                     migration_cell = random.choice(neighbours)
                     if migration_cell.classname == 'Water':
-                        print('vaaaannnn')
-                        cell.herb_pop.append(animal)
+                        cell.migrating_herbs.append(animal)
                     else:
-                        print('hade')
                         migration_cell.register_for_asylum(migrator=animal)
 
                 for loc, cell in self.map.items():
@@ -116,13 +124,17 @@ i = Island(textwrap.dedent(geogr))
 
 #i.check_map(geogr)
 
-ini_herbs = [{'loc': (2, 2),
+ini_herbs = [{'loc': (2,2),
               'pop': [{'species': 'Herbivore',
                     'age': 5,
                     'weight': 20}
-                    for _ in range(40)]}]
+                    for _ in range(3)]}]
 
-i.place_population(ini_pop=ini_herbs)
+i.place_population(populations=ini_herbs)
+herbs_per_cell = i.get_number_herbs()
 
-i.island_migration()
+for loc, count in herbs_per_cell.items():
+    print(loc, ':', count)
+
+#i.island_migration()
 

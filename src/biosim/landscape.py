@@ -44,14 +44,15 @@ class Landscape:
         self.migrating_carns = []
         self.habitability = True if type(self) is not Water else False
 
-    def add_population(self, population): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
+    def add_population(self, animals): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
         '''
         parameters
         ----------
         population: list of dicts counting animal info
         '''
+        print(f'add_population runned')
         if self.habitability is True:
-            for animal in population:
+            for animal in animals:
                 age = animal['age']
                 weight = animal['weight']
                 if animal['species'] == 'Herbivore':
@@ -132,6 +133,8 @@ class Landscape:
             else:
                 staying_herbs.append(herb)
         self.herb_pop = staying_herbs
+        print(len(migrators))
+        print(len(staying_herbs))
         return migrators
 
     def register_for_asylum(self, migrator):
@@ -143,9 +146,7 @@ class Landscape:
             raise ValueError('*** Intruderalarm ***')
 
     def add_migraters_to_pop(self):
-        print(len(self.herb_pop))
         self.herb_pop.extend(self.migrating_herbs)
-        print(len(self.herb_pop))
         self.migrating_herbs.clear()
         self.carn_pop.extend(self.migrating_carns)
         self.migrating_carns.clear()
@@ -177,8 +178,6 @@ class Landscape:
         self.weight_loss()
         self.population_death()
 
-    def print(self, animal):
-        print(animal.weight)
 class Lowland(Landscape):
     """
     Class representing Lowland squares on the island.
@@ -209,13 +208,7 @@ class Water(Landscape):
 
 
 
-ini_pops = [Herbivore() for herb in range(100)]
 
-l1 = Lowland(herb_pop=ini_pops)
-
-print(len(l1.herb_pop))
-l1.reproduction()
-print(len(l1.herb_pop))
 
 '''
 

@@ -82,6 +82,11 @@ class Island:
         for loc,cell in self.map.items():
             herbs_per_cell[loc] = cell.get_num_herbs()
         return herbs_per_cell
+    def get_number_carns(self):
+        carns_per_cell = {}
+        for loc, cell in self.map.items():
+            carns_per_cell[loc] = cell.get_num_carns()
+        return carns_per_cell
 
     def island_migration(self):
         for loc, cell in self.map.items():
@@ -93,14 +98,20 @@ class Island:
                               self.map[(loc[0], loc[1]+1)],
                               self.map[(loc[0], loc[1]-1)]]
 
-                migrators = cell.animal_migration()
+                migrators_herb,migrators_carn = cell.animal_migration()
 
-                for animal in migrators:
+                for herb in migrators_herb:
                     migration_cell = random.choice(neighbours)
                     if migration_cell.classname == 'Water':
-                        cell.migrating_herbs.append(animal)
+                        cell.migrating_herbs.append(herb)
                     else:
-                        migration_cell.register_for_asylum(migrator=animal)
+                        migration_cell.register_for_asylum(migrator=herb)
+                for carn in migrators_carn:
+                    migration_cell = random.choice(neighbours)
+                    if migration_cell.classname == 'Water':
+                        cell.migrating_carns.append(carn)
+                    else:
+                        migration_cell.register_for_asylum(migrator=carn)
 
                 for loc, cell in self.map.items():
                     if cell.classname == 'Water':
@@ -120,20 +131,37 @@ i = Island(textwrap.dedent(geogr))
 
 #i.check_map(geogr)
 
-ini_herbs = [{'loc': (2,2),
+ini_pop = [{'loc': (2,2),
               'pop': [{'species': 'Herbivore',
                     'age': 5,
                     'weight': 20}
-                    for _ in range(50)]}]
+                    for _ in range(50)]},
+           {'loc': (2,4),
+            'pop': [{'species': 'Carnivore',
+                    'age': 5,
+                    'weight': 20}
+                    for _ in range(10)]}]
 
-i.place_population(populations=ini_herbs)
+
+i.place_population(populations=ini_pop)
 def print_herbs_per_cell(i):
+    print('HERBIVORES')
+    print('----------')
     herbs_per_cell = i.get_number_herbs()
     for loc, count in herbs_per_cell.items():
         print(loc, ':', count)
 
+def print_carns_per_cell(i):
+    print('CARNIVORES')
+    print('----------')
+    carns_per_cell = i.get_number_carns()
+    for loc, count in carns_per_cell.items():
+        print(loc, ':', count)
+
 print_herbs_per_cell(i)
+print_carns_per_cell(i)
 for year in range(10):
     i.island_migration()
+print_carns_per_cell(i)
 print_herbs_per_cell(i)
 

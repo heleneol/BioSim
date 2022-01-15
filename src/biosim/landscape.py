@@ -124,15 +124,25 @@ class Landscape:
         self.carn_pop.extend(new_pop(self.carn_pop))
 
     def animal_migration(self):
-        migrators = []
+        migrators_herb = []
+        migrators_carn = []
         staying_herbs = []
+        staying_carns = []
         for herb in self.herb_pop:
             if herb.migrate() is True:
-                migrators.append(herb)
+                migrators_herb.append(herb)
             else:
                 staying_herbs.append(herb)
         self.herb_pop = staying_herbs
-        return migrators
+
+        for carn in self.carn_pop:
+            if carn.migrate() is True:
+                migrators_carn.append(carn)
+            else:
+                staying_carns.append(carn)
+        self.carn_pop = staying_carns
+
+        return migrators_herb, migrators_carn
 
     def register_for_asylum(self, migrator):
         if type(migrator) is Herbivore:

@@ -155,8 +155,8 @@ class Animals:
         Decides whether an animal dies. An animal dies with certainty if their weight is 0,
         or with a probability of :math:``\\omega(1-\\phi)``.
 
-        :return: True, if animal dies.
-        :return: False, if animal does not die.
+        :return: True, if animal dies. False, if animal does not die.
+        :rtype: boolean
         """
         if self.weight <= 0:
             return True
@@ -189,8 +189,11 @@ class Herbivore(Animals):
         """
         Decides how much fodder each herbivore gets, and updates weight and fitness accordingly.
 
-        :param landscape_fodder: int, amount of fodder available for herbivore.
-        :return: float, the herbivore's portion.
+        :param landscape_fodder: amount of fodder available for herbivore.
+        :type landscape_fodder: int
+
+        :return: the herbivore's portion.
+        :rtype: float
         """
 
         if 0 < landscape_fodder < self.appetite:
@@ -223,9 +226,15 @@ class Carnivore(Animals):
     def carnivore_feeding(self, herbivore):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
+
+        :param herbivore: List of herbivores in the same cell as the carnivore.
+        :type herbivore: List
+
+        :return: True if the carnivore kills the herbivore, and false if it doesn't
+        :rtype: boolean
         """
         if self.fitness <= herbivore.fitness:
-            return True
+            return False
 
         delta_phi = self.fitness - herbivore.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
@@ -237,10 +246,10 @@ class Carnivore(Animals):
             self.appetite -= herbivore.weight
             self.weight += self.parameters['beta']*herbivore.weight
             self.update_fitness()
-            return False
+            return True
 
         else:
-            return True
+            return False
 
 
 herb = Herbivore(age = 5, weight = 10)

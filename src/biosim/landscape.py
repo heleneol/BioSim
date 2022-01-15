@@ -101,7 +101,7 @@ class Landscape:
                 survivors = []
 
                 for herb in self.herb_pop:
-                    if carn.carnivore_feeding(herb) is True:
+                    if carn.carnivore_feeding(herb) is False:
                         survivors.append(herb)
                 self.herb_pop = survivors.copy()
 

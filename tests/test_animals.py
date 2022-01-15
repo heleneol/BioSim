@@ -303,7 +303,7 @@ def test_carn_nokill():
     herb.fitness = 1
 
     for _ in range(10):
-        assert carn.carnivore_feeding(herb) is True
+        assert carn.carnivore_feeding(herb) is False
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'DeltaPhiMax': 0.5}], indirect=True)
@@ -320,6 +320,6 @@ def test_certain_kill(set_carnivore_parameters, mocker):
 
     mocker.patch('random.random', return_value=0)
     for _ in range(10):
-        assert carn.carnivore_feeding(herb) is False
+        assert carn.carnivore_feeding(herb) is True
 
     # Bytte om på false og true i denne funksjonen?

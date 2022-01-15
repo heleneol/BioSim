@@ -1,6 +1,8 @@
-import pytest
 from src.biosim.landscape import Lowland, Highland, Water, Desert
 from src.biosim.animals import Herbivore, Carnivore
+
+import pytest
+import random
 
 
 @pytest.fixture
@@ -68,7 +70,7 @@ def test_landscape_construction():
         assert landscape.get_num_herbs() == number_herb and landscape.get_num_carns() == number_carn
 
 
-for _ in range(10):
+for _ in range(10): # Hvorfor for løkke her?
     random_fodder = random.randint(0, 800)
 
 
@@ -77,8 +79,17 @@ def test_setting_fooder_amount(set_lowland_parameters):
     L = Lowland()
     assert L.fodder == random_fodder
 
+#@pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
+#def test_setting_fodder_desert(set_lowland_parameters):
+#    D = Desert()
+#    with pytest.raises():
+#        D.fodder
+
 
 def test_sort_herbs_by_fitness():
+    """
+    Testing if the list of herbivores are sorted by decreasing fitness if decreasing=True.
+    """
     herb_pop = [Herbivore() for _ in range(10)]
 
     H = Highland(herb_pop)
@@ -90,6 +101,9 @@ def test_sort_herbs_by_fitness():
 
 
 def test_herbivores_eating():
+    """
+    Testing if herbivores are eating.
+    """
     herb_pop = [Herbivore() for _ in range(10)]
     H = Highland(herb_pop)
 

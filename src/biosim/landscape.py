@@ -116,7 +116,7 @@ class Landscape:
             for parent in population:
                 newborn = parent.gives_birth(N)
 
-                if newborn is not None:
+                if newborn is not False:
                     newborns.append(newborn)
             return newborns
 
@@ -206,6 +206,16 @@ class Water(Landscape):
     Class representing Ocean squares on the island.
     """
     parameters = {'f_max': 0}
+
+
+
+ini_pops = [Herbivore() for herb in range(100)]
+
+l1 = Lowland(herb_pop=ini_pops)
+
+print(len(l1.herb_pop))
+l1.reproduction()
+print(len(l1.herb_pop))
 
 '''
 

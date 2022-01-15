@@ -109,6 +109,7 @@ def test_fitness_value():
         herb.update_fitness()
         assert 0 <= herb.fitness <= 1
 
+
 # Slette?:
 def test_fitness_no_weight():
     """
@@ -139,12 +140,54 @@ def test_fitness_values():
         assert herb.fitness == q_pos * q_neg
 
 
-def test_not_migrate(mocker):
+def test_regains_appetite():
+    """
+    Testing that the regain_appetite() function successfully sets the animal's appetite as parameter F.
+    """
     carn = Carnivore()
-    mocker.patch('random.random', return_value=1)
+    carn.appetite = 0
+    carn.regain_appetite()
+    assert carn.appetite == carn.parameters['F']
+
+
+def test_certain_birth(mocker):
+    """
+    Mocker ensures random.random returns the value zero.
+    Weight is set at 1000 to ensure it always surpasses xi*newborn.weight,
+    and the function should not return None.
+    """
+    num = 100
+    carn = Carnivore(weight=1000)
+    mocker.patch('random.random', return_value=0)
+
+    for _ in range(5):
+        assert carn.gives_birth(N=num) is not None
+
+
+@pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 0.0}], indirect=True)
+def test_no_birth(set_carnivore_parameters):
+    """
+    If gamma is zero, the birth probability (gamma * fitness * (num - 1)), will be zero.
+    Hence, gives_birth() will return None.
+    """
+    carn = Carnivore()
+    num = 100
+
+    for _ in range(50):
+        assert carn.gives_birth(N=num) is None
+
+
+@pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)
+def test_certain_migration(set_carnivore_parameters):
+    """
+    Making sure the animal's fitness * mu > 1.
+    """
+    carn = Carnivore()
+    # Ensuring the carnivore's fitness is large enough.
+    carn.fitness = 10
 
     for _ in range(10):
-        assert carn.migrate() is False
+        assert carn.migrate() is True
 
 
 def test_animal_aging():
@@ -158,56 +201,6 @@ def test_animal_aging():
         carn.update_age()
         assert herb.age == n + 1
         assert carn.age == n + 1
-
-
-def test_death_by_too_low_weight():
-    # denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
-    carn = Carnivore()
-    carn.set_weight(new_weight=0)
-    assert carn.dies()
-
-
-#@pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 0.0}], indirect=True)
-#def test_no_birth(set_carnivore_parameters):
-    """
-    If gamma is zero, the birth probability (gamma * fitness * (num - 1)), will be zero.
-    Hence, gives_birth() will not return any new animals.
-    """
-#    carn = Carnivore()
-#    num = 100
-
-#    for _ in range(50):
-#        carn.gives_birth(N=num)
-#    assert
-
-#def test_certain_birth(mocker):
-#    carn = Carnivore()
-#    mocker.patch('random.random', return_value=0)
-#
-#    for _ in range(5):
-#        assert carn.gives_birth()
-
-
-# Burde sette inn bestemte verdier.
-@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 0.4}], indirect=True)
-def test_dies_z_test(set_herbivore_parameters):
-    random.seed(SEED)
-    num = 100
-
-    h = Herbivore()
-    p = h.parameters['omega'] * (1 - h.fitness)
-    n = sum(h.dies() for _ in range(num)) # True == 1, False == 0
-
-    mean = num * p
-    var = math.sqrt(num * p * (1 - p))
-    # noinspection PyPep8Naming
-    Z = (n - mean) / var
-    phi = 2 * stats.norm.cdf(-abs(Z))
-    assert phi > ALPHA
-
-# Test gives_birth():
-# kanskje en statistisk test som sjekker om fordelingen er som forventet
-# Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
 
 
 def test_animal_metabolism():
@@ -225,6 +218,44 @@ def test_animal_metabolism():
         carn.metabolism()
         assert herb.weight < h_weight_before
         assert carn.weight < c_weight_before
+
+
+def test_death_by_too_low_weight():
+    # denne kan passere tilfeldig om vekten er lav siden død da er bestemt av sannsynlighet
+    carn = Carnivore()
+    carn.set_weight(new_weight=0)
+    assert carn.dies()
+
+
+@pytest.mark.parametrize('set_herbivore_parameters', [{'omega': 0.6}], indirect=True)
+def test_dies_z_test(set_herbivore_parameters):
+    """
+    Binomial Z-test on the dies()-function with herbivores.
+
+    H0 = The number of times the function returns True, the animal dies, is statistically significant with the
+    probability exceeding the set significance level of 0.01 (ALPHA).
+    H1 = The function does not return True a statistically significant number of times. We cannot accept H0 as true.
+
+    Based on settinkilde.
+
+    """
+    random.seed(SEED)
+    num = 100
+
+    h = Herbivore(age=100)
+    p = h.parameters['omega']  # * (1 - h.fitness)
+    n = sum(h.dies() for _ in range(num)) # True == 1, False == 0
+
+    mean = num * p
+    var = math.sqrt(num * p * (1 - p))
+    # noinspection PyPep8Naming
+    Z = (n - mean) / var
+    phi = 2 * stats.norm.cdf(-abs(Z))
+    assert phi > ALPHA
+
+# Test gives_birth():
+# kanskje en statistisk test som sjekker om fordelingen er som forventet
+# Test if self.weight<xi*newborn.weight returns None, and if species is herbivore it runs Herbivore()
 
 
 def test_certain_death(mocker):
@@ -253,3 +284,38 @@ def test_herb_fitnesschange_fodder():
 
     herb.herbivore_feeding(landscape_fodder=herb.appetite)
     assert herb.fitness > fitness_before
+
+
+def test_carn_nokill():
+    """
+    Testing the carnivore does not kill herbivore, carnivore_feeding returns True, if the herbivore's fitness
+    exceeds the carnivore's fitness.
+    """
+    carn = Carnivore()
+    herb = Herbivore()
+
+    # Ensuring herbivore fitness > carnivore fitness
+    carn.fitness = 0.5
+    herb.fitness = 1
+
+    for _ in range(10):
+        assert carn.carnivore_feeding(herb) is True
+
+
+@pytest.mark.parametrize('set_carnivore_parameters', [{'DeltaPhiMax': 0.5}], indirect=True)
+def test_certain_kill(set_carnivore_parameters, mocker):
+    """
+    Testing the carnivore kills the herbivore using mocker to set random.random as 0 and.
+    Ensuring DeltaPhi > DeltaPhiMax, so that the prey probability is 1.
+    """
+    carn = Carnivore()
+    herb = Herbivore()
+
+    carn.fitness = 1
+    herb.fitness = 0.1
+
+    mocker.patch('random.random', return_value=0)
+    for _ in range(10):
+        assert carn.carnivore_feeding(herb) is False
+
+    # Bytte om på false og true i denne funksjonen?

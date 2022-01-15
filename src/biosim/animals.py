@@ -73,7 +73,7 @@ class Animals:
 
             # self.fitness = q_pos * q_neg
 
-            # Trenger ikke denne fordi den kan ikke bli over 1???
+            # Trenger ikke denne fordi den kan ikke bli over 1?
             if self.fitness > 1:
                 # noinspection PyAttributeOutsideInit
                 self.fitness = 1

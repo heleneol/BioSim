@@ -81,10 +81,11 @@ class BioSim:
         :type num_years: int
         """
         num_simulations = num_years if num_years is not None else 1
-        if num_simulations.is_integer() is True:
+        if float(num_simulations).is_integer() is True:
             for simulation in range(num_simulations):
                 self.island.annual_cycle_island()
                 self.last_year_simulated += 1
+                print(self.last_year_simulated)
         else:
             raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
 

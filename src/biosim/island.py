@@ -72,7 +72,18 @@ class Island:
                     landscape = type(self.parameters[letter])()
                     island_map[loc] = landscape
                 else:
-                    raise ValueError(f'The {letter} is an Invalid habitat type')
+                    if letter == ' ':
+                        raise ValueError(f'There is a hole in the map at loc: {(row,column)}. Fill it with a valid habitat type:\n'
+                                         f'* L - Lowland\n'
+                                         f'* H - Highland\n'
+                                         f'* D - Desert\n'
+                                         f'* W - Water')
+                    else:
+                        raise ValueError(f'The {letter} is an Invalid habitat type, change to:\n'
+                                         f'* L - Lowland\n'
+                                         f'* H - Highland\n'
+                                         f'* D - Desert\n'
+                                         f'* W - Water')
         return island_map
 
     def place_population(self, populations):

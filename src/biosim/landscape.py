@@ -28,7 +28,7 @@ class Landscape:
 
         for key in new_params:
             if key == 'f_max':
-                if type(cls) is Desert or type(cls) is Water:
+                if type(cls.) is Desert or type(cls) is Water:
                     raise KeyError(f'{key} cannot be changed for Desert and Water!')
 
             if key not in cls.parameters:

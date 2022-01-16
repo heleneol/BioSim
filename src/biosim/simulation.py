@@ -1,19 +1,27 @@
 """
-Template for BioSim class.
+Module implementing the simulation of the ecosystem through the BioSim class.
 """
 
 # The material in this file is licensed under the BSD 3-clause license
 # https://opensource.org/licenses/BSD-3-Clause
 # (C) Copyright 2021 Hans Ekkehard Plesser / NMBU
 
+from biosim.island import Island
+
+
 class BioSim:
+    """
+    Class for simulating the ecosystem on the island.
+    """
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
                  img_dir=None, img_base=None, img_fmt='png', img_years=None,
                  log_file=None):
 
-        self.island_map
-        self.population = self.add_population(ini_pop)
+        self.island = Island(geogr=island_map)
+        self.add_population(population=ini_pop)
+        self.seed = seed
+        self.last_year_simulated = 0
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -55,6 +63,7 @@ class BioSim:
         :param species: String, name of animal species
         :param params: Dict with valid parameter specification for species
         """
+        self.island.set_animal_parameters_island(species=species, params=params)
 
     def set_landscape_parameters(self, landscape, params):
         """
@@ -63,13 +72,22 @@ class BioSim:
         :param landscape: String, code letter for landscape
         :param params: Dict with valid parameter specification for landscape
         """
+        self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years):
+    def simulate(self, num_years=None):
         """
         Run simulation while visualizing the result.
 
         :param num_years: number of years to simulate
+        :type num_years: int
         """
+        num_simulations = num_years if num_years is not None else 1
+        if num_simulations.is_integer() is True:
+            for simulation in range(num_simulations):
+                self.island.annual_cycle_island()
+                self.last_year_simulated += 1
+        else:
+            raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
 
     def add_population(self, population):
         """
@@ -77,21 +95,24 @@ class BioSim:
 
         :param population: List of dictionaries specifying population
         """
+        self.island.place_population(populations=population)
 
     @property
     def year(self):
         """Last year simulated."""
-
+        return self.last_year_simulated
 
     @property
     def num_animals(self):
         """Total number of animals on island."""
-
+        return self.island.get_number_of_carns() + self.island.get_number_of_herbs()
 
     @property
     def num_animals_per_species(self):
         """Number of animals per species in island, as dictionary."""
 
+        return {'Herbivores': self.island.get_number_of_herbs(),
+                'Carnivores': self.island.get_number_of_carns()}
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""

@@ -8,22 +8,17 @@ import random
 @pytest.fixture
 def set_lowland_parameters(request):
     """
-    Fixture setting class parameters on Herbivore.
+    Fixture setting class parameters on Lowland, based on H.E. Plesser's biolab/bacteria.py.
 
-    The fixture sets Herbivore parameters when called for setup,
+    The fixture sets the Lowland parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
     parameters are always reset before leaving a test.
 
     This fixture should be called via parametrize with indirect=True.
 
-    Based on https://stackoverflow.com/a/33879151
-
-    Parameters
-    ----------
-    request
-        Request object automatically provided by pytest.
-        request.param is the parameter dictionary to be passed to
-        Herbivore.set_parameters()
+    :param request: Request object automatically provided by pytest.
+                    request.param is the parameter dictionary to be passed to
+                    Lowland.set_parameters()
     """
     default_parameters = Lowland.parameters.copy()
     Lowland.set_parameters(request.param)
@@ -34,22 +29,17 @@ def set_lowland_parameters(request):
 @pytest.fixture
 def set_highland_parameters(request):
     """
-    Fixture setting class parameters on Herbivore.
+    Fixture setting class parameters on Highland, based on H.E. Plesser's biolab/bacteria.py.
 
-    The fixture sets Herbivore parameters when called for setup,
+    The fixture sets the Highland parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
     parameters are always reset before leaving a test.
 
     This fixture should be called via parametrize with indirect=True.
 
-    Based on https://stackoverflow.com/a/33879151
-
-    Parameters
-    ----------
-    request
-        Request object automatically provided by pytest.
-        request.param is the parameter dictionary to be passed to
-        Herbivore.set_parameters()
+    :param request: Request object automatically provided by pytest.
+                    request.param is the parameter dictionary to be passed to
+                    Highland.set_parameters()
     """
     default_parameters = Highland.parameters.copy()
     Highland.set_parameters(request.param)
@@ -73,12 +63,13 @@ def test_landscape_construction():
         assert landscape.get_num_herbs() == number_herb and landscape.get_num_carns() == number_carn
 
 
-for _ in range(10): # Hvorfor for løkke her?
-    random_fodder = random.randint(0, 800)
+#for _ in range(10): # Hvorfor for løkke her?
+
+random_fodder = random.randint(0, 800)
 
 
 @pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
-def test_setting_fooder_amount(set_lowland_parameters):
+def test_setting_fodder_amount(set_lowland_parameters):
     L = Lowland()
     assert L.fodder == random_fodder
 

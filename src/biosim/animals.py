@@ -8,7 +8,11 @@ import math
 
 class Animals:
     """
-    Superclass for herbivores and carnivores.
+    Superclass for animals.
+
+    Subclasses:
+    * Herbivore
+    * Carnivore
     """
 
     @classmethod
@@ -32,12 +36,12 @@ class Animals:
 
     def __init__(self, age=None, weight=None):
         """
-        Initializing the animal class.
+        Initializing animal objects.
 
         :param age: age of animal
-        :type age: int
+        :type age: float
         :param weight: weight of animal
-        :type weight: int
+        :type weight: float
         """
         self.classname = self.__class__.__name__
 
@@ -92,23 +96,26 @@ class Animals:
         self.appetite = self.parameters['F']
 
     # noinspection PyPep8Naming
-    def gives_birth(self, N):
+    def gives_birth(self, pop_size):
         """
         Decides whether an animal gives birth. The probability of giving birth to an offspring in a year
         is 0 if the weight is :math:``\\omega < \\xi(w_{birth} + \\sigma_{birth})``.
-        Else the probability is :math:``\\gamma \\times \\phi \\times \\(N-1)``
+        Else the probability is :math:``\\gamma \\times \\phi \\times \\(\\textit{pop_size} - 1)``.
+        If the animal gets an offspring, the animal's weight is updated with
+        :math:``\\xi \\times \\text{newborn's weight}``, and the fitness is updated accordingly.
 
-        :param N: number of animals of the same species in a cell.
-        :return: newborn of class Herbivore or Carnivore, if animal is born
-                 None, if no animal is born.
+        :param pop_size: number of animals of the same species in a cell.
+        :return: newborn of class Herbivore or Carnivore, if animal is born.
+                 False if no animal is born.
+        :rtype: bool or object
 
         """
-        preg_prob = min(1, self.parameters['gamma'] * self.fitness * (N - 1))
+        preg_prob = min(1, self.parameters['gamma'] * self.fitness * (pop_size - 1))
 
         if random.random() < preg_prob:
             newborn = type(self)()
             if self.weight < self.parameters['xi'] * newborn.weight:
-                return None
+                return False
 
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
@@ -116,15 +123,16 @@ class Animals:
                 return newborn
 
         else:
-            return None
+            return False
 
     def migrate(self):
         """
         Function determines if animals migrate or not.
-        An animal moves with a probability of :math:``\\mu\\phi``.
+        An animal moves with a probability of :math:``\\mu \\times \\phi``.
 
         :return: True, if animal migrates.
                  False, if animal does not migrate.
+        :rtype: bool
         """
         if random.random() < self.parameters['mu']*self.fitness:
             return True
@@ -139,12 +147,11 @@ class Animals:
         :type years: int or None
         """
         self.age += years if years is not None else 1
-        print(f'This is years {type(years)}')
         self.update_fitness()
 
     def metabolism(self):
         """
-        Updates animal weight which is due to annual weightloss, :math:``\\eta \\times weight``,
+        Updates animal weight which is due to annual weightloss, :math:``\\eta \\times \\textit{weight}``,
         and updates fitness accordingly.
         """
         self.weight -= self.parameters['eta']*self.weight
@@ -156,7 +163,7 @@ class Animals:
         or with a probability of :math:``\\omega(1-\\phi)``.
 
         :return: True, if animal dies. False, if animal does not die.
-        :rtype: boolean
+        :rtype: bool
         """
         if self.weight <= 0:
             return True
@@ -166,7 +173,7 @@ class Animals:
 
     def set_weight(self, new_weight):
         """
-        Function allowing to enter new weight to animal when function is called upon.
+        Function allowing to enter new weight for animal when function is called upon.
         """
         self.weight = new_weight
 
@@ -188,9 +195,10 @@ class Herbivore(Animals):
     def herbivore_feeding(self, landscape_fodder):
         """
         Decides how much fodder each herbivore gets, and updates weight and fitness accordingly.
+        Weight is updated with a factor of :math:``\\beta \\times \\text{fodderamount}``
 
         :param landscape_fodder: amount of fodder available for herbivore.
-        :type landscape_fodder: int
+        :type landscape_fodder: float
 
         :return: the herbivore's portion.
         :rtype: float
@@ -205,10 +213,6 @@ class Herbivore(Animals):
         self.update_fitness()
 
         return herbivore_portion
-
-    def print_stuff(self):
-        print(f'this is fitness {type(self.fitness)}')
-        print(f'this is weight {type(self.weight)}')
 
 
 class Carnivore(Animals):
@@ -227,11 +231,11 @@ class Carnivore(Animals):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
 
-        :param herbivore: List of herbivores in the same cell as the carnivore.
-        :type herbivore: List
+        :param herbivore: A herbivore in the same cell as the carnivore.
+        :type herbivore: object
 
         :return: True if the carnivore kills the herbivore, and false if it doesn't
-        :rtype: boolean
+        :rtype: bool
         """
         if self.fitness <= herbivore.fitness:
             return False
@@ -250,10 +254,3 @@ class Carnivore(Animals):
 
         else:
             return False
-
-
-herb = Herbivore(age = 5, weight = 10)
-herb.update_age(years=3)
-herb.print_stuff()
-herb.herbivore_feeding(landscape_fodder=800)
-herb.gives_birth(N=10)

@@ -10,7 +10,7 @@ ALPHA = 0.01  # significance level for statistical tests
 @pytest.fixture
 def set_herbivore_parameters(request):
     """
-    Fixture setting class parameters on Herbivore.
+    Fixture setting class parameters on Herbivore, based on X
 
     The fixture sets Herbivore parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
@@ -161,7 +161,7 @@ def test_certain_birth(mocker):
     mocker.patch('random.random', return_value=0)
 
     for _ in range(5):
-        assert carn.gives_birth(N=num) is not None
+        assert carn.gives_birth(pop_size=num) is not False
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 0.0}], indirect=True)
@@ -174,7 +174,7 @@ def test_no_birth(set_carnivore_parameters):
     num = 100
 
     for _ in range(50):
-        assert carn.gives_birth(N=num) is None
+        assert carn.gives_birth(pop_size=num) is False
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)

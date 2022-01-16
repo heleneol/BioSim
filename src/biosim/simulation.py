@@ -7,6 +7,7 @@ Module implementing the simulation of the ecosystem through the BioSim class.
 # (C) Copyright 2021 Hans Ekkehard Plesser / NMBU
 
 from biosim.island import Island
+from biosim.graphics import Graphics
 
 
 class BioSim:
@@ -17,6 +18,7 @@ class BioSim:
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
                  img_dir=None, img_base=None, img_fmt='png', img_years=None,
                  log_file=None):
+
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -52,8 +54,11 @@ class BioSim:
         """
         self.island = Island(geogr=island_map)
         self.add_population(population=ini_pop)
+        self.graphics = Graphics(img_dir, img_name, img_fmt)
         self.seed = seed
-        self.last_year_simulated = 0
+
+        self.step = 0
+        self.final_step = None
 
     def set_animal_parameters(self, species, params):
         """
@@ -73,18 +78,35 @@ class BioSim:
         """
         self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years=None):
+    def simulate(self, num_years=None, vis_steps = 1, img_steps = None):
         """
         Run simulation while visualizing the result.
 
         :param num_years: number of years to simulate
         :type num_years: int
+        :param vis_steps: interval between visualizations updates
+        :param img_steps: interval between visualizations saved to file
         """
+        if img_steps is None:
+            img_steps = vis_steps
+
+        if img_steps % vis_steps != 0:
+            raise ValueError('img_steps must be a multiple of vis_steps')
+
+        self.final_step = self.step + num_years
+        self.graphics.setup(self.final_step, img_steps)
+
         num_simulations = num_years if num_years is not None else 1
         if float(num_simulations).is_integer() is True:
+            while self.step < self.final_step:
+                self.island.annual_cycle_island()
+
             for simulation in range(int(num_simulations)):
                 self.island.annual_cycle_island()
-                self.last_year_simulated += 1
+                # hente ut properties til visualisering
+                self.step += 1
+                if self.step % vis_steps == 0:
+                    self.graphics.update(self.step, )
                 print(self.last_year_simulated)
         else:
             raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
@@ -113,6 +135,25 @@ class BioSim:
 
         return {'Herbivores': self.island.get_number_of_herbs(),
                 'Carnivores': self.island.get_number_of_carns()}
+    @property
+    def num_animals_per_species_per_cell(self):
+        return {'Herbivores': self.island.get_number_herbs_per_cell(),
+                'Carnivores': self.island.get_number_carns_per_cell()}
+
+    @property
+    def animal_fitness_per_species(self):
+        return {'Herbivores': self.island.get_herbs_fitness(),
+                'Carnivores': self.island.get_carns_fitness()}
+
+    @property
+    def animal_age_per_species(self):
+        return {'Herbivores': self.island.get_herbs_age(),
+               'Carnivores': self.island.get_carns_age()}
+
+    @property
+    def animal_weight_per_species(self):
+        return {'Herbivores': self.island.get_herbs_weight(),
+                'Carnivores': self.island.get_carns_weight()}
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""

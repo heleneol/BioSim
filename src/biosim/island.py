@@ -165,6 +165,24 @@ class Island:
         for loc, cell in self.map.items():
             carns_per_cell[loc] = cell.get_num_carns()
         return carns_per_cell
+    def get_herbs_fitness(self):
+        herbivores_fitness = [[herb.fitness for herb in cell.herb_pop] for cell in self.map.values()]
+        return sorted(herbivores_fitness)
+    def get_carns_fitness(self):
+        carnivores_fitness = [[carn.fitness for carn in cell.carn_pop] for cell in self.map.values()]
+        return sorted(carnivores_fitness)
+    def get_herbs_age(self):
+        herbivores_age = [[herb.age for herb in cell.herb_pop] for cell in self.map.values()]
+        return sorted(herbivores_age)
+    def get_carns_age(self):
+        carnivores_age = [[carn.age for carn in cell.carn_pop] for cell in self.map.values()]
+        return sorted(carnivores_age)
+    def get_herbs_weight(self):
+        herbivores_weight = [[herb.weight for herb in cell.herb_pop] for cell in self.map.values()]
+        return sorted(herbivores_weight)
+    def get_carns_weight(self):
+        carnivores_weight = [[carn.weight for carn in cell.carn_pop] for cell in self.map.values()]
+        return sorted(carnivores_weight)
 
     def island_migration(self):
         """

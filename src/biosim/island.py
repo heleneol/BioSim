@@ -3,6 +3,7 @@ Module implementing the island itself.
 """
 
 from biosim.landscape import Lowland, Highland, Desert, Water
+from biosim.animals import Herbivore, Carnivore
 
 import textwrap
 import random
@@ -12,6 +13,8 @@ class Island:
     """
     Class representing the entire island.
     """
+    sample_animals = {'herbivore': Herbivore(),
+                      'carnivore': Carnivore()}
 
     parameters = {'L': Lowland(),
                   'H': Highland(),
@@ -91,6 +94,14 @@ class Island:
                 cell.add_population(population['pop'])
             else:
                 raise ValueError(f'The stated location {loc} is outside the map boundaries')
+
+    def set_animal_parameters_island(self, species, params):
+        species = self.sample_animals[species.lower()]
+        species.set_parameters(new_params=params)
+
+    def set_landscape_parameters_island(self, landscape, params):
+        landscape = self.parameters[landscape]
+        landscape.set_parameters(new_params=params)
 
     def get_number_of_herbs(self):
         """
@@ -183,19 +194,20 @@ class Island:
                     else:
                         cell.add_migraters_to_pop()
 
-    def pre_migration_annual_cycle(self):
+    def annual_cycle_island(self):
         """
-        The annual cycle of the island till migration.
+        Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
+        herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
+        Lastly, in post migration the animals age, lose weight and some die.
         """
         for cell in self.map.values():
             cell.pre_migration_cycle()
 
-    def post_migration_annual_cycle(self):
-        """-
+        self.island_migration()
 
-        """
         for cell in self.map.values():
             cell.post_migration_cycle()
+
 
 geogr = """\
            WWWWWWWWW

@@ -194,19 +194,20 @@ class Island:
                     else:
                         cell.add_migraters_to_pop()
 
-    def pre_migration_annual_cycle(self):
+    def annual_cycle_island(self):
         """
-        The annual cycle of the island till migration.
+        Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
+        herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
+        Lastly, in post migration the animals age, lose weight and some die.
         """
         for cell in self.map.values():
             cell.pre_migration_cycle()
 
-    def post_migration_annual_cycle(self):
-        """-
+        self.island_migration()
 
-        """
         for cell in self.map.values():
             cell.post_migration_cycle()
+
 
 geogr = """\
            WWWWWWWWW

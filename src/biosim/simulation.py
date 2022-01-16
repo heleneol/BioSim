@@ -17,11 +17,6 @@ class BioSim:
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
                  img_dir=None, img_base=None, img_fmt='png', img_years=None,
                  log_file=None):
-
-        self.island = Island(geogr=island_map)
-        self.add_population(population=ini_pop)
-        self.seed = seed
-        self.last_year_simulated = 0
         """
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
@@ -55,6 +50,10 @@ class BioSim:
 
         img_dir and img_base must either be both None or both strings.
         """
+        self.island = Island(geogr=island_map)
+        self.add_population(population=ini_pop)
+        self.seed = seed
+        self.last_year_simulated = 0
 
     def set_animal_parameters(self, species, params):
         """

@@ -10,7 +10,7 @@ ALPHA = 0.01  # significance level for statistical tests
 @pytest.fixture
 def set_herbivore_parameters(request):
     """
-    Fixture setting class parameters on Herbivore, based on X
+    Fixture setting class parameters on Herbivore, based on H. E. Plesser's biolab/bacteria.py
 
     The fixture sets Herbivore parameters when called for setup,
     and resets them when called for teardown. This ensures that modified

@@ -55,6 +55,7 @@ class Animals:
             raise ValueError('Animal weight has to be >= 0')
 
         self.update_fitness()
+
         self.regain_appetite()
 
     def update_fitness(self):
@@ -83,10 +84,6 @@ class Animals:
 
             self.fitness = q_pos * q_neg
 
-            # Trenger ikke denne fordi den kan ikke bli over 1?
-            if self.fitness > 1:
-                # noinspection PyAttributeOutsideInit
-                self.fitness = 1
 
     def regain_appetite(self):
         """

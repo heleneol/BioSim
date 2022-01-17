@@ -126,7 +126,6 @@ def test_fitness_values():
         herb.update_fitness()
         assert herb.fitness == q_pos * q_neg
 
-
 def test_regains_appetite():
     """
     Testing that the regain_appetite() function successfully sets the animal's appetite as parameter F.
@@ -163,6 +162,10 @@ def test_no_birth(set_carnivore_parameters):
     for _ in range(50):
         assert carn.gives_birth(pop_size=num) is False
 
+def test_no_birth_by_to_low_parent_weight():
+    herb = Herbivore()
+
+    assert herb.gives_birth(pop_size=2000) is False
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)
 def test_certain_migration(set_carnivore_parameters):
@@ -173,10 +176,16 @@ def test_certain_migration(set_carnivore_parameters):
     """
     carn = Carnivore()
     # Ensuring the carnivore's fitness is large enough.
-    carn.fitness = 10
-
+    carn.fitness = 1
     for _ in range(10):
         assert carn.migrate() is True
+
+
+@pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 0}], indirect=True)
+def test_cartain_no_migration(set_carnivore_parameters):
+    carn = Carnivore()
+    for _ in range(10):
+        assert carn.migrate() is False
 
 
 def test_animal_aging():

@@ -306,17 +306,13 @@ class Water(Landscape):
 
 
 
-
-
-'''
-
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
 l1 = Lowland(carn_pop=carnivores)
 
 # l1.carnivores_eating()
-
+'''
 herb_count = []
 carn_count = []
 for year in range(10):

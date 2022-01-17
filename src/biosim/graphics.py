@@ -86,7 +86,7 @@ class Graphics:
 
 
 
-    def update(self, year, species_count, animal_matrix, animal_fitness_per_species):
+    def update(self, year, species_count, animal_matrix, animal_fitness_per_species, animal_age_per_species, animal_weight_per_species):
         """
         Updates graphics with current data and save to file if necessary.
 
@@ -99,8 +99,10 @@ class Graphics:
         self._update_herb_heat_map(animal_matrix['Herbivores'])
         self._update_carn_heat_map(animal_matrix['Carnivores'])
         self._update_fitness_hist(animal_fitness_per_species)
+        self._update_age_hist(animal_age_per_species)
+        self._update_weight_hist(animal_weight_per_species)
         self.fig.canvas.flush_events()  # ensure every thing is drawn
-        plt.pause(1e-6)  # pause required to pass control to GUI
+        plt.pause(1e-5)  # pause required to pass control to GUI
 
         #self._save_graphics(step)
 
@@ -208,18 +210,26 @@ class Graphics:
 
         if self.fitnes_hist_ax is None:
             self.fitnes_hist_ax = self.fig.add_subplot(3, 3, 7)
-            self.fitness_bins = np.linspace(0,1,50)
+            self.fitnes_hist_ax.set_title('Fitness hist.')
+            self.fitnes_hist_ax.set_ylim(0, 2000)
+            self.fitness_bins = np.linspace(0, 1, 30)
 
 
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
+            self.age_hist_ax.set_title('Age hist.')
+            self.age_hist_ax.set_ylim(0, 2000)
+            self.age_bins = np.linspace(0, 60, 30)
 
         if self.weight_hist_ax is None:
             self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
+            self.weight_hist_ax.set_title('Weight hist.')
+            self.weight_hist_ax.set_ylim(0, 2000)
+            self.weight_bins = np.linspace(0, 60, 30)
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                np.full(final_step+1, np.nan))
+                                                np.full(final_step+1, np.nan), color='blue')
             self.herb_line = herb_plot[0]
         else:
             x_data, y_data = self.herb_line.get_data()
@@ -230,7 +240,7 @@ class Graphics:
                                          np.hstack((y_data, y_new)))
         if self.carn_line is None:
             carn_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                np.full(final_step+1, np.nan))
+                                                np.full(final_step+1, np.nan), color= 'red')
             self.carn_line = carn_plot[0]
         else:
             x_data, y_data = self.carn_line.get_data()
@@ -276,8 +286,24 @@ class Graphics:
 
     def _update_fitness_hist(self, animall_fitness_per_species):
         self.fitnes_hist_ax.clear()
-        self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins)
-        self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins)
+        self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins,
+                                 histtype=u'step', color= 'blue')
+        self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins,
+                                 histtype=u'step', color= 'red')
+
+    def _update_age_hist(self, animal_age_per_species):
+        self.age_hist_ax.clear()
+        self.age_hist_ax.hist(animal_age_per_species['Herbivores'], self.age_bins,
+                              histtype=u'step', color='blue')
+        self.age_hist_ax.hist(animal_age_per_species['Carnivores'], self.age_bins,
+                              histtype=u'step', color='red')
+
+    def _update_weight_hist(self, animal_weight_per_species):
+        self.weight_hist_ax.clear()
+        self.weight_hist_ax.hist(animal_weight_per_species['Herbivores'], self.weight_bins,
+                                 histtype = u'step', color = 'blue')
+        self.weight_hist_ax.hist(animal_weight_per_species['Carnivores'], self.weight_bins,
+                                 histtype=u'step', color= 'red')
 
     def _save_graphics(self, step):
         """Saves graphics to file if file name given."""

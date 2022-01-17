@@ -209,7 +209,6 @@ class Landscape:
         :param migrator: Animal that is migrating.
         :type migrator: object
         """
-        print(type(migrator))
         if type(migrator) is Herbivore:
             self.migrating_herbs.append(migrator)
         elif type(migrator) is Carnivore:

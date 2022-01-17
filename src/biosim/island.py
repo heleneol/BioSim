@@ -175,30 +175,42 @@ class Island:
         for cell in self.map.values():
             for herb in cell.herb_pop:
                 herbivores_fitness.append(herb.fitness)
-        return sorted(herbivores_fitness)
+        return herbivores_fitness
 
     def get_carns_fitness(self):
         carnivores_fitness = []
         for cell in self.map.values():
             for carn in cell.carn_pop:
                 carnivores_fitness.append(carn.fitness)
-        return sorted(carnivores_fitness)
+        return carnivores_fitness
 
     def get_herbs_age(self):
-        herbivores_age = [[herb.age for herb in cell.herb_pop] for cell in self.map.values()]
-        return sorted(herbivores_age)
+        herbivores_age = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_age.append(herb.age)
+        return herbivores_age
 
     def get_carns_age(self):
-        carnivores_age = [[carn.age for carn in cell.carn_pop] for cell in self.map.values()]
-        return sorted(carnivores_age)
+        carnivores_age = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_age.append(carn.age)
+        return carnivores_age
 
     def get_herbs_weight(self):
-        herbivores_weight = [[herb.weight for herb in cell.herb_pop] for cell in self.map.values()]
-        return sorted(herbivores_weight)
+        herbivores_weight = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_weight.append(herb.weight)
+        return herbivores_weight
 
     def get_carns_weight(self):
-        carnivores_weight = [[carn.weight for carn in cell.carn_pop] for cell in self.map.values()]
-        return sorted(carnivores_weight)
+        carnivores_weight = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_weight.append(carn.weight)
+        return carnivores_weight
 
     def island_migration(self):
         """

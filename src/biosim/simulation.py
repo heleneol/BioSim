@@ -84,7 +84,7 @@ class BioSim:
         """
         self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years):
+    def simulate(self, num_years, island_map):
         """
         Run simulation while visualizing the result.
 
@@ -95,7 +95,7 @@ class BioSim:
 
 
         self.final_step = self.step + num_years
-        self.graphics.setup(self.final_step, self.img_years)
+        self.graphics.setup(self.final_step, self.img_years, island_geographie=island_map)
 
         num_simulations = num_years
         if num_simulations//1 == num_simulations:
@@ -116,6 +116,8 @@ class BioSim:
         :param population: List of dictionaries specifying population
         """
         self.island.place_population(populations=population)
+
+
 
     @property
     def year(self):

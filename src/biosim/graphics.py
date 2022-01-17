@@ -82,10 +82,6 @@ class Graphics:
         self.herb_line = None
         self.carn_line = None
 
-    def island_map_img(self, island_map):
-        island_map = textwrap.dedent(island_map)
-        map_rgb = [[self.rgb_value[column] for column in row] for row in island_map.splitlines()]
-        return map_rgb
 
 
 
@@ -147,7 +143,7 @@ class Graphics:
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
 
-    def setup(self, final_step, img_step):
+    def setup(self, final_step, img_step, island_geographie):
         """
         Prepare graphics.
 
@@ -170,6 +166,12 @@ class Graphics:
         #add suplot for map
         if self.map_ax is None:
             self.map_ax = self.fig.add_subplot(3, 3, 1)
+
+        island_geographie = textwrap.dedent(island_geographie)
+        map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographie.splitlines()]
+        self.map_ax.imshow(map_rgb)
+
+
 
         if self.map_plot is not None:
             self.carn_heat_map_plot.set_data()

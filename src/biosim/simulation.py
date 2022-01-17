@@ -95,8 +95,6 @@ class BioSim:
         :type num_years: int
 
         """
-
-
         self.final_step = self.step + num_years
         self.graphics.setup(self.final_step, self.img_years, self.island_geographie)
 
@@ -123,12 +121,10 @@ class BioSim:
         """
         self.island.place_population(populations=population)
 
-
-
     @property
     def year(self):
         """Last year simulated."""
-        return self.last_year_simulated
+        return self.step
 
     @property
     def num_animals(self):
@@ -139,27 +135,28 @@ class BioSim:
     def num_animals_per_species(self):
         """Number of animals per species in island, as dictionary."""
 
-        return {'Herbivores': self.island.get_number_of_herbs(),
-                'Carnivores': self.island.get_number_of_carns()}
+        return {'Herbivore': self.island.get_number_of_herbs(),
+                'Carnivore': self.island.get_number_of_carns()}
+
     @property
     def num_animals_per_species_per_cell(self):
-        return {'Herbivores': self.island.get_number_herbs_per_cell(),
-                'Carnivores': self.island.get_number_carns_per_cell()}
+        return {'Herbivore': self.island.get_number_herbs_per_cell(),
+                'Carnivore': self.island.get_number_carns_per_cell()}
 
     @property
     def animal_fitness_per_species(self):
-        return {'Herbivores': self.island.get_herbs_fitness(),
-                'Carnivores': self.island.get_carns_fitness()}
+        return {'Herbivore': self.island.get_herbs_fitness(),
+                'Carnivore': self.island.get_carns_fitness()}
 
     @property
     def animal_age_per_species(self):
-        return {'Herbivores': self.island.get_herbs_age(),
-               'Carnivores': self.island.get_carns_age()}
+        return {'Herbivore': self.island.get_herbs_age(),
+                'Carnivore': self.island.get_carns_age()}
 
     @property
     def animal_weight_per_species(self):
-        return {'Herbivores': self.island.get_herbs_weight(),
-                'Carnivores': self.island.get_carns_weight()}
+        return {'Herbivore': self.island.get_herbs_weight(),
+                'Carnivore': self.island.get_carns_weight()}
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""

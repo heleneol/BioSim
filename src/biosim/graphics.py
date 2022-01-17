@@ -76,15 +76,12 @@ class Graphics:
         self.herb_heat_map_plot = None
         self.carn_heat_map_ax = None
         self.carn_heat_map_plot = None
-        self.fitnes_hist_ax = None
+        self.fitness_hist_ax = None
         self.age_hist_ax = None
         self.weight_hist_ax = None
         self.img_axis = None
         self.herb_line = None
         self.carn_line = None
-
-
-
 
     def update(self, year, species_count, animal_matrix, animal_fitness_per_species, animal_age_per_species, animal_weight_per_species):
         """
@@ -95,16 +92,16 @@ class Graphics:
         :param sys_mean: current mean value of system
         """
         self._update_year_count(year)
-        self._update_count_graph(year, species_count['Herbivores'], species_count['Carnivores'])
-        self._update_herb_heat_map(animal_matrix['Herbivores'])
-        self._update_carn_heat_map(animal_matrix['Carnivores'])
+        self._update_count_graph(year, species_count['Herbivore'], species_count['Carnivore'])
+        self._update_herb_heat_map(animal_matrix['Herbivore'])
+        self._update_carn_heat_map(animal_matrix['Carnivore'])
         self._update_fitness_hist(animal_fitness_per_species)
         self._update_age_hist(animal_age_per_species)
         self._update_weight_hist(animal_weight_per_species)
         self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-5)  # pause required to pass control to GUI
 
-        #self._save_graphics(step)
+        # self._save_graphics(step)
 
     def make_movie(self, movie_fmt=None):
         """
@@ -167,7 +164,7 @@ class Graphics:
         # Add left subplot for images created with imshow().
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
-        #add suplot for map
+        # add subplot for map
 
         self.map_ax = self.fig.add_subplot(3, 3, 1)
 
@@ -177,10 +174,10 @@ class Graphics:
         self.map_legend = self.fig.add_axes([0.37, 0.7, 0.1, 0.2])
         self.map_legend.axis('off')
         for ix, landscapename in enumerate(('Water', 'Lowland',
-                                   'Highland', 'Desert')):
+                                            'Highland', 'Desert')):
             self.map_legend.add_patch(plt.Rectangle((0., ix * 0.2), 0.2, 0.05,
-                                          edgecolor='none',
-                                          facecolor=self.rgb_value[landscapename[0]]))
+                                      edgecolor='none',
+                                      facecolor=self.rgb_value[landscapename[0]]))
             self.map_legend.text(0.35, ix * 0.2, landscapename, transform=self.map_legend.transAxes)
 
         # add subplot for yearcount
@@ -189,9 +186,9 @@ class Graphics:
             self.year_ax.axis('off')
             self.count_template = 'Count: {:5d}'
             self.txt = self.year_ax.text(0.5, 0.5, self.count_template.format(0),
-                       horizontalalignment='center',
-                       verticalalignment='center',
-                       transform=self.year_ax.transAxes)
+                                         horizontalalignment='center',
+                                         verticalalignment='center',
+                                         transform=self.year_ax.transAxes)
 
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
@@ -208,12 +205,11 @@ class Graphics:
             self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
             self.carn_heat_map_ax.set_title('Carnivore heat map')
 
-        if self.fitnes_hist_ax is None:
-            self.fitnes_hist_ax = self.fig.add_subplot(3, 3, 7)
-            self.fitnes_hist_ax.set_title('Fitness hist.')
-            self.fitnes_hist_ax.set_ylim(0, 2000)
+        if self.fitness_hist_ax is None:
+            self.fitness_hist_ax = self.fig.add_subplot(3, 3, 7)
+            self.fitness_hist_ax.set_title('Fitness hist.')
+            self.fitness_hist_ax.set_ylim(0, 2000)
             self.fitness_bins = np.linspace(0, 1, 30)
-
 
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
@@ -229,7 +225,7 @@ class Graphics:
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                np.full(final_step+1, np.nan), color='blue')
+                                                  np.full(final_step+1, np.nan), color='blue')
             self.herb_line = herb_plot[0]
         else:
             x_data, y_data = self.herb_line.get_data()
@@ -237,10 +233,10 @@ class Graphics:
             if len(x_new) > 0:
                 y_new = np.full(x_new.shape, np.nan)
                 self.herb_line.set_data(np.hstack((x_data, x_new)),
-                                         np.hstack((y_data, y_new)))
+                                        np.hstack((y_data, y_new)))
         if self.carn_line is None:
             carn_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                np.full(final_step+1, np.nan), color= 'red')
+                                                  np.full(final_step+1, np.nan), color='red')
             self.carn_line = carn_plot[0]
         else:
             x_data, y_data = self.carn_line.get_data()
@@ -248,7 +244,7 @@ class Graphics:
             if len(x_new) > 0:
                 y_new = np.full(x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
-                                         np.hstack((y_data, y_new)))
+                                        np.hstack((y_data, y_new)))
 
     def _update_herb_heat_map(self, herb_map):
         """Update the 2D-view of the system."""
@@ -257,8 +253,8 @@ class Graphics:
             self.herb_heat_map_plot.set_data(herb_map)
         else:
             self.herb_heat_map_plot = self.herb_heat_map_ax.imshow(herb_map,
-                                                 interpolation='nearest',
-                                                 vmin=0, vmax=200)
+                                                                   interpolation='nearest',
+                                                                   vmin=0, vmax=200)
             plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
                          orientation='vertical', shrink=0.75)
 
@@ -267,8 +263,8 @@ class Graphics:
             self.carn_heat_map_plot.set_data(carn_map)
         else:
             self.carn_heat_map_plot = self.carn_heat_map_ax.imshow(carn_map,
-                                                 interpolation='nearest',
-                                                 vmin=0, vmax=200)
+                                                                   interpolation='nearest',
+                                                                   vmin=0, vmax=200)
             plt.colorbar(self.carn_heat_map_plot, ax=self.carn_heat_map_ax,
                          orientation='vertical', shrink=0.75)
 
@@ -281,29 +277,29 @@ class Graphics:
         y_data[year] = carn_count
         self.carn_line.set_ydata(y_data)
 
-    def _update_year_count(self,year):
+    def _update_year_count(self, year):
         self.txt.set_text(self.count_template.format(year))
 
     def _update_fitness_hist(self, animall_fitness_per_species):
-        self.fitnes_hist_ax.clear()
-        self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins,
-                                 histtype=u'step', color= 'blue')
-        self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins,
-                                 histtype=u'step', color= 'red')
+        self.fitness_hist_ax.clear()
+        self.fitness_hist_ax.hist(animall_fitness_per_species['Herbivore'], self.fitness_bins,
+                                  histtype=u'step', color='blue')
+        self.fitness_hist_ax.hist(animall_fitness_per_species['Carnivore'], self.fitness_bins,
+                                  histtype=u'step', color='red')
 
     def _update_age_hist(self, animal_age_per_species):
         self.age_hist_ax.clear()
-        self.age_hist_ax.hist(animal_age_per_species['Herbivores'], self.age_bins,
+        self.age_hist_ax.hist(animal_age_per_species['Herbivore'], self.age_bins,
                               histtype=u'step', color='blue')
-        self.age_hist_ax.hist(animal_age_per_species['Carnivores'], self.age_bins,
+        self.age_hist_ax.hist(animal_age_per_species['Carnivore'], self.age_bins,
                               histtype=u'step', color='red')
 
     def _update_weight_hist(self, animal_weight_per_species):
         self.weight_hist_ax.clear()
-        self.weight_hist_ax.hist(animal_weight_per_species['Herbivores'], self.weight_bins,
-                                 histtype = u'step', color = 'blue')
-        self.weight_hist_ax.hist(animal_weight_per_species['Carnivores'], self.weight_bins,
-                                 histtype=u'step', color= 'red')
+        self.weight_hist_ax.hist(animal_weight_per_species['Herbivore'], self.weight_bins,
+                                 histtype=u'step', color='blue')
+        self.weight_hist_ax.hist(animal_weight_per_species['Carnivore'], self.weight_bins,
+                                 histtype=u'step', color='red')
 
     def _save_graphics(self, step):
         """Saves graphics to file if file name given."""

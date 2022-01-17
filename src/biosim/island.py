@@ -113,10 +113,22 @@ class Island:
                 raise ValueError(f'The stated location {loc} is outside the map boundaries')
 
     def set_animal_parameters_island(self, species, params):
+        """
+        Setting animal parameters.
+
+        :param species: specifying which species to set the parameters for
+        :param params: new parameters to set for the species.
+        """
         species = self.sample_animals[species.lower()]
         species.set_parameters(new_params=params)
 
     def set_landscape_parameters_island(self, landscape, params):
+        """
+        Setting landscape parameters.
+
+        :param landscape: specifying which landscape to set the parameters for
+        :param params: new parameters to set for the landscape.
+        """
         landscape = self.parameters[landscape]
         landscape.set_parameters(new_params=params)
 
@@ -275,3 +287,6 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
+
+
+

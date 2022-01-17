@@ -29,13 +29,13 @@ class Animals:
                 raise KeyError('Invalid parameter name: ' + key)
 
             elif key == 'DeltaPhiMax':
-                if key < 0:
+                if new_params[key] < 0:
                     raise ValueError('DeltaPhiMax must be strictly positive!')
                 else:
                     continue
 
             elif key == 'eta':
-                if key > 1:
+                if new_params[key] > 1:
                     raise ValueError('Eta must be <= 1 !')
                 else:
                     continue

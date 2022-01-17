@@ -1,5 +1,5 @@
-Dishes and Bacteria
-===================
+BioSim class
+============
 
 The dish module
 ---------------

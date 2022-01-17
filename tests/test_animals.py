@@ -163,12 +163,25 @@ def test_no_birth(set_carnivore_parameters):
         assert carn.gives_birth(pop_size=num) is False
 
 
+@pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 100.0, 'xi': 100}], indirect=True)
+def test_no_birth_parentweight_too_low(set_carnivore_parameters, mocker):
+    """
+    Testing no birth to offspring occurs if the parent's weight < xi * newborn's weight.
+    Setting parameters so random.random < gamma * fitness * (N-1). The animal's weight and xi are set so weight will
+    always be lower than xi * newborn's weight.
+    """
+    mocker.patch('random.random', return_value=0)
+    h = Herbivore(weight=0.01)
+
+    for _ in range(10):
+        assert h.gives_birth(pop_size=200) is False
+
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)
 def test_certain_migration(set_carnivore_parameters):
     """
     Testing migration does happen if the conditions are met.
-    Making sure the animal's fitness * mu > 1 by setting mu to 100 and the animal's fitness to 10. Migration should,
+    Making sure the animal's fitness * mu > 1 by setting mu to 100 and the animal's fitness to 1. Migration should,
     with these conditions, always happen.
     """
     carn = Carnivore()

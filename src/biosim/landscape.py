@@ -48,7 +48,6 @@ class Landscape:
         """
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max']
-
         self.herb_pop = herb_pop if herb_pop is not None else []
         self.migrating_herbs = []
         self.carn_pop = carn_pop if carn_pop is not None else []
@@ -209,6 +208,7 @@ class Landscape:
         :param migrator: Animal that is migrating.
         :type migrator: object
         """
+        print(type(migrator))
         if type(migrator) is Herbivore:
             self.migrating_herbs.append(migrator)
         elif type(migrator) is Carnivore:
@@ -294,20 +294,23 @@ class Desert(Landscape):
     """
     Subclass representing Desert landscape on the island.
     """
-    parameters = {'f_max': 0}
+    parameters = {}
 
 class Water(Landscape):
     """
     Subclass representing Ocean landscape on the island.
     """
-    parameters = {'f_max': 0}
+    parameters = {}
 
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
-l1 = Lowland(carn_pop=None, herb_pop=None)
-l1.set_parameters(new_params={'f_max': 30})
-print(l1.herb_pop)
+l1 = Lowland(herb_pop=ini_pops)
+
+for herb in ini_pops:
+    l1.register_migrants(herb)
+
+
 
 # l1.carnivores_eating()
 '''

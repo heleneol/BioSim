@@ -179,14 +179,14 @@ def test_add_population_species():
         h.add_population(herb_pop)
 
 
-def test_add_population_expected():
-    """
-    Testing whether population is added as expected
-    """
-    carn_pop = generate_carn_pop(5, 20, 30)
-
-    low = Lowland()
-    low.add_population(carn_pop)
+#def test_add_population_expected():
+#    """
+#    Testing whether population is added as expected
+#    """
+#    carn_pop = generate_carn_pop(5, 20, 30)
+#
+#    low = Lowland()
+#    low.add_population(carn_pop)
     ##? Se landscape construction
 
 
@@ -220,7 +220,6 @@ def test_herbivores_eating():
     """
     herb_pop = generate_herb_pop(None, None, 20)
     H = Highland(herb_pop)
-
     original_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
     H.herbivores_eating()
     post_eating_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
@@ -233,12 +232,12 @@ def test_carnivores_eating():
     """
     herb_pop = [Herbivore() for _ in range(250)]
     carn_pop = [Carnivore() for _ in range(5)]
-    D = Desert(herb_pop, carn_pop)
+    d = Desert(herb_pop, carn_pop)
 
     for hunting_season in range(10):
-        herb_pop_before_hunting = D.get_num_herbs()
-        D.carnivores_eating()
-        assert D.get_num_herbs() <= herb_pop_before_hunting
+        herb_pop_before_hunting = d.get_num_herbs()
+        d.carnivores_eating()
+        assert d.get_num_herbs() <= herb_pop_before_hunting
 
 
 def test_reproduction():
@@ -263,6 +262,32 @@ def test_reproduction():
 
 # def test_reproduction_statisticly
 
+
+def test_register_migrants():
+    """
+    Testing that the input animal is appended to the right list of migrating animals.
+    """
+    herb_pop = [Herbivore(age=1, weight=50) for _ in range(20)]
+    low = Lowland()
+
+    for herb in herb_pop:
+        low.register_migrants(herb)
+    assert len(low.migrating_herbs) > 0
+
+
+def test_add_migrators():
+    """
+    Testing that the migrators are added to the population, and that the list of migrators is emptied.
+    """
+    carn_pop = [Carnivore(age=1, weight=50) for _ in range(20)]
+    h = Highland(carn_pop=carn_pop)
+    len_carn_before = len(h.carn_pop)
+
+    h.migrating_carns = [Carnivore(age=1, weight=50) for _ in range(3)]
+    h.add_migraters_to_pop()
+    len_carn_after = len(h.carn_pop)
+    assert len(h.migrating_carns) == 0
+    assert len_carn_after > len_carn_before
 
 def test_aging():
     """

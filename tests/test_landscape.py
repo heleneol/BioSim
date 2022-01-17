@@ -308,6 +308,20 @@ def test_aging():
     assert get_mean_age(L.carn_pop) == 1
 
 
+def test_population_weightloss():
+    """
+    Testing the mean weight of a population is lower after the animal's annual weightloss.
+    """
+    herb_pop = generate_herb_pop(None, None, 10)
+    h = Highland(herb_pop)
+    herb_weight_before = sum([animal.weight for animal in h.herb_pop]) / len(h.herb_pop)
+    h.weight_loss()
+    herb_weight_after = sum([animal.weight for animal in h.herb_pop]) / len(h.herb_pop)
+
+    assert herb_weight_after < herb_weight_before
+
+
+
 def test_animal_migration():
     """
     Testing migration returns an empty migrator list if the number of animals in the population doesn't change after

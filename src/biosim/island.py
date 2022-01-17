@@ -7,6 +7,7 @@ from biosim.animals import Herbivore, Carnivore
 
 import textwrap
 import random
+import numpy as np
 
 
 class Island:
@@ -146,25 +147,28 @@ class Island:
         """
         Calculates the number of herbivores per cell on the map.
 
-        :return: dictionary with the location as key and count of herbivores as value
-        :rtype: dict
+        :return: 2D-array with herbivorecount per cell as values
+        :rtype:
         """
-        herbs_per_cell = {}
+
+        map_dim = self.map.keys()[-1]
+        herb_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
-            herbs_per_cell[loc] = cell.get_num_herbs()
-        return herbs_per_cell
+            herb_matrix[loc[0]-1][loc[1]-1] = cell.get_num_herbs()
+        return herb_matrix
 
     def get_number_carns_per_cell(self):
         """
-        Getting the number of carnivores per cell on the map.
+        Calculates the number of carnivores per cell on the map.
 
-        :return: dictionary with the location as key and count of carnivores as value
-        :rtype: dict
+        :return: 2D-array with carnivorecount per cell as values
+        :rtype:
         """
-        carns_per_cell = {}
+        map_dim = self.map.keys()[-1]
+        carn_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
-            carns_per_cell[loc] = cell.get_num_carns()
-        return carns_per_cell
+            carn_matrix[loc[0] - 1][loc[1] - 1] = cell.get_num_herbs()
+        return carn_matrix
 
     def get_herbs_fitness(self):
         herbivores_fitness = [[herb.fitness for herb in cell.herb_pop] for cell in self.map.values()]

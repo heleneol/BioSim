@@ -218,7 +218,7 @@ class Graphics:
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
                                          np.hstack((y_data, y_new)))
 
-    def _update_system_map(self, sys_map):
+    def _update_heat_map(self, herb_map, carn_map):
         """Update the 2D-view of the system."""
 
         if self._img_axis is not None:
@@ -230,7 +230,7 @@ class Graphics:
             plt.colorbar(self._img_axis, ax=self._map_ax,
                          orientation='horizontal')
 
-    def _update_mean_graph(self, step, mean):
+    def _update_count_graph(self, year, carn_cunt, herb_count):
         y_data = self._mean_line.get_ydata()
         y_data[step] = mean
         self._mean_line.set_ydata(y_data)

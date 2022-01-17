@@ -116,7 +116,6 @@ class Animals:
             newborn = type(self)()
             if self.weight < self.parameters['xi'] * newborn.weight:
                 return False
-
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
                 self.update_fitness()
@@ -251,6 +250,5 @@ class Carnivore(Animals):
             self.weight += self.parameters['beta']*herbivore.weight
             self.update_fitness()
             return True
-
         else:
             return False

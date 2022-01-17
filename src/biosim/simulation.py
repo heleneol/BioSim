@@ -54,8 +54,13 @@ class BioSim:
         """
         self.island = Island(geogr=island_map)
         self.add_population(population=ini_pop)
-        self.graphics = Graphics(img_dir, img_name, img_fmt)
+        self.graphics = Graphics()
         self.seed = seed
+        self.vis_years = vis_years
+        self.img_years = img_years
+
+        if vis_years % img_years != 0 and vis_years is None and img_years is None:
+            raise ValueError('img_steps must be a multiple of vis_steps')
 
         self.step = 0
         self.final_step = None
@@ -78,34 +83,26 @@ class BioSim:
         """
         self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years=None, vis_steps = 1, img_steps = None):
+    def simulate(self, num_years):
         """
         Run simulation while visualizing the result.
 
         :param num_years: number of years to simulate
         :type num_years: int
-        :param vis_steps: interval between visualizations updates
-        :param img_steps: interval between visualizations saved to file
-        """
-        if img_steps is None:
-            img_steps = vis_steps
 
-        if img_steps % vis_steps != 0:
-            raise ValueError('img_steps must be a multiple of vis_steps')
+        """
+
 
         self.final_step = self.step + num_years
-        self.graphics.setup(self.final_step, img_steps)
+        self.graphics.setup(self.final_step, self.img_years)
 
-        num_simulations = num_years if num_years is not None else 1
-        if float(num_simulations).is_integer() is True:
+        num_simulations = num_years
+        if num_simulations//1 == num_simulations:
             while self.step < self.final_step:
-                self.island.annual_cycle_island()
-
-            for simulation in range(int(num_simulations)):
                 self.island.annual_cycle_island()
                 # hente ut properties til visualisering
                 self.step += 1
-                if self.step % vis_steps == 0:
+                if self.step % self.vis_years == 0:
                     self.graphics.update(self.step, )
                 print(self.last_year_simulated)
         else:

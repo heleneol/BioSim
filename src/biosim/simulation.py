@@ -62,17 +62,24 @@ class BioSim:
         self.graphics = Graphics()
         self.seed = seed
         self.ymax_animals = ymax_animals if ymax_animals is not None else 20000
-        self.cmax_animals = cmax_animals if cmax_animals is not None else {'Herbivore':200,
-                                                                           'Carnivore':200}
+        self.cmax_animals = {'Herbivore': 200,
+                            'Carnivore': 200}
+        if cmax_animals is not None:
+            for key, value in cmax_animals.items():
+                if key in self.cmax_animals.keys():
+                    self.cmax_animals[key] = value
+                else:
+                    raise KeyError(f'Key {key} is not valid')
+
         self.hist_specs = {'fitness': {'max': 1.0, 'delta': 0.05},
                            'age': {'max': 60.0, 'delta': 2},
                            'weight': {'max': 60, 'delta': 2}}
-
-        for key, value in hist_specs.items():
-            if key in self.hist_specs.keys():
-                self.hist_specs[key] = value
-            else:
-                KeyError(f'Key {key} is not valid')
+        if hist_specs is not None:
+            for key, value in hist_specs.items():
+                if key in self.hist_specs.keys():
+                    self.hist_specs[key] = value
+                else:
+                    raise KeyError(f'Key {key} is not valid')
 
         self.vis_years = vis_years
         self.img_years = img_years
@@ -135,7 +142,6 @@ class BioSim:
             if num_simulations // 1 == num_simulations:
                 while self.step < self.final_step:
                     self.island.annual_cycle_island()
-                    print(self.step)
                     self.step += 1
 
 

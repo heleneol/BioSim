@@ -50,7 +50,6 @@ def set_carnivore_parameters(request):
     yield
     Carnivore.set_parameters(default_parameters)
 
-## ??? Skriv test for DeltaPhiMax!!
 
 def test_input_param():
     """
@@ -74,16 +73,25 @@ def test_wrong_param():
     with pytest.raises(ValueError):
         Herbivore.set_parameters({'w_birth': -2.0})
 
+    with pytest.raises(ValueError):
+        Carnivore.set_parameters({'DeltaPhiMax': -1.0})
+
+    with pytest.raises(ValueError):
+        Carnivore.set_parameters(({'eta': 1.5}))
+
 
 def test_value_error_of_age_and_weight():
     """
     Testing whether ValueError is raised for error in input age and weight.
     """
     with pytest.raises(ValueError):
+        Herbivore(age=5.25)
+
+    with pytest.raises(ValueError):
         Herbivore(age=-5)
 
     with pytest.raises(ValueError):
-        Carnivore(weight=0)
+        Carnivore(weight=-1)
 
 
 def test_fitness_value():
@@ -97,7 +105,7 @@ def test_fitness_value():
         assert 0 <= herb.fitness <= 1
 
 
-def test_fitness_no_weight():  # Slette?:
+def test_fitness_no_weight():
     """
     When the animal's weight is zero, the fitness is also zero.
     """
@@ -130,6 +138,7 @@ def test_fitness_values():
         carn.update_fitness()
         assert carn.fitness == q_pos * q_neg
 
+
 def test_regains_appetite():
     """
     Testing that the regain_appetite() function successfully sets the animal's appetite as parameter F.
@@ -144,7 +153,8 @@ def test_certain_birth(mocker):
     """
     Testing to ensure birth happens when conditions for birth are met.
     Mocker ensures random.random returns the value zero. Weight is set at 1000 to ensure it always surpasses
-    xi*newborn.weight. With these conditions the function should not return False (False meaning no offspring).
+    xi*newborn.weight and zeta*(w_birth + sigma_birth).
+    With these conditions the function should not return False (False meaning no offspring).
     """
     num = 100
     carn = Carnivore(weight=1000)
@@ -167,18 +177,32 @@ def test_no_birth(set_carnivore_parameters):
         assert carn.gives_birth(pop_size=num) is False
 
 
-@pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 100.0, 'xi': 100}], indirect=True)
-def test_no_birth_parentweight_too_low(set_carnivore_parameters, mocker):
+@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0, 'zeta': 100}], indirect=True)
+def test_no_birth_zeta(set_herbivore_parameters, mocker):
     """
-    Testing no birth to offspring occurs if the parent's weight < zeta * newborn's weight.
+    Testing birth to an offspring does not occur if the mother's weight is lower than zeta * (w_birth + sigma_birth)'
+    """
+    herb = Herbivore()
+    num = 100
+    mocker.patch('random.random', return_value=0)
+
+    for _ in range(10):
+        assert herb.gives_birth(pop_size=num) is False
+
+
+@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0, 'xi': 100}], indirect=True)
+def test_no_birth_parentweight_too_low(set_herbivore_parameters, mocker):
+    """
+    Testing no birth to offspring occurs if the parent's weight < xi * newborn's weight.
     Setting parameters so random.random < gamma * fitness * (N-1). The animal's weight and xi are set so weight will
     always be lower than xi * newborn's weight.
     """
     mocker.patch('random.random', return_value=0)
+    num = 200
     h = Herbivore(weight=0.01)
 
     for _ in range(10):
-        assert h.gives_birth(pop_size=200) is False
+        assert h.gives_birth(pop_size=num) is False
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)

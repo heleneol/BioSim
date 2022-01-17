@@ -28,7 +28,19 @@ class Animals:
             if key not in cls.parameters:
                 raise KeyError('Invalid parameter name: ' + key)
 
-            elif new_params[key] < 0:
+            elif key == 'DeltaPhiMax':
+                if key < 0:
+                    raise ValueError('DeltaPhiMax must be strictly positive!')
+                else:
+                    continue
+
+            elif key == 'eta':
+                if key > 1:
+                    raise ValueError('Eta must be <= 1 !')
+                else:
+                    continue
+
+            elif new_params[key] <= 0:
                 raise ValueError('All parameter values need to be positive')
 
         cls.parameters.update(new_params)

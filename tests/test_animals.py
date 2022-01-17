@@ -50,6 +50,7 @@ def set_carnivore_parameters(request):
     yield
     Carnivore.set_parameters(default_parameters)
 
+## ??? Skriv test for DeltaPhiMax!!
 
 def test_input_param():
     """

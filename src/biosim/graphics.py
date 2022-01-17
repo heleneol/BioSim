@@ -1,5 +1,5 @@
 """
-:mod:`randvis.graphics` provides graphics support for RandVis.
+:mod:`BioSim.graphics` provides graphics support for BioSim.
 
 .. note::
    * This module requires the program ``ffmpeg`` or ``convert``
@@ -27,13 +27,19 @@ _MAGICK_BINARY = 'magick'
 # update this to the directory and file-name beginning
 # for the graphics files
 _DEFAULT_GRAPHICS_DIR = os.path.join('../..', 'data')
-_DEFAULT_GRAPHICS_NAME = 'dv'
+_DEFAULT_GRAPHICS_NAME = 'image'
 _DEFAULT_IMG_FORMAT = 'png'
-_DEFAULT_MOVIE_FORMAT = 'mp4'   # alternatives: mp4, gif
+_DEFAULT_MOVIE_FORMAT = 'mp4'
 
 
 class Graphics:
-    """Provides graphics support for RandVis."""
+
+    """Provides graphics support for BioSim."""
+
+    rgb_value = {'W': (0.0, 0.0, 1.0),  # blue
+                 'L': (0.0, 0.6, 0.0),  # dark green
+                 'H': (0.5, 1.0, 0.5),  # light green
+                 'D': (1.0, 1.0, 0.5)}  # light yellow
 
     def __init__(self, img_dir=None, img_name=None, img_fmt=None):
         """
@@ -59,11 +65,25 @@ class Graphics:
         self._img_step = 1
 
         # the following will be initialized by _setup_graphics
-        self._fig = None
-        self._map_ax = None
-        self._img_axis = None
-        self._mean_ax = None
-        self._mean_line = None
+        self.fig = None
+        self.map_ax = None
+        self.year_ax = None
+        self.animal_count_ax = None
+        self.herb_heat_map_ax = None
+        self.carn_heat_map_ax = None
+        self.fitnes_hist_ax = None
+        self.age_hist_ax = None
+        self.weight_hist_ax = None
+        self.img_axis = None
+        self.herb_line = None
+        self.carn_line = None
+
+    def island_map_img(self, island_map):
+        island_map = textwrap.dedent(island_map)
+        map_rgb = [[rgb_value[column] for column in row] for row in island_map.splitlines()]
+        return map_rgb
+
+
 
     def update(self, step, sys_map, sys_mean):
         """
@@ -136,35 +156,66 @@ class Graphics:
         self._img_step = img_step
 
         # create new figure window
-        if self._fig is None:
-            self._fig = plt.figure()
+        if self.fig is None:
+            self.fig = plt.figure()
 
         # Add left subplot for images created with imshow().
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
-        if self._map_ax is None:
-            self._map_ax = self._fig.add_subplot(1, 2, 1)
-            self._img_axis = None
+        #add suplot for map
+        if self.map_ax is None:
+            self.map_ax = self._fig.add_subplot(3, 3, 1)
 
-        # Add right subplot for line graph of mean.
-        if self._mean_ax is None:
-            self._mean_ax = self._fig.add_subplot(1, 2, 2)
-            self._mean_ax.set_ylim(-0.05, 0.05)
+
+        # add subplot for yearcount
+        if self.year_ax is None:
+            self.year_ax = self.fig.add_subplot(3, 3, 2)
+
+        # Add subplot for animal count per species
+        if self.animal_count_ax is None:
+            self.animal_count_ax = self.fig.add_subplot(3, 3, 3)
+            self.animal_count_ax.set_ylim(0, 8000)
+
+        if self.herb_heat_map_ax is None:
+            self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
+
+        if self.carn_heat_map_ax is None:
+            self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
+
+        if self.fitnes_hist_ax is None:
+            self.fitnes_hist_ax = self.fig.add_subplot(3, 3, 7)
+
+        if self.age_hist_ax is None:
+            self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
+
+        if self.weight_hist_ax is None:
+            self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
 
         # needs updating on subsequent calls to simulate()
         # add 1 so we can show values for time zero and time final_step
-        self._mean_ax.set_xlim(0, final_step+1)
+        self.animal_count_ax.set_xlim(0, final_step+1)
 
-        if self._mean_line is None:
-            mean_plot = self._mean_ax.plot(np.arange(0, final_step+1),
-                                           np.full(final_step+1, np.nan))
-            self._mean_line = mean_plot[0]
+        if self.herb_line is None:
+            herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
+                                                np.full(final_step+1, np.nan))
+            self.herb_line = herb_plot[0]
         else:
-            x_data, y_data = self._mean_line.get_data()
+            x_data, y_data = self.herb_line.get_data()
             x_new = np.arange(x_data[-1] + 1, final_step+1)
             if len(x_new) > 0:
                 y_new = np.full(x_new.shape, np.nan)
-                self._mean_line.set_data(np.hstack((x_data, x_new)),
+                self.herb_line.set_data(np.hstack((x_data, x_new)),
+                                         np.hstack((y_data, y_new)))
+        if self.carn_line is None:
+            carn_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
+                                                np.full(final_step+1, np.nan))
+            self.carn_line = carn_plot[0]
+        else:
+            x_data, y_data = self.carn_line.get_data()
+            x_new = np.arange(x_data[-1] + 1, final_step+1)
+            if len(x_new) > 0:
+                y_new = np.full(x_new.shape, np.nan)
+                self.carn_line.set_data(np.hstack((x_data, x_new)),
                                          np.hstack((y_data, y_new)))
 
     def _update_system_map(self, sys_map):

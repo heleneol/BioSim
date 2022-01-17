@@ -68,6 +68,7 @@ class Graphics:
         # the following will be initialized by _setup_graphics
         self.fig = None
         self.map_ax = None
+        self.map_plot = None
         self.year_ax = None
         self.animal_count_ax = None
         self.herb_heat_map_ax = None
@@ -81,10 +82,6 @@ class Graphics:
         self.herb_line = None
         self.carn_line = None
 
-    def island_map_img(self, island_map):
-        island_map = textwrap.dedent(island_map)
-        map_rgb = [[self.rgb_value[column] for column in row] for row in island_map.splitlines()]
-        return map_rgb
 
 
 
@@ -97,8 +94,9 @@ class Graphics:
         :param sys_mean: current mean value of system
         """
 
-        self._update_count_graph(year, species_count["Herbivores"], species_count["Carnivores"])
-        self._update_heat_map(animal_matrix["Herbivores"], animal_matrix["Carnivores"])
+        self._update_count_graph(year, species_count['Herbivores'], species_count['Carnivores'])
+        self._update_herb_heat_map(animal_matrix['Herbivores'])
+        self._update_carn_heat_map(animal_matrix['Carnivores'])
         self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-6)  # pause required to pass control to GUI
 
@@ -145,7 +143,7 @@ class Graphics:
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
 
-    def setup(self, final_step, img_step):
+    def setup(self, final_step, img_step, island_geographie):
         """
         Prepare graphics.
 
@@ -169,10 +167,19 @@ class Graphics:
         if self.map_ax is None:
             self.map_ax = self.fig.add_subplot(3, 3, 1)
 
+        island_geographie = textwrap.dedent(island_geographie)
+        map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographie.splitlines()]
+        self.map_ax.imshow(map_rgb)
+
+
+
+        if self.map_plot is not None:
+            self.carn_heat_map_plot.set_data()
 
         # add subplot for yearcount
         if self.year_ax is None:
             self.year_ax = self.fig.add_subplot(3, 3, 2)
+            self.year_ax.axis('off')
 
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
@@ -195,9 +202,6 @@ class Graphics:
 
         if self.weight_hist_ax is None:
             self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
-
-        # needs updating on subsequent calls to simulate()
-        # add 1 so we can show values for time zero and time final_step
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
@@ -222,7 +226,7 @@ class Graphics:
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
                                          np.hstack((y_data, y_new)))
 
-    def _update_heat_map(self, herb_map, carn_map):
+    def _update_herb_heat_map(self, herb_map):
         """Update the 2D-view of the system."""
 
         if self.herb_heat_map_plot is not None:
@@ -232,9 +236,17 @@ class Graphics:
                                                  interpolation='nearest',
                                                  vmin=0, vmax=200)
             plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
-                         orientation='horizontal')
+                         orientation='vertical')
 
-        ##Add Carnivvore
+    def _update_carn_heat_map(self, carn_map):
+        if self.carn_heat_map_plot is not None:
+            self.carn_heat_map_plot.set_data(carn_map)
+        else:
+            self.carn_heat_map_plot = self.carn_heat_map_ax.imshow(carn_map,
+                                                 interpolation='nearest',
+                                                 vmin=0, vmax=200)
+            plt.colorbar(self.carn_heat_map_plot, ax=self.carn_heat_map_ax,
+                         orientation='vertical')
 
     def _update_count_graph(self, year, herb_count, carn_count):
         y_data = self.herb_line.get_ydata()

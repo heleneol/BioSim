@@ -84,7 +84,7 @@ class BioSim:
         """
         self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years):
+    def simulate(self, num_years, island_map):
         """
         Run simulation while visualizing the result.
 
@@ -95,17 +95,17 @@ class BioSim:
 
 
         self.final_step = self.step + num_years
-        self.graphics.setup(self.final_step, self.img_years)
+        self.graphics.setup(self.final_step, self.img_years, island_geographie=island_map)
 
         num_simulations = num_years
         if num_simulations//1 == num_simulations:
             while self.step < self.final_step:
                 self.island.annual_cycle_island()
-                # hente ut properties til visualisering
+
                 self.step += 1
                 if self.step % self.vis_years == 0:
-                    self.graphics.update(self.step, self.num_animals_per_species, self.num_animals_per_species_per_cell)
-                #print(self.last_year_simulated)
+                    self.graphics.update(year=self.step, species_count=self.num_animals_per_species, animal_matrix=self.num_animals_per_species_per_cell)
+
         else:
             raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
 
@@ -116,6 +116,8 @@ class BioSim:
         :param population: List of dictionaries specifying population
         """
         self.island.place_population(populations=population)
+
+
 
     @property
     def year(self):

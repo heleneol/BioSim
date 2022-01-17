@@ -324,3 +324,12 @@ def test_get_carns_weight():
     Testing if get_carns_weight indeed returns the Carnivore's true weight.
     """
 
+
+def test_island_migration():
+    """
+
+    """
+
+
+def test_only_migrates_once():
+

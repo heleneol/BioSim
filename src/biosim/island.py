@@ -289,27 +289,4 @@ class Island:
             cell.post_migration_cycle()
 
 
-geography = """\
-                WWWWWWWWWWW
-                WLLLHHHLLLW
-                WLLLLLLLLLW
-                WLDDDDLLDDW
-                WLLLLLLLLLW
-                WWWWWWWWWWW"""
-geography = textwrap.dedent(geography)
 
-ini_herbies = [{'loc': (2, 2),
-                'pop': [{'species': 'Herbivore',
-                         'age': 5,
-                         'weight': 20}
-                        for _ in range(4)]},
-               {'loc': (3, 3),
-                'pop': [{'species': 'Herbivore',
-                         'age': 3,
-                         'weight': 20}
-                        for _ in range(5)]}]
-
-i = Island(geography)
-i.place_population(ini_herbies)
-
-i.get_number_herbs_per_cell()

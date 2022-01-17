@@ -19,6 +19,9 @@ import subprocess
 import os
 import textwrap
 
+plt.rc('font', size=8)
+
+
 # Update these variables to point to your ffmpeg and convert binaries
 # If you installed ffmpeg using conda or installed both softwares in
 # standard ways on your computer, no changes should be required.
@@ -67,8 +70,6 @@ class Graphics:
 
         # the following will be initialized by _setup_graphics
         self.fig = None
-        self.map_ax = None
-        self.map_plot = None
         self.year_ax = None
         self.animal_count_ax = None
         self.herb_heat_map_ax = None
@@ -85,7 +86,7 @@ class Graphics:
 
 
 
-    def update(self, year, species_count, animal_matrix):
+    def update(self, year, species_count, animal_matrix, animal_fitness_per_species):
         """
         Updates graphics with current data and save to file if necessary.
 
@@ -93,10 +94,11 @@ class Graphics:
         :param sys_map: current system status (2d array)
         :param sys_mean: current mean value of system
         """
-
+        self._update_year_count(year)
         self._update_count_graph(year, species_count['Herbivores'], species_count['Carnivores'])
         self._update_herb_heat_map(animal_matrix['Herbivores'])
         self._update_carn_heat_map(animal_matrix['Carnivores'])
+        #self._update_fitness_hist(animal_fitness_per_species)
         self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-6)  # pause required to pass control to GUI
 
@@ -164,37 +166,50 @@ class Graphics:
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
         #add suplot for map
-        if self.map_ax is None:
-            self.map_ax = self.fig.add_subplot(3, 3, 1)
 
-        island_geographie = textwrap.dedent(island_geographie)
-        map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographie.splitlines()]
-        self.map_plot = self.map_ax.imshow(map_rgb)
+        self.map_ax = self.fig.add_subplot(3, 3, 1)
 
-
-        if self.map_plot is not None:
-            self.carn_heat_map_plot.set_data()
+        island_geographic = textwrap.dedent(island_geographie)
+        map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographic.splitlines()]
+        self.map_ax.imshow(map_rgb)
+        self.map_legend = self.fig.add_axes([0.37, 0.7, 0.1, 0.2])
+        self.map_legend.axis('off')
+        for ix, landscapename in enumerate(('Water', 'Lowland',
+                                   'Highland', 'Desert')):
+            self.map_legend.add_patch(plt.Rectangle((0., ix * 0.2), 0.2, 0.05,
+                                          edgecolor='none',
+                                          facecolor=self.rgb_value[landscapename[0]]))
+            self.map_legend.text(0.35, ix * 0.2, landscapename, transform=self.map_legend.transAxes)
 
         # add subplot for yearcount
         if self.year_ax is None:
-            self.year_ax = self.fig.add_subplot(3, 3, 2)
+            self.year_ax = self.fig.add_axes([0.45, 0.85, 0.1, 0.1])
             self.year_ax.axis('off')
+            self.count_template = 'Count: {:5d}'
+            self.txt = self.year_ax.text(0.5, 0.5, self.count_template.format(0),
+                       horizontalalignment='center',
+                       verticalalignment='center',
+                       transform=self.year_ax.transAxes)
 
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
             self.animal_count_ax = self.fig.add_subplot(3, 3, 3)
-            self.animal_count_ax.set_ylim(0, 18000)
+            self.animal_count_ax.set_ylim(0, 20000)
 
         self.animal_count_ax.set_xlim(0, final_step + 1)
 
         if self.herb_heat_map_ax is None:
             self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
+            self.herb_heat_map_ax.set_title('Herbivore heat map')
 
         if self.carn_heat_map_ax is None:
             self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
+            self.carn_heat_map_ax.set_title('Carnivore heat map')
 
         if self.fitnes_hist_ax is None:
             self.fitnes_hist_ax = self.fig.add_subplot(3, 3, 7)
+            #self.fitness_bins = np.linspace(0,1,50)
+
 
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
@@ -235,7 +250,7 @@ class Graphics:
                                                  interpolation='nearest',
                                                  vmin=0, vmax=200)
             plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
-                         orientation='vertical')
+                         orientation='vertical', shrink=0.75)
 
     def _update_carn_heat_map(self, carn_map):
         if self.carn_heat_map_plot is not None:
@@ -245,7 +260,7 @@ class Graphics:
                                                  interpolation='nearest',
                                                  vmin=0, vmax=200)
             plt.colorbar(self.carn_heat_map_plot, ax=self.carn_heat_map_ax,
-                         orientation='vertical')
+                         orientation='vertical', shrink=0.75)
 
     def _update_count_graph(self, year, herb_count, carn_count):
         y_data = self.herb_line.get_ydata()
@@ -255,6 +270,13 @@ class Graphics:
         y_data = self.carn_line.get_ydata()
         y_data[year] = carn_count
         self.carn_line.set_ydata(y_data)
+
+    def _update_year_count(self,year):
+        self.txt.set_text(self.count_template.format(year))
+
+    #def _update_fitness_hist(self, animall_fitness_per_species):
+        #self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins,alpha = 0.5,)
+        #self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins,alpha = 0.5)
 
     def _save_graphics(self, step):
         """Saves graphics to file if file name given."""

@@ -21,6 +21,7 @@ class BioSim:
                  log_file=None):
 
         """
+
         :param island_map: Multi-line string specifying island geography
         :param ini_pop: List of dictionaries specifying initial population
         :param seed: Integer used as random number seed
@@ -37,17 +38,17 @@ class BioSim:
         If ymax_animals is None, the y-axis limit should be adjusted automatically.
         If cmax_animals is None, sensible, fixed default values should be used.
         cmax_animals is a dict mapping species names to numbers, e.g.,
-           {'Herbivore': 50, 'Carnivore': 20}
+        {'Herbivore': 50, 'Carnivore': 20}
 
         hist_specs is a dictionary with one entry per property for which a histogram shall be shown.
         For each property, a dictionary providing the maximum value and the bin width must be
         given, e.g.,
-            {'weight': {'max': 80, 'delta': 2}, 'fitness': {'max': 1.0, 'delta': 0.05}}
+        {'weight': {'max': 80, 'delta': 2}, 'fitness': {'max': 1.0, 'delta': 0.05}}
         Permitted properties are 'weight', 'age', 'fitness'.
 
         If img_dir is None, no figures are written to file. Filenames are formed as
 
-            f'{os.path.join(img_dir, img_base}_{img_number:05d}.{img_fmt}'
+        f'{os.path.join(img_dir, img_base}_{img_number:05d}.{img_fmt}'
 
         where img_number are consecutive image numbers starting from 0.
 

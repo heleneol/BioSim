@@ -171,11 +171,17 @@ class Island:
         return carn_matrix
 
     def get_herbs_fitness(self):
-        herbivores_fitness = [[herb.fitness for herb in cell.herb_pop] for cell in self.map.values()]
+        herbivores_fitness = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_fitness.append(herb.fitness)
         return sorted(herbivores_fitness)
 
     def get_carns_fitness(self):
-        carnivores_fitness = [[carn.fitness for carn in cell.carn_pop] for cell in self.map.values()]
+        carnivores_fitness = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_fitness.append(carn.fitness)
         return sorted(carnivores_fitness)
 
     def get_herbs_age(self):
@@ -246,70 +252,3 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
-
-
-geogr = """\
-           WWWWWWWWW
-           WLLLWHHHW
-           WHLHHHLLW
-           WHLLLDDDW
-           WLLLWDDDW
-           WWWWWWWWW"""
-
-
-i = Island(textwrap.dedent(geogr))
-
-'''
-#i.check_map(geogr)
-
-ini_pop = [{'loc': (2,2),
-              'pop': [{'species': 'Herbivore',
-                    'age': 5,
-                    'weight': 20}
-                    for _ in range(50)]}]
-
-
-i.place_population(populations=ini_pop)
-def print_herbs_per_cell(i):
-    print('HERBIVORES')
-    print('----------')
-    herbs_per_cell = i.get_number_herbs()
-    for loc, count in herbs_per_cell.items():
-        print(loc, ':', count)
-
-def print_carns_per_cell(i):
-    print('CARNIVORES')
-    print('----------')
-    carns_per_cell = i.get_number_carns()
-    for loc, count in carns_per_cell.items():
-        print(loc, ':', count)
-''''''
-for indx,year in enumerate(range(30), start=1):
-
-    print(f'Begining of year {indx}')
-    print('****************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.pre_migration_anual_cycle()
-
-    print('Pre migration')
-    print('*************')
-
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.island_migration()
-
-    print('Post migration')
-    print('*************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.post_migration_anual_cycle()
-
-    print('End of year')
-    print('*************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-'''

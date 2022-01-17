@@ -98,7 +98,7 @@ class Graphics:
         self._update_count_graph(year, species_count['Herbivores'], species_count['Carnivores'])
         self._update_herb_heat_map(animal_matrix['Herbivores'])
         self._update_carn_heat_map(animal_matrix['Carnivores'])
-        #self._update_fitness_hist(animal_fitness_per_species)
+        self._update_fitness_hist(animal_fitness_per_species)
         self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-6)  # pause required to pass control to GUI
 
@@ -208,7 +208,7 @@ class Graphics:
 
         if self.fitnes_hist_ax is None:
             self.fitnes_hist_ax = self.fig.add_subplot(3, 3, 7)
-            #self.fitness_bins = np.linspace(0,1,50)
+            self.fitness_bins = np.linspace(0,1,50)
 
 
         if self.age_hist_ax is None:
@@ -274,9 +274,10 @@ class Graphics:
     def _update_year_count(self,year):
         self.txt.set_text(self.count_template.format(year))
 
-    #def _update_fitness_hist(self, animall_fitness_per_species):
-        #self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins,alpha = 0.5,)
-        #self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins,alpha = 0.5)
+    def _update_fitness_hist(self, animall_fitness_per_species):
+        self.fitnes_hist_ax.clear()
+        self.fitnes_hist_ax.hist(animall_fitness_per_species['Herbivores'], self.fitness_bins)
+        self.fitnes_hist_ax.hist(animall_fitness_per_species['Carnivores'], self.fitness_bins)
 
     def _save_graphics(self, step):
         """Saves graphics to file if file name given."""

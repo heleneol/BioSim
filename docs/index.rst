@@ -15,13 +15,11 @@ BioSim is a small Python package developed for examination purposes in the INF20
 
 The package simulates a population dynamics simulation on a fictional island called Rossum-island.
 
-
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
-    user_interface
-    system
+   animals
 
 
 Indices and tables

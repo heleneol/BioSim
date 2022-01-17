@@ -47,6 +47,7 @@ class Landscape:
         :type carn_pop: list
         """
         self.classname = self.__class__.__name__
+
         self.fodder = self.parameters['f_max']
         self.herb_pop = herb_pop if herb_pop is not None else []
         self.migrating_herbs = []

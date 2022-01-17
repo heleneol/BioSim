@@ -91,7 +91,7 @@ def test_fitness_value():
     """
     herb = Herbivore()
 
-    for _ in range(50):
+    for _ in range(10):
         herb.update_fitness()
         assert 0 <= herb.fitness <= 1
 
@@ -103,7 +103,7 @@ def test_fitness_no_weight():  # Slette?:
     carn = Carnivore()
     carn.set_weight(new_weight=0)
 
-    for _ in range(50):
+    for _ in range(10):
         carn.update_fitness()
         assert carn.fitness == 0
 
@@ -122,7 +122,7 @@ def test_fitness_values():
     q_pos = 1 / (1 + (math.exp(herb.parameters['phi_age'] * (herb.age - herb.parameters['a_half']))))
     q_neg = 1 / (1 + (math.exp((-1) * herb.parameters['phi_weight'] * (herb.weight - herb.parameters['w_half']))))
 
-    for _ in range(50):
+    for _ in range(20):
         herb.update_fitness()
         assert herb.fitness == q_pos * q_neg
 
@@ -146,7 +146,7 @@ def test_certain_birth(mocker):
     carn = Carnivore(weight=1000)
     mocker.patch('random.random', return_value=0)
 
-    for _ in range(5):
+    for _ in range(10):
         assert carn.gives_birth(pop_size=num) is not False
 
 
@@ -159,7 +159,7 @@ def test_no_birth(set_carnivore_parameters):
     carn = Carnivore()
     num = 100
 
-    for _ in range(50):
+    for _ in range(10):
         assert carn.gives_birth(pop_size=num) is False
 
 
@@ -221,7 +221,7 @@ def test_animal_metabolism():
     carn = Carnivore()
     c_weight_before = carn.weight
 
-    for _ in range(50):
+    for _ in range(10):
         herb.metabolism()
         carn.metabolism()
         assert herb.weight < h_weight_before
@@ -281,6 +281,20 @@ def test_certain_death(mocker):
         assert herb.dies() # Trenger ikke is true her?
 
 
+def test_return_herbivores_feeding():
+    """
+    Testing the herbivore's weight changes as expected after it eats an amount of fodder that is smaller than its
+    appetite.
+    """
+    herb = Herbivore()
+    herb.appetite = 8
+    weight_before = herb.weight
+
+    landscape_fodder = 3
+    herb.herbivore_feeding(landscape_fodder=landscape_fodder)
+    assert herb.weight == weight_before + (herb.parameters['beta'] * landscape_fodder)
+
+
 def test_herb_weightchange_fodder():
     """
     Testing the herbivore's weight changes as expected after it eats a known amount of fodder.
@@ -317,7 +331,6 @@ def test_carn_nokill():
         assert carn.carnivore_feeding(herb) is False
 
 
-
 @pytest.mark.parametrize('set_carnivore_parameters', [{'DeltaPhiMax': 0.5}], indirect=True)
 def test_certain_kill(set_carnivore_parameters, mocker):
     """
@@ -333,3 +346,20 @@ def test_certain_kill(set_carnivore_parameters, mocker):
     mocker.patch('random.random', return_value=0)
     for _ in range(10):
         assert carn.carnivore_feeding(herb) is True
+
+
+def test_nokill_preyprob(mocker):
+    """
+    Testing carnivore does not kill herbivore if the random probability of kill does not exceed the prey probability.
+    Setting parameters so the prey probability (fitness carnivore - fitness herbivore) / DeltaPhiMax <= 1.
+    """
+    h = Herbivore()
+    c = Carnivore()
+
+    h.fitness = 0.3
+    c.fitness = 0.8
+
+    mocker.patch('random.random', return_value=1)
+
+    for _ in range(10):
+        assert c.carnivore_feeding(h) is False

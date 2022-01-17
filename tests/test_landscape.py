@@ -166,10 +166,29 @@ def test_add_population_water():
         w.add_population(herb_pop)
 
 
-def test_add_population_works():
+def test_add_population_species():
     """
-    Testing whether adding population
+    Testing whether adding population with erroneous assigned species will raise a KeyError as expected.
     """
+    herb_pop = herb_pop = [{'age': 5,
+                            'weight': 20}
+                           for _ in range(150)]
+    h = Highland()
+
+    with pytest.raises(KeyError):
+        h.add_population(herb_pop)
+
+
+def test_add_population_expected():
+    """
+    Testing whether population is added as expected
+    """
+    carn_pop = generate_carn_pop(5, 20, 30)
+
+    low = Lowland()
+    low.add_population(carn_pop)
+    ##? Se landscape construction
+
 
 def test_sort_herbs_by_fitness():
     """
@@ -185,19 +204,6 @@ def test_sort_herbs_by_fitness():
     assert failed == 0
 
 
-def test_herbivores_eating():
-    """
-    Testing if herbivores are eating by comparing their weight before and after eating.
-    """
-    herb_pop = [Herbivore() for _ in range(10)]
-    H = Highland(herb_pop)
-
-    original_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
-    H.herbivores_eating()
-    post_eating_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
-    assert original_mean_weight < post_eating_mean_weight
-
-
 def test_regrowth():
     """
     Testing regrowth of fodder sets the fodder amount to f_max.
@@ -206,6 +212,19 @@ def test_regrowth():
     low.fodder = 20
     low.regrowth()
     assert low.fodder == low.parameters['f_max']
+
+
+def test_herbivores_eating():
+    """
+    Testing if herbivores are eating by comparing their weight before and after eating.
+    """
+    herb_pop = generate_herb_pop(None, None, 20)
+    H = Highland(herb_pop)
+
+    original_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
+    H.herbivores_eating()
+    post_eating_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
+    assert original_mean_weight < post_eating_mean_weight
 
 
 def test_carnivores_eating():

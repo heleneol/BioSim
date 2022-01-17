@@ -18,8 +18,9 @@ import numpy as np
 import subprocess
 import os
 import textwrap
+import warnings
 
-plt.rc('font', size=8)
+plt.rc('font', size=6)
 
 
 # Update these variables to point to your ffmpeg and convert binaries
@@ -68,6 +69,7 @@ class Graphics:
         self._img_ctr = 0
         self._img_step = 1
 
+
         # the following will be initialized by _setup_graphics
         self.fig = None
         self.year_ax = None
@@ -83,7 +85,8 @@ class Graphics:
         self.herb_line = None
         self.carn_line = None
 
-    def update(self, year, species_count, animal_matrix, animal_fitness_per_species, animal_age_per_species, animal_weight_per_species):
+    def update(self, year, species_count, animal_matrix, animal_fitness_per_species,
+               animal_age_per_species, animal_weight_per_species, cmax_animals):
         """
         Updates graphics with current data and save to file if necessary.
 
@@ -93,8 +96,8 @@ class Graphics:
         """
         self._update_year_count(year)
         self._update_count_graph(year, species_count['Herbivore'], species_count['Carnivore'])
-        self._update_herb_heat_map(animal_matrix['Herbivore'])
-        self._update_carn_heat_map(animal_matrix['Carnivore'])
+        self._update_herb_heat_map(animal_matrix['Herbivore'], cmax_animals)
+        self._update_carn_heat_map(animal_matrix['Carnivore'], cmax_animals)
         self._update_fitness_hist(animal_fitness_per_species)
         self._update_age_hist(animal_age_per_species)
         self._update_weight_hist(animal_weight_per_species)
@@ -144,7 +147,7 @@ class Graphics:
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
 
-    def setup(self, final_step, img_step, island_geographie):
+    def setup(self, final_step, img_step, vis_years, island_geographie, ymax_animals, hist_specs):
         """
         Prepare graphics.
 
@@ -161,6 +164,7 @@ class Graphics:
         if self.fig is None:
             self.fig = plt.figure()
 
+
         # Add left subplot for images created with imshow().
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
@@ -171,7 +175,7 @@ class Graphics:
         island_geographic = textwrap.dedent(island_geographie)
         map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographic.splitlines()]
         self.map_ax.imshow(map_rgb)
-        self.map_legend = self.fig.add_axes([0.37, 0.7, 0.1, 0.2])
+        self.map_legend = self.fig.add_axes([0.33, 0.77, 0.1, 0.2])
         self.map_legend.axis('off')
         for ix, landscapename in enumerate(('Water', 'Lowland',
                                             'Highland', 'Desert')):
@@ -184,7 +188,7 @@ class Graphics:
         if self.year_ax is None:
             self.year_ax = self.fig.add_axes([0.45, 0.85, 0.1, 0.1])
             self.year_ax.axis('off')
-            self.count_template = 'Count: {:5d}'
+            self.count_template = 'year: {:5d}'
             self.txt = self.year_ax.text(0.5, 0.5, self.count_template.format(0),
                                          horizontalalignment='center',
                                          verticalalignment='center',
@@ -193,39 +197,54 @@ class Graphics:
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
             self.animal_count_ax = self.fig.add_subplot(3, 3, 3)
-            self.animal_count_ax.set_ylim(0, 20000)
+            self.animal_count_ax.set_ylim(0, ymax_animals)
 
         self.animal_count_ax.set_xlim(0, final_step + 1)
 
         if self.herb_heat_map_ax is None:
             self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
-            self.herb_heat_map_ax.set_title('Herbivore heat map')
+            self.herb_heat_map_ax.set_title('Herbivore distribution')
 
         if self.carn_heat_map_ax is None:
             self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
-            self.carn_heat_map_ax.set_title('Carnivore heat map')
+            self.carn_heat_map_ax.set_title('Carnivore distribution')
 
+        fitness_specs = hist_specs['fitness']
+        fitness_min = 0
+        fitness_max = int(fitness_specs['max'])
+        fitness_steps = int((fitness_max - fitness_min)/fitness_specs['delta'])
         if self.fitness_hist_ax is None:
             self.fitness_hist_ax = self.fig.add_subplot(3, 3, 7)
             self.fitness_hist_ax.set_title('Fitness hist.')
             self.fitness_hist_ax.set_ylim(0, 2000)
-            self.fitness_bins = np.linspace(0, 1, 30)
+            self.fitness_bins = np.linspace(fitness_min, fitness_max, fitness_steps)
 
+        age_specs = hist_specs['age']
+        age_min = 0
+        age_max = int(age_specs['max'])
+        age_steps = int((age_max - age_min) / age_specs['delta'])
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
-            self.age_hist_ax.set_title('Age hist.')
-            self.age_hist_ax.set_ylim(0, 2000)
-            self.age_bins = np.linspace(0, 60, 30)
+            self.age_hist_ax.title.set_text('Age hist.')
+            self.age_bins = np.linspace(age_min, age_max, age_steps)
 
+        weight_specs = hist_specs['weight']
+        weight_min = 0
+        weight_max = int(weight_specs['max'])
+        weight_steps = int((weight_max - weight_min) / weight_specs['delta'])
         if self.weight_hist_ax is None:
             self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
             self.weight_hist_ax.set_title('Weight hist.')
-            self.weight_hist_ax.set_ylim(0, 2000)
-            self.weight_bins = np.linspace(0, 60, 30)
+            self.weight_bins = np.linspace(weight_min, weight_max, weight_steps)
+
+        if vis_years > 1:
+            linestyle = '-*'
+        else:
+            linestyle = '-'
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                  np.full(final_step+1, np.nan), color='blue')
+                                                  np.full(final_step+1, np.nan), linestyle, color='blue')
             self.herb_line = herb_plot[0]
         else:
             x_data, y_data = self.herb_line.get_data()
@@ -236,7 +255,7 @@ class Graphics:
                                         np.hstack((y_data, y_new)))
         if self.carn_line is None:
             carn_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                  np.full(final_step+1, np.nan), color='red')
+                                                  np.full(final_step+1, np.nan), linestyle, color='red')
             self.carn_line = carn_plot[0]
         else:
             x_data, y_data = self.carn_line.get_data()
@@ -245,8 +264,10 @@ class Graphics:
                 y_new = np.full(x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
                                         np.hstack((y_data, y_new)))
+        warnings.filterwarnings('ignore')
+        self.fig.tight_layout(pad=3.0)
 
-    def _update_herb_heat_map(self, herb_map):
+    def _update_herb_heat_map(self, herb_map, cmax_animals):
         """Update the 2D-view of the system."""
 
         if self.herb_heat_map_plot is not None:
@@ -254,17 +275,17 @@ class Graphics:
         else:
             self.herb_heat_map_plot = self.herb_heat_map_ax.imshow(herb_map,
                                                                    interpolation='nearest',
-                                                                   vmin=0, vmax=200)
+                                                                   vmin=0, vmax=cmax_animals['Herbivore'])
             plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
                          orientation='vertical', shrink=0.75)
 
-    def _update_carn_heat_map(self, carn_map):
+    def _update_carn_heat_map(self, carn_map, cmax_animals):
         if self.carn_heat_map_plot is not None:
             self.carn_heat_map_plot.set_data(carn_map)
         else:
             self.carn_heat_map_plot = self.carn_heat_map_ax.imshow(carn_map,
                                                                    interpolation='nearest',
-                                                                   vmin=0, vmax=200)
+                                                                   vmin=0, vmax=cmax_animals['Carnivore'])
             plt.colorbar(self.carn_heat_map_plot, ax=self.carn_heat_map_ax,
                          orientation='vertical', shrink=0.75)
 

@@ -11,8 +11,9 @@ class Animals:
     Superclass for animals.
 
     Subclasses:
-    * Herbivore
-    * Carnivore
+    * :class:'animals.Herbivore'
+    * :class:'animals.Carnivore'
+
     """
 
     @classmethod
@@ -22,6 +23,7 @@ class Animals:
 
         :param new_params: new parameter values.
         :type new_params: dict
+
         """
 
         for key in new_params:
@@ -31,7 +33,7 @@ class Animals:
             elif key == 'DeltaPhiMax':
                 if new_params[key] <= 0:
                     raise ValueError('DeltaPhiMax must be strictly positive!')
-                elif cls.parameter is None:
+                elif cls.parameters is None:
                     raise ValueError('You cannot assign a value for DeltaPhiMax for Herbivores.')
 
             elif key == 'eta':
@@ -53,11 +55,12 @@ class Animals:
         :type age: float
         :param weight: weight of animal
         :type weight: float
+
         """
         self.classname = self.__class__.__name__
 
         self.age = age if age is not None else 0
-        if self.age < 0 or self.age//1 != self.age:
+        if self.age < 0 or self.age // 1 != self.age:
             raise ValueError('Animal age has to be an integer >= 0')
 
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
@@ -70,15 +73,14 @@ class Animals:
         self.regain_appetite()
 
     def update_fitness(self):
-        """
-        Function calculating the fitness of animals based on weight and age. If weight is 0, fitness is 0, else
-
+        r"""
+        Function calculating the fitness :math:`(\Phi)` of animals based on weight and age.
         .. math::
-        q^{+}(a, a_{\\frac{1}{2}}, \\phi_{age}) \\times q^{-}(w, w_{\\frac{1}{2}}, \\phi_{weight})
-
-        where
-
-        q^{\\pm}(x, x_{\\frac{1}{2}}, \\phi) = \\frac{1}{1 + e^{\\pm \\phi(x-x_{\\frac{1}{2}})}}
+            \Phi =
+            \left\{\begin{array}{lr}
+            0, & \text{for } & w <= 0
+            q^{+}(a, a_{\frac{1}{2}}, \phi_{age}) * q^{-}(w, w_{\frac{1}{2}}, \phi_{weight}) &  & \text{else}
+            \end{array}\right\}
 
         Fitness will always be between 0 and 1.
         """
@@ -95,15 +97,14 @@ class Animals:
 
             self.fitness = q_pos * q_neg
 
-
     def regain_appetite(self):
         """
-        An animals appetite is set to the animal's parameter 'F' when function is called upon.
+        Animals appetite is set to the animal's parameter 'F' when function is called upon.
+
         """
         # noinspection PyAttributeOutsideInit
         self.appetite = self.parameters['F']
 
-    # noinspection PyPep8Naming
     def gives_birth(self, pop_size):
         """
         Decides whether an animal gives birth. The probability of giving birth to an offspring in a year
@@ -142,6 +143,7 @@ class Animals:
         :return: True, if animal migrates.
                  False, if animal does not migrate.
         :rtype: bool
+
         """
         if random.random() < self.parameters['mu'] * self.fitness:
             return True
@@ -154,6 +156,7 @@ class Animals:
 
         :param years: number of years the animal ages.
         :type years: int or None
+
         """
         self.age += years if years is not None else 1
         self.update_fitness()
@@ -162,6 +165,7 @@ class Animals:
         """
         Updates animal weight which is due to annual weightloss, :math:``\\eta \\times \\textit{weight}``,
         and updates fitness accordingly.
+
         """
         self.weight -= self.parameters['eta'] * self.weight
         self.update_fitness()
@@ -173,6 +177,7 @@ class Animals:
 
         :return: True, if animal dies. False, if animal does not die.
         :rtype: bool
+
         """
         if self.weight <= 0:
             return True
@@ -182,6 +187,7 @@ class Animals:
     def set_weight(self, new_weight):
         """
         Function allowing to enter new weight for animal when function is called upon.
+
         """
         self.weight = new_weight
 
@@ -189,6 +195,7 @@ class Animals:
 class Herbivore(Animals):
     """
     Subclass for herbivores.
+
     """
 
     parameters = {'w_birth': 8.0, 'sigma_birth': 1.5,
@@ -210,6 +217,7 @@ class Herbivore(Animals):
 
         :return: the herbivore's portion.
         :rtype: float
+
         """
 
         if 0 < landscape_fodder < self.appetite:
@@ -217,14 +225,17 @@ class Herbivore(Animals):
         else:
             herbivore_portion = self.appetite
 
-        self.weight += self.parameters['beta']*herbivore_portion
+        self.weight += self.parameters['beta'] * herbivore_portion
         self.update_fitness()
 
         return herbivore_portion
 
 
 class Carnivore(Animals):
-    """ Subclass for carnivores. """
+    """
+    Subclass for carnivores.
+
+    """
 
     parameters = {'w_birth': 6.0, 'sigma_birth': 1.0,
                   'beta': 0.75, 'eta': 0.125,
@@ -244,6 +255,7 @@ class Carnivore(Animals):
 
         :return: True if the carnivore kills the herbivore, and false if it doesn't
         :rtype: bool
+
         """
         if self.fitness <= herb.fitness:
             return False

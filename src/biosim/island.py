@@ -13,6 +13,7 @@ import numpy as np
 class Island:
     """
     Class representing the entire island.
+
     """
     sample_animals = {'herbivore': Herbivore(),
                       'carnivore': Carnivore()}
@@ -28,6 +29,7 @@ class Island:
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
+
         """
         self.map = self.createmap(geogr)
 
@@ -36,10 +38,11 @@ class Island:
         Making the given map into a dictionary with location as keys and landscape-objects as value. The given map
         must have a rectangular-shape, and all border cells have to be water. All cells have to indicate a
         landscape-subclass of:
-         * L - Lowland
-         * H - Highland
-         * D - Desert
-         * W - Water
+
+         * L - :class:'landscape.Lowland'
+         * H - :class:'landscape.Highland'
+         * D - :class:'landscape.Desert'
+         * W - :class:'landscape.Water'
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
@@ -50,6 +53,7 @@ class Island:
         raises
         ----------
         ValueError, is raised when habitat letter is erroneous on the map.
+
         """
         geogr = geogr.split(sep='\n') if geogr is not None else str
 
@@ -98,6 +102,7 @@ class Island:
         raises
         -----------
         ValueError: if the location is not included in the map's keys
+
         """
         for population in populations:
             loc = population['loc']
@@ -133,6 +138,7 @@ class Island:
 
         :return: number of herbivores on the island.
         :rtype: int
+
         """
         herb_count = 0
 
@@ -147,6 +153,7 @@ class Island:
 
         :return: number of carnivores on the island.
         :rtype: int
+
         """
         carn_count = 0
 
@@ -161,6 +168,7 @@ class Island:
 
         :return: 2D-array with herbivorecount per cell as values
         :rtype:
+
         """
 
         map_dim = list(self.map.keys())[-1]
@@ -175,6 +183,7 @@ class Island:
 
         :return: 2D-array with carnivorecount per cell as values
         :rtype:
+
         """
         map_dim = list(self.map.keys())[-1]
         carn_matrix = np.zeros(map_dim)
@@ -231,6 +240,7 @@ class Island:
         Gets neighbouring cells and chooses one at random for the animal to emigrate to. If the chosen cell is water,
         the animal stays put, else it is registered to the chosen cells migrant population. Lastly, it adds
         the migrators to their cell's population.
+
         """
         for loc, cell in self.map.items():
             if cell.classname == 'Water':
@@ -268,6 +278,7 @@ class Island:
         Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
         herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
         Lastly, in post migration the animals age, lose weight and some die.
+
         """
         for cell in self.map.values():
             cell.pre_migration_cycle()

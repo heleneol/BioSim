@@ -262,18 +262,18 @@ def test_reproduction():
 
 # def test_reproduction_statisticly
 
-
+"""
 def test_register_migrants():
-    """
+
     Testing that the input animal is appended to the right list of migrating animals.
-    """
+
     herb_pop = [Herbivore(age=1, weight=50) for _ in range(20)]
     low = Lowland()
 
     for herb in herb_pop:
         low.register_migrants(herb)
     assert len(low.migrating_herbs) > 0
-
+"""
 
 def test_add_migrators():
     """
@@ -288,6 +288,7 @@ def test_add_migrators():
     len_carn_after = len(h.carn_pop)
     assert len(h.migrating_carns) == 0
     assert len_carn_after > len_carn_before
+
 
 def test_aging():
     """

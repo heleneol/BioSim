@@ -294,13 +294,13 @@ class Desert(Landscape):
     """
     Subclass representing Desert landscape on the island.
     """
-    parameters = {}
+    parameters = {'f_max': 0}
 
 class Water(Landscape):
     """
     Subclass representing Ocean landscape on the island.
     """
-    parameters = {}
+    parameters = {'f_max': 0}
 
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]

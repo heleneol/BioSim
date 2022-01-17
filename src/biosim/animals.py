@@ -110,7 +110,7 @@ class Animals:
 
         if random.random() < preg_prob:
             newborn = type(self)()
-            if self.weight < self.parameters['xi'] * newborn.weight:
+            if self.weight < self.parameters['zeta'] * newborn.weight:
                 return False
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight

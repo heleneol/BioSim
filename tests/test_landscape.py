@@ -321,6 +321,20 @@ def test_population_weightloss():
     assert herb_weight_after < herb_weight_before
 
 
+def test_population_death_occurs():
+    carn_pop = generate_carn_pop(5, None, 50)
+    d = Desert(carn_pop)
+    carn_pop_before = len(carn_pop)
+    d.population_death()
+    carn_pop_after = len(carn_pop)
+    assert carn_pop_after <= carn_pop_before
+
+
+
+
+
+
+
 
 def test_animal_migration():
     """

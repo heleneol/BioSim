@@ -108,10 +108,22 @@ class Island:
                 raise ValueError(f'The stated location {loc} is outside the map boundaries')
 
     def set_animal_parameters_island(self, species, params):
+        """
+        Setting animal parameters.
+
+        :param species: specifying which species to set the parameters for
+        :param params: new parameters to set for the species.
+        """
         species = self.sample_animals[species.lower()]
         species.set_parameters(new_params=params)
 
     def set_landscape_parameters_island(self, landscape, params):
+        """
+        Setting landscape parameters.
+
+        :param landscape: specifying which landscape to set the parameters for
+        :param params: new parameters to set for the landscape.
+        """
         landscape = self.parameters[landscape]
         landscape.set_parameters(new_params=params)
 
@@ -264,3 +276,29 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
+
+
+geography = """\
+                WWWWWWWWWWW
+                WLLLHHHLLLW
+                WLLLLLLLLLW
+                WLDDDDLLDDW
+                WLLLLLLLLLW
+                WWWWWWWWWWW"""
+geography = textwrap.dedent(geography)
+
+ini_herbies = [{'loc': (2, 2),
+                'pop': [{'species': 'Herbivore',
+                         'age': 5,
+                         'weight': 20}
+                        for _ in range(4)]},
+               {'loc': (3, 3),
+                'pop': [{'species': 'Herbivore',
+                         'age': 3,
+                         'weight': 20}
+                        for _ in range(5)]}]
+
+i = Island(geography)
+i.place_population(ini_herbies)
+
+i.get_number_herbs_per_cell()

@@ -101,11 +101,11 @@ class BioSim:
         if num_simulations//1 == num_simulations:
             while self.step < self.final_step:
                 self.island.annual_cycle_island()
-                # hente ut properties til visualisering
+
                 self.step += 1
                 if self.step % self.vis_years == 0:
-                    self.graphics.update(self.step, self.num_animals_per_species, self.num_animals_per_species_per_cell)
-                #print(self.last_year_simulated)
+                    self.graphics.update(year=self.step, species_count=self.num_animals_per_species, animal_matrix=self.num_animals_per_species_per_cell)
+
         else:
             raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
 

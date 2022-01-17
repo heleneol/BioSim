@@ -167,7 +167,7 @@ class Island:
         map_dim = list(self.map.keys())[-1]
         carn_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
-            carn_matrix[loc[0] - 1][loc[1] - 1] = cell.get_num_herbs()
+            carn_matrix[loc[0] - 1][loc[1] - 1] = cell.get_num_carns()
         return carn_matrix
 
     def get_herbs_fitness(self):

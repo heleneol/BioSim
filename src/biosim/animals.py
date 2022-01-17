@@ -112,7 +112,7 @@ class Animals:
             newborn = type(self)()
             if self.weight < self.parameters['zeta'] * (self.parameters['w_birth'] + self.parameters['sigma_birth']):
                 return False
-            elif self.weight < self.parameters['xi'] * newborn.weight
+            elif self.weight < self.parameters['xi'] * newborn.weight:
                 return False
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
@@ -165,8 +165,7 @@ class Animals:
         if self.weight <= 0:
             return True
         else:
-            omega = self.parameters['omega']
-            return random.random() < (omega*(1 - self.fitness))
+            return random.random() < (self.parameters['omega'] * (1 - self.fitness))
 
     def set_weight(self, new_weight):
         """
@@ -236,16 +235,18 @@ class Carnivore(Animals):
         """
         if self.fitness <= herb.fitness:
             return False
-
         delta_phi = self.fitness - herb.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
             prey_prob = delta_phi / self.parameters['DeltaPhiMax']
         else:
             prey_prob = 1
-
         if random.random() < prey_prob:
-            self.appetite -= herb.weight
-            self.weight += self.parameters['beta'] * herb.weight
+            if 0 < self.appetite < herb.weight:
+                carn_portion = self.appetite
+            else:
+                carn_portion = herb.weight
+            self.appetite -= carn_portion
+            self.weight += self.parameters['beta'] * carn_portion
             self.update_fitness()
             return True
         else:

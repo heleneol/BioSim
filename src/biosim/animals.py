@@ -110,7 +110,9 @@ class Animals:
 
         if random.random() < preg_prob:
             newborn = type(self)()
-            if self.weight < self.parameters['zeta'] * newborn.weight:
+            if self.weight < self.parameters['zeta'] * (self.parameters['w_birth'] + self.parameters['sigma_birth']):
+                return False
+            elif self.weight < self.parameters['xi'] * newborn.weight
                 return False
             else:
                 self.weight -= self.parameters['xi'] * newborn.weight
@@ -129,7 +131,7 @@ class Animals:
                  False, if animal does not migrate.
         :rtype: bool
         """
-        if random.random() < self.parameters['mu']*self.fitness:
+        if random.random() < self.parameters['mu'] * self.fitness:
             return True
         else:
             return False
@@ -149,7 +151,7 @@ class Animals:
         Updates animal weight which is due to annual weightloss, :math:``\\eta \\times \\textit{weight}``,
         and updates fitness accordingly.
         """
-        self.weight -= self.parameters['eta']*self.weight
+        self.weight -= self.parameters['eta'] * self.weight
         self.update_fitness()
 
     def dies(self):
@@ -222,28 +224,28 @@ class Carnivore(Animals):
                   'omega': 0.8, 'F': 50.0,
                   'DeltaPhiMax': 10.0}
 
-    def carnivore_feeding(self, herbivore):
+    def carnivore_feeding(self, herb):
         """
         Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
 
-        :param herbivore: A herbivore in the same cell as the carnivore.
-        :type herbivore: object
+        :param herb: A herbivore in the same cell as the carnivore.
+        :type herb: object
 
         :return: True if the carnivore kills the herbivore, and false if it doesn't
         :rtype: bool
         """
-        if self.fitness <= herbivore.fitness:
+        if self.fitness <= herb.fitness:
             return False
 
-        delta_phi = self.fitness - herbivore.fitness
+        delta_phi = self.fitness - herb.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
             prey_prob = delta_phi / self.parameters['DeltaPhiMax']
         else:
             prey_prob = 1
 
         if random.random() < prey_prob:
-            self.appetite -= herbivore.weight
-            self.weight += self.parameters['beta']*herbivore.weight
+            self.appetite -= herb.weight
+            self.weight += self.parameters['beta'] * herb.weight
             self.update_fitness()
             return True
         else:

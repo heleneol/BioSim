@@ -169,7 +169,7 @@ def test_no_birth(set_carnivore_parameters):
 @pytest.mark.parametrize('set_carnivore_parameters', [{'gamma': 100.0, 'xi': 100}], indirect=True)
 def test_no_birth_parentweight_too_low(set_carnivore_parameters, mocker):
     """
-    Testing no birth to offspring occurs if the parent's weight < xi * newborn's weight.
+    Testing no birth to offspring occurs if the parent's weight < zeta * newborn's weight.
     Setting parameters so random.random < gamma * fitness * (N-1). The animal's weight and xi are set so weight will
     always be lower than xi * newborn's weight.
     """

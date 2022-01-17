@@ -8,22 +8,17 @@ import random
 @pytest.fixture
 def set_lowland_parameters(request):
     """
-    Fixture setting class parameters on Herbivore.
+    Fixture setting class parameters on Lowland, based on H.E. Plesser's biolab/bacteria.py.
 
-    The fixture sets Herbivore parameters when called for setup,
+    The fixture sets the Lowland parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
     parameters are always reset before leaving a test.
 
     This fixture should be called via parametrize with indirect=True.
 
-    Based on https://stackoverflow.com/a/33879151
-
-    Parameters
-    ----------
-    request
-        Request object automatically provided by pytest.
-        request.param is the parameter dictionary to be passed to
-        Herbivore.set_parameters()
+    :param request: Request object automatically provided by pytest.
+                    request.param is the parameter dictionary to be passed to
+                    Lowland.set_parameters()
     """
     default_parameters = Lowland.parameters.copy()
     Lowland.set_parameters(request.param)
@@ -34,22 +29,17 @@ def set_lowland_parameters(request):
 @pytest.fixture
 def set_highland_parameters(request):
     """
-    Fixture setting class parameters on Herbivore.
+    Fixture setting class parameters on Highland, based on H.E. Plesser's biolab/bacteria.py.
 
-    The fixture sets Herbivore parameters when called for setup,
+    The fixture sets the Highland parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
     parameters are always reset before leaving a test.
 
     This fixture should be called via parametrize with indirect=True.
 
-    Based on https://stackoverflow.com/a/33879151
-
-    Parameters
-    ----------
-    request
-        Request object automatically provided by pytest.
-        request.param is the parameter dictionary to be passed to
-        Herbivore.set_parameters()
+    :param request: Request object automatically provided by pytest.
+                    request.param is the parameter dictionary to be passed to
+                    Highland.set_parameters()
     """
     default_parameters = Highland.parameters.copy()
     Highland.set_parameters(request.param)
@@ -57,9 +47,27 @@ def set_highland_parameters(request):
     Highland.set_parameters(default_parameters)
 
 
+@pytest.fixture
+def generate_herb_pop(age, weight, num_herbs):
+    """
+    A function that generates a herbivore population.
+    Write None for age and weight if you dont want to specify.
+    """
+    return [Herbivore(age=age, weight=weight) for _ in range(num_herbs)]
+
+
+@pytest.fixture
+def generate_carn_pop(age, weight, num_carns):
+    """
+    A function that generates a herbivore population.
+    Write None for age and weight if you dont want to specify.
+    """
+    return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
+
+
 def test_landscape_construction():
     """
-
+    Testing that creating landscapes with a given list of animal objects works.
     """
     number_herb = 50
     number_carn = 10
@@ -73,14 +81,14 @@ def test_landscape_construction():
         assert landscape.get_num_herbs() == number_herb and landscape.get_num_carns() == number_carn
 
 
-for _ in range(10): # Hvorfor for løkke her?
-    random_fodder = random.randint(0, 800)
+random_fodder = random.randint(0, 800)
 
 
 @pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
-def test_setting_fooder_amount(set_lowland_parameters):
+def test_setting_fodder_amount(set_lowland_parameters):
     L = Lowland()
     assert L.fodder == random_fodder
+
 
 #@pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
 #def test_setting_fodder_desert(set_lowland_parameters):
@@ -91,21 +99,21 @@ def test_setting_fooder_amount(set_lowland_parameters):
 
 def test_sort_herbs_by_fitness():
     """
-    Testing if the list of herbivores are sorted by decreasing fitness if decreasing=True.
+    Testing if the list of herbivores are sorted by decreasing fitness when decreasing=True.
     """
     herb_pop = [Herbivore() for _ in range(10)]
 
-    H = Highland(herb_pop)
-    H.sort_herbs_by_fitness(decreasing=True)
+    h = Highland(herb_pop)
+    h.sort_herbs_by_fitness(decreasing=True)
     failed = 0
-    if all(H.herb_pop[i].fitness <= H.herb_pop[i + 1].fitness for i in range(len(H.herb_pop) - 1)):
+    if all(h.herb_pop[i].fitness <= h.herb_pop[i + 1].fitness for i in range(len(h.herb_pop) - 1)):
         failed += 1
     assert failed == 0
 
 
 def test_herbivores_eating():
     """
-    Testing if herbivores are eating.
+    Testing if herbivores are eating by comparing their weight before and after eating.
     """
     herb_pop = [Herbivore() for _ in range(10)]
     H = Highland(herb_pop)
@@ -117,13 +125,19 @@ def test_herbivores_eating():
 
 
 def test_regrowth():
-    L = Lowland()
-    L.fodder = 20
-    L.regrowth()
-    assert L.fodder == L.parameters['f_max']
+    """
+    Testing regrowth of fodder sets the fodder amount to f_max.
+    """
+    low = Lowland()
+    low.fodder = 20
+    low.regrowth()
+    assert low.fodder == low.parameters['f_max']
 
 
 def test_carnivores_eating():
+    """
+    Testing the amount of herbivores remain the same or less than before the carnivores feed.
+    """
     herb_pop = [Herbivore() for _ in range(250)]
     carn_pop = [Carnivore() for _ in range(5)]
     D = Desert(herb_pop, carn_pop)
@@ -135,8 +149,12 @@ def test_carnivores_eating():
 
 
 def test_reproduction():
-    herb_pop = [Herbivore() for herb in range(250)]
-    carn_pop = [Carnivore() for carn in range(5)]
+    """
+    Testing both populations increase after the breeding season. Setting weight high and age low to ensure good fitness
+    and that feeding happens.
+    """
+    herb_pop = [Herbivore(age=1, weight=50) for _ in range(250)]
+    carn_pop = [Carnivore(age=1, weight=50) for _ in range(5)]
     h = Highland(herb_pop, carn_pop)
 
     herb_count_old = h.get_num_herbs()
@@ -151,12 +169,19 @@ def test_reproduction():
 
 
 # def test_reproduction_statisticly
+
+
 def test_aging():
+    """
+    Testing whether a population ages.
+    Using a function for calculating mean age to compare the mean age after aging is bigger than before, or is equal
+    to 1 in the carnivore population's case
+    """
     def get_mean_age(population):
         return sum([animal.age for animal in population]) / len(population)
 
     herb_pop = [Herbivore(age=age) for herb, age in zip(range(250), [random.randint(0, 6) for _ in range(250)])]
-    carn_pop = [Carnivore() for _ in range(5)]
+    carn_pop = [Carnivore(age=0) for _ in range(5)]
     L = Lowland(herb_pop, carn_pop)
     herb_age_before = get_mean_age(L.herb_pop)
     L.aging()
@@ -164,16 +189,10 @@ def test_aging():
     assert get_mean_age(L.carn_pop) == 1
 
 
-def generate_herb_pop(age, weight, num_herbs):
-    """write None for age and weight if you dont want to spesify"""
-    return [Herbivore(age=age, weight=weight) for _ in range(num_herbs)]
-
-
-def generate_carn_pop(age, weight, num_carns):
-    """write None for age and weight if you dont want to spesify"""
-    return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
-
 def test_add_population():
+    """
+    Testing whether adding population to water raises the expected ValueError.
+    """
     herb_pop = [{'species': 'Herbivore',
                            'age': 5,
                            'weight': 20}
@@ -182,10 +201,15 @@ def test_add_population():
     with pytest.raises(ValueError):
         w.add_population(herb_pop)
 
+
 def test_animal_migration():
+    """
+    Testing migration returns an empty migrator list if the number of animals in the population doesn't change after
+    running migration, and that it returns a list with animals if there is a change of population.
+    """
     l = Lowland()
-    l.herb_pop = generate_herb_pop(age=5, weight = None, num_herbs=20)
-    l.carn_pop = generate_carn_pop(age=5, weight = None, num_carns=10)
+    l.herb_pop = generate_herb_pop(age=5, weight=None, num_herbs=20)
+    l.carn_pop = generate_carn_pop(age=5, weight=None, num_carns=10)
     num_herbs_old = l.get_num_herbs()
     num_carns_old = l.get_num_carns()
     migrators_herb, migrators_carn = l.animal_migration()

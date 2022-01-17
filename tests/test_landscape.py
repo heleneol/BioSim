@@ -158,9 +158,9 @@ def test_add_population_water():
     Testing whether adding population to water raises the expected ValueError.
     """
     herb_pop = [{'species': 'Herbivore',
-                           'age': 5,
-                           'weight': 20}
-                          for _ in range(150)]
+                 'age': 5,
+                 'weight': 20}
+                for _ in range(150)]
     w = Water()
     with pytest.raises(ValueError):
         w.add_population(herb_pop)
@@ -170,9 +170,9 @@ def test_add_population_species():
     """
     Testing whether adding population with erroneous assigned species will raise a KeyError as expected.
     """
-    herb_pop = herb_pop = [{'age': 5,
-                            'weight': 20}
-                           for _ in range(150)]
+    herb_pop = [{'age': 5,
+                'weight': 20}
+                for _ in range(150)]
     h = Highland()
 
     with pytest.raises(KeyError):
@@ -216,13 +216,13 @@ def test_regrowth():
 
 def test_herbivores_eating():
     """
-    Testing if herbivores are eating by comparing their weight before and after eating.
+    Testing if herbivores are eating by comparing their mean weight before and after eating.
     """
     herb_pop = generate_herb_pop(None, None, 20)
-    H = Highland(herb_pop)
-    original_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
-    H.herbivores_eating()
-    post_eating_mean_weight = sum([herb.weight for herb in H.herb_pop]) / len(H.herb_pop)
+    h = Highland(herb_pop)
+    original_mean_weight = sum([herb.weight for herb in h.herb_pop]) / len(h.herb_pop)
+    h.herbivores_eating()
+    post_eating_mean_weight = sum([herb.weight for herb in h.herb_pop]) / len(h.herb_pop)
     assert original_mean_weight < post_eating_mean_weight
 
 
@@ -230,11 +230,11 @@ def test_carnivores_eating():
     """
     Testing the amount of herbivores remain the same or less than before the carnivores feed.
     """
-    herb_pop = [Herbivore() for _ in range(250)]
+    herb_pop = [Herbivore() for _ in range(100)]
     carn_pop = [Carnivore() for _ in range(5)]
     d = Desert(herb_pop, carn_pop)
 
-    for hunting_season in range(10):
+    for hunting_season in range(5):
         herb_pop_before_hunting = d.get_num_herbs()
         d.carnivores_eating()
         assert d.get_num_herbs() <= herb_pop_before_hunting
@@ -245,14 +245,14 @@ def test_reproduction():
     Testing both populations increase after the breeding season. Setting weight high and age low to ensure good fitness
     and that feeding happens.
     """
-    herb_pop = [Herbivore(age=1, weight=50) for _ in range(250)]
+    herb_pop = [Herbivore(age=1, weight=50) for _ in range(100)]
     carn_pop = [Carnivore(age=1, weight=50) for _ in range(5)]
     h = Highland(herb_pop, carn_pop)
 
     herb_count_old = h.get_num_herbs()
     carn_count_old = h.get_num_carns()
 
-    for _ in range(20):
+    for _ in range(10):
         h.reproduction()
         herb_count = h.get_num_herbs()
         carn_count = h.get_num_carns()
@@ -262,18 +262,18 @@ def test_reproduction():
 
 # def test_reproduction_statisticly
 
-"""
+
 def test_register_migrants():
-
+    """
     Testing that the input animal is appended to the right list of migrating animals.
-
+    """
     herb_pop = [Herbivore(age=1, weight=50) for _ in range(20)]
-    low = Lowland()
+    low = Lowland(herb_pop=herb_pop)
 
     for herb in herb_pop:
         low.register_migrants(herb)
     assert len(low.migrating_herbs) > 0
-"""
+
 
 def test_add_migrators():
     """
@@ -313,27 +313,34 @@ def test_population_weightloss():
     Testing the mean weight of a population is lower after the animal's annual weightloss.
     """
     herb_pop = generate_herb_pop(None, None, 10)
-    h = Highland(herb_pop)
+    carn_pop = generate_carn_pop(None, None, 5)
+    h = Highland(herb_pop, carn_pop)
     herb_weight_before = sum([animal.weight for animal in h.herb_pop]) / len(h.herb_pop)
+    carn_weight_before = sum([animal.weight for animal in h.carn_pop]) / len(h.carn_pop)
     h.weight_loss()
     herb_weight_after = sum([animal.weight for animal in h.herb_pop]) / len(h.herb_pop)
+    carn_weight_after = sum([animal.weight for animal in h.carn_pop]) / len(h.carn_pop)
 
     assert herb_weight_after < herb_weight_before
+    assert carn_weight_after < carn_weight_before
 
 
 def test_population_death_occurs():
-    carn_pop = generate_carn_pop(5, None, 50)
-    d = Desert(carn_pop)
-    carn_pop_before = len(carn_pop)
+    """
+    Testing that some of the population die after annually.
+    Ensuring some animals are expected to die by setting the age high and weight low (bad fitness),
+    and setting the population to 100.
+    """
+    carn_pop = generate_carn_pop(age=60, weight=2, num_carns=100)
+    herb_pop = generate_herb_pop(age=60, weight=2, num_herbs=100)
+    d = Desert(herb_pop=herb_pop, carn_pop=carn_pop)
+    carn_pop_before = len(d.carn_pop)
+    herb_pop_before = len(d.herb_pop)
     d.population_death()
-    carn_pop_after = len(carn_pop)
-    assert carn_pop_after <= carn_pop_before
-
-
-
-
-
-
+    carn_pop_after = len(d.carn_pop)
+    herb_pop_after = len(d.herb_pop)
+    assert carn_pop_after < carn_pop_before
+    assert herb_pop_after < herb_pop_before
 
 
 def test_animal_migration():

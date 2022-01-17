@@ -28,7 +28,7 @@ class Landscape:
 
         for key in new_params:
             if key == 'f_max':
-                if type(cls) is Desert or type(cls) is Water:
+                if cls.classname is Desert or cls.classname is Water:
                     raise KeyError(f'{key} cannot be changed for Desert and Water!')
 
             if key not in cls.parameters:
@@ -309,7 +309,8 @@ class Water(Landscape):
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
-l1 = Lowland(carn_pop=carnivores)
+l1 = Desert(carn_pop=carnivores)
+l1.set_parameters(new_params={'f_max': 30})
 
 # l1.carnivores_eating()
 '''

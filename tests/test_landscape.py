@@ -61,7 +61,7 @@ def test_input_param_landscape():
 
 def test_param_wrong_landscape():
     """
-    Testing that errors are raised when input parameters are erroneous.
+    Testing that errors are raised when trying to insert fodder in Desert and Water habitat.
     """
     with pytest.raises(KeyError):
         Desert.set_parameters({'f_max': 20})

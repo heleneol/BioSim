@@ -162,10 +162,7 @@ def test_no_birth(set_carnivore_parameters):
     for _ in range(50):
         assert carn.gives_birth(pop_size=num) is False
 
-def test_no_birth_by_to_low_parent_weight():
-    herb = Herbivore()
 
-    assert herb.gives_birth(pop_size=2000) is False
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 100}], indirect=True)
 def test_certain_migration(set_carnivore_parameters):
@@ -305,6 +302,7 @@ def test_carn_nokill():
 
     for _ in range(10):
         assert carn.carnivore_feeding(herb) is False
+
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'DeltaPhiMax': 0.5}], indirect=True)

@@ -33,7 +33,7 @@ class Animals:
             elif key == 'DeltaPhiMax':
                 if new_params[key] <= 0:
                     raise ValueError('DeltaPhiMax must be strictly positive!')
-                elif cls.parameter is None:
+                elif cls.parameters is None:
                     raise ValueError('You cannot assign a value for DeltaPhiMax for Herbivores.')
 
             elif key == 'eta':

@@ -18,8 +18,9 @@ import numpy as np
 import subprocess
 import os
 import textwrap
+import warnings
 
-plt.rc('font', size=8)
+plt.rc('font', size=6)
 
 
 # Update these variables to point to your ffmpeg and convert binaries
@@ -146,7 +147,7 @@ class Graphics:
         else:
             raise ValueError('Unknown movie format: ' + movie_fmt)
 
-    def setup(self, final_step, img_step, vis_years, island_geographie, ymax_animals):
+    def setup(self, final_step, img_step, vis_years, island_geographie, ymax_animals, hist_specs):
         """
         Prepare graphics.
 
@@ -163,6 +164,7 @@ class Graphics:
         if self.fig is None:
             self.fig = plt.figure()
 
+
         # Add left subplot for images created with imshow().
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
@@ -173,7 +175,7 @@ class Graphics:
         island_geographic = textwrap.dedent(island_geographie)
         map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographic.splitlines()]
         self.map_ax.imshow(map_rgb)
-        self.map_legend = self.fig.add_axes([0.37, 0.7, 0.1, 0.2])
+        self.map_legend = self.fig.add_axes([0.33, 0.77, 0.1, 0.2])
         self.map_legend.axis('off')
         for ix, landscapename in enumerate(('Water', 'Lowland',
                                             'Highland', 'Desert')):
@@ -201,29 +203,39 @@ class Graphics:
 
         if self.herb_heat_map_ax is None:
             self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
-            self.herb_heat_map_ax.set_title('Herbivore heat map')
+            self.herb_heat_map_ax.set_title('Herbivore distribution')
 
         if self.carn_heat_map_ax is None:
             self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
-            self.carn_heat_map_ax.set_title('Carnivore heat map')
+            self.carn_heat_map_ax.set_title('Carnivore distribution')
 
+        fitness_specs = hist_specs['fitness']
+        fitness_min = 0
+        fitness_max = int(fitness_specs['max'])
+        fitness_steps = int((fitness_max - fitness_min)/fitness_specs['delta'])
         if self.fitness_hist_ax is None:
             self.fitness_hist_ax = self.fig.add_subplot(3, 3, 7)
             self.fitness_hist_ax.set_title('Fitness hist.')
             self.fitness_hist_ax.set_ylim(0, 2000)
-            self.fitness_bins = np.linspace(0, 1, 30)
+            self.fitness_bins = np.linspace(fitness_min, fitness_max, fitness_steps)
 
+        age_specs = hist_specs['age']
+        age_min = 0
+        age_max = int(age_specs['max'])
+        age_steps = int((age_max - age_min) / age_specs['delta'])
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
-            self.age_hist_ax.set_title('Age hist.')
-            self.age_hist_ax.set_ylim(0, 2000)
-            self.age_bins = np.linspace(0, 60, 30)
+            self.age_hist_ax.title.set_text('Age hist.')
+            self.age_bins = np.linspace(age_min, age_max, age_steps)
 
+        weight_specs = hist_specs['weight']
+        weight_min = 0
+        weight_max = int(weight_specs['max'])
+        weight_steps = int((weight_max - weight_min) / weight_specs['delta'])
         if self.weight_hist_ax is None:
             self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
             self.weight_hist_ax.set_title('Weight hist.')
-            self.weight_hist_ax.set_ylim(0, 2000)
-            self.weight_bins = np.linspace(0, 60, 30)
+            self.weight_bins = np.linspace(weight_min, weight_max, weight_steps)
 
         if vis_years > 1:
             linestyle = '-*'
@@ -252,6 +264,8 @@ class Graphics:
                 y_new = np.full(x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
                                         np.hstack((y_data, y_new)))
+        warnings.filterwarnings('ignore')
+        self.fig.tight_layout(pad=3.0)
 
     def _update_herb_heat_map(self, herb_map, cmax_animals):
         """Update the 2D-view of the system."""

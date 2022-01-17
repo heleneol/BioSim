@@ -1,3 +1,5 @@
+import numpy as np
+
 from src.biosim.landscape import Lowland, Highland, Water, Desert
 from src.biosim.animals import *
 
@@ -47,7 +49,43 @@ def set_highland_parameters(request):
     Highland.set_parameters(default_parameters)
 
 
-@pytest.fixture
+def test_input_param_landscape():
+    """
+    Testing that input of new parameter values is possible.
+    """
+    new_params = {'f_max': 300}
+
+    Highland.set_parameters(new_params)
+    assert Highland.parameters['f_max'] == 300
+
+
+def test_param_wrong_landscape():
+    """
+    Testing that errors are raised when input parameters are erroneous.
+    """
+    with pytest.raises(KeyError):
+        Desert.set_parameters({'f_max': 20})
+
+    with pytest.raises(KeyError):
+        Water.set_parameters({'f_max': 40})
+
+
+def test_param_mistake_landscape():
+    """
+    Testing that errors are raised when input parameters are erroneous.
+    """
+    with pytest.raises(KeyError):
+        Highland.set_parameters({'fmax': 20})
+
+
+def test_value_error_of_age_and_weight():
+    """
+    Testing whether ValueError is raised for error in input age and weight.
+    """
+    with pytest.raises(ValueError):
+        Highland.set_parameters({'f_max': -40})
+
+
 def generate_herb_pop(age, weight, num_herbs):
     """
     A function that generates a herbivore population.
@@ -56,7 +94,6 @@ def generate_herb_pop(age, weight, num_herbs):
     return [Herbivore(age=age, weight=weight) for _ in range(num_herbs)]
 
 
-@pytest.fixture
 def generate_carn_pop(age, weight, num_carns):
     """
     A function that generates a herbivore population.

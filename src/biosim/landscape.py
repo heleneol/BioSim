@@ -25,14 +25,12 @@ class Landscape:
         :param new_params: new parameter values.
         :type new_params: dict
         """
+        #if cls.classname is Desert or cls.classname is Water:
+        #    raise AttributeError(f'Fodder amount can only be changed in Highland or Lowland!')
 
         for key in new_params:
-            if key == 'f_max':
-                if cls.classname is Desert or cls.classname is Water:
-                    raise KeyError(f'{key} cannot be changed for Desert and Water!')
-
             if key not in cls.parameters:
-                raise KeyError('Invalid parameter name: ' + key)
+                raise KeyError(f'Invalid parameter name: {key}')
 
             elif new_params[key] < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
@@ -50,6 +48,7 @@ class Landscape:
         """
         self.classname = self.__class__.__name__
         self.fodder = self.parameters['f_max']
+
         self.herb_pop = herb_pop if herb_pop is not None else []
         self.migrating_herbs = []
         self.carn_pop = carn_pop if carn_pop is not None else []
@@ -297,20 +296,18 @@ class Desert(Landscape):
     """
     parameters = {'f_max': 0}
 
-
 class Water(Landscape):
     """
     Subclass representing Ocean landscape on the island.
     """
     parameters = {'f_max': 0}
 
-
-
 ini_pops = [Herbivore() for herb in range(100)]
 carnivores = [Carnivore() for carn in range(5)]
 
-l1 = Desert(carn_pop=carnivores)
+l1 = Lowland(carn_pop=None, herb_pop=None)
 l1.set_parameters(new_params={'f_max': 30})
+print(l1.herb_pop)
 
 # l1.carnivores_eating()
 '''

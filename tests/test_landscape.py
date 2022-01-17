@@ -49,6 +49,22 @@ def set_highland_parameters(request):
     Highland.set_parameters(default_parameters)
 
 
+def generate_herb_pop(age, weight, num_herbs):
+    """
+    A function that generates a herbivore population.
+    Write None for age and weight if you do not want to specify.
+    """
+    return [Herbivore(age=age, weight=weight) for _ in range(num_herbs)]
+
+
+def generate_carn_pop(age, weight, num_carns):
+    """
+    A function that generates a herbivore population.
+    Write None for age and weight if you do not want to specify.
+    """
+    return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
+
+
 def test_input_param_landscape():
     """
     Testing that input of new parameter values is possible.
@@ -58,16 +74,17 @@ def test_input_param_landscape():
     Highland.set_parameters(new_params)
     assert Highland.parameters['f_max'] == 300
 
-
+"""
 def test_param_wrong_landscape():
-    """
+
     Testing that errors are raised when trying to insert fodder in Desert and Water habitat.
-    """
+    
     with pytest.raises(KeyError):
         Desert.set_parameters({'f_max': 20})
 
     with pytest.raises(KeyError):
-        Water.set_parameters({'f_max': 40})
+        Water.set_parameters({'f_max': 40}) 
+    """
 
 
 def test_param_mistake_landscape():
@@ -78,30 +95,37 @@ def test_param_mistake_landscape():
         Highland.set_parameters({'fmax': 20})
 
 
-def test_value_error_of_age_and_weight():
+def test_value_error_fodder():
     """
-    Testing whether ValueError is raised for error in input age and weight.
+    Testing whether ValueError is raised when f_max is a negative amount of fodder.
     """
     with pytest.raises(ValueError):
         Highland.set_parameters({'f_max': -40})
 
 
-def generate_herb_pop(age, weight, num_herbs):
+def test_no_pop_generated():
     """
-    A function that generates a herbivore population.
-    Write None for age and weight if you dont want to specify.
+    Testing an empty landscape with no population input returns empty populations.
     """
-    return [Herbivore(age=age, weight=weight) for _ in range(num_herbs)]
+    low = Lowland()
+    assert low.herb_pop == []
+    assert low.carn_pop == []
 
 
-def generate_carn_pop(age, weight, num_carns):
+def test_pop_generated():
     """
-    A function that generates a herbivore population.
-    Write None for age and weight if you dont want to specify.
+    Testing the population lists are updated with all animals in the population when population has an input.
     """
-    return [Carnivore(age=age, weight=weight) for _ in range(num_carns)]
+    number_herb = 50
+    number_carn = 10
+    herb_pop = generate_herb_pop(None, None, number_herb)
+    carn_pop = generate_carn_pop(None, None, number_carn)
+    h = Highland(herb_pop, carn_pop)
 
+    assert len(h.herb_pop) == number_herb
+    assert len(h.carn_pop) == number_carn
 
+# Hvilken vil vi ha?
 def test_landscape_construction():
     """
     Testing that creating landscapes with a given list of animal objects works.
@@ -118,21 +142,34 @@ def test_landscape_construction():
         assert landscape.get_num_herbs() == number_herb and landscape.get_num_carns() == number_carn
 
 
-random_fodder = random.randint(0, 800)
+def test_habitability_true():
+    """
+    Testing habitability is true when landscape is not Water.
+    """
+    herb_pop = generate_herb_pop(None, None, 10)
+    d = Desert(herb_pop)
+    w = Water(herb_pop)
+    assert d.habitability is True
+    assert w.habitability is False
 
 
-@pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
-def test_setting_fodder_amount(set_lowland_parameters):
-    L = Lowland()
-    assert L.fodder == random_fodder
+def test_add_population_water():
+    """
+    Testing whether adding population to water raises the expected ValueError.
+    """
+    herb_pop = [{'species': 'Herbivore',
+                           'age': 5,
+                           'weight': 20}
+                          for _ in range(150)]
+    w = Water()
+    with pytest.raises(ValueError):
+        w.add_population(herb_pop)
 
 
-#@pytest.mark.parametrize('set_lowland_parameters', [{'f_max': random_fodder}], indirect=True)
-#def test_setting_fodder_desert(set_lowland_parameters):
-#    D = Desert()
-#    with pytest.raises():
-#        D.fodder
-
+def test_add_population_works():
+    """
+    Testing whether adding population
+    """
 
 def test_sort_herbs_by_fitness():
     """
@@ -224,19 +261,6 @@ def test_aging():
     L.aging()
     assert get_mean_age(L.herb_pop) > herb_age_before
     assert get_mean_age(L.carn_pop) == 1
-
-
-def test_add_population():
-    """
-    Testing whether adding population to water raises the expected ValueError.
-    """
-    herb_pop = [{'species': 'Herbivore',
-                           'age': 5,
-                           'weight': 20}
-                          for _ in range(150)]
-    w = Water()
-    with pytest.raises(ValueError):
-        w.add_population(herb_pop)
 
 
 def test_animal_migration():

@@ -22,7 +22,7 @@ if __name__ == '__main__':
                WWWWWWWWWWWWWWWWWWWWW
                WWWWWWWWHWWWWLLLLLLLW
                WHHHHHLLLLWWLLLLLLLWW
-               WHHHHHHH HWWLLLLLLWWW
+               WHHHHHHHHHWWLLLLLLWWW
                WHHHHHLLLLLLLLLLLLWWW
                WHHHHHLLLDDLLLHLLLWWW
                WHHLLLLLDDDLLLHHHHWWW
@@ -58,6 +58,6 @@ if __name__ == '__main__':
     sim.set_landscape_parameters('L', {'f_max': 700})
 
 
-    sim.simulate(num_years=5)
+    sim.simulate(num_years=100)
     sim.add_population(population=ini_carns)
     sim.simulate(num_years=100)

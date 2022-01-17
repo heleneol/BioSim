@@ -151,7 +151,7 @@ class Island:
         :rtype:
         """
 
-        map_dim = self.map.keys()[-1]
+        map_dim = list(self.map.keys())[-1]
         herb_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
             herb_matrix[loc[0]-1][loc[1]-1] = cell.get_num_herbs()
@@ -164,7 +164,7 @@ class Island:
         :return: 2D-array with carnivorecount per cell as values
         :rtype:
         """
-        map_dim = self.map.keys()[-1]
+        map_dim = list(self.map.keys())[-1]
         carn_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
             carn_matrix[loc[0] - 1][loc[1] - 1] = cell.get_num_herbs()

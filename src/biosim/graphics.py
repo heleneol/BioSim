@@ -17,6 +17,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import subprocess
 import os
+import textwrap
 
 # Update these variables to point to your ffmpeg and convert binaries
 # If you installed ffmpeg using conda or installed both softwares in
@@ -70,7 +71,9 @@ class Graphics:
         self.year_ax = None
         self.animal_count_ax = None
         self.herb_heat_map_ax = None
+        self.herb_heat_map_plot = None
         self.carn_heat_map_ax = None
+        self.carn_heat_map_plot = None
         self.fitnes_hist_ax = None
         self.age_hist_ax = None
         self.weight_hist_ax = None
@@ -80,12 +83,12 @@ class Graphics:
 
     def island_map_img(self, island_map):
         island_map = textwrap.dedent(island_map)
-        map_rgb = [[rgb_value[column] for column in row] for row in island_map.splitlines()]
+        map_rgb = [[self.rgb_value[column] for column in row] for row in island_map.splitlines()]
         return map_rgb
 
 
 
-    def update(self, step, sys_map, sys_mean):
+    def update(self, year, species_count, animal_matrix):
         """
         Updates graphics with current data and save to file if necessary.
 
@@ -94,12 +97,12 @@ class Graphics:
         :param sys_mean: current mean value of system
         """
 
-        self._update_system_map(sys_map)
-        self._update_mean_graph(step, sys_mean)
-        self._fig.canvas.flush_events()  # ensure every thing is drawn
+        self._update_count_graph(year, species_count["Herbivores"], species_count["Carnivores"])
+        self._update_heat_map(animal_matrix["Herbivores"], animal_matrix["Carnivores"])
+        self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-6)  # pause required to pass control to GUI
 
-        self._save_graphics(step)
+        #self._save_graphics(step)
 
     def make_movie(self, movie_fmt=None):
         """
@@ -164,7 +167,7 @@ class Graphics:
         # the size of the image, so we delay its creation.
         #add suplot for map
         if self.map_ax is None:
-            self.map_ax = self._fig.add_subplot(3, 3, 1)
+            self.map_ax = self.fig.add_subplot(3, 3, 1)
 
 
         # add subplot for yearcount
@@ -174,7 +177,9 @@ class Graphics:
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
             self.animal_count_ax = self.fig.add_subplot(3, 3, 3)
-            self.animal_count_ax.set_ylim(0, 8000)
+            self.animal_count_ax.set_ylim(0, 18000)
+
+        self.animal_count_ax.set_xlim(0, final_step + 1)
 
         if self.herb_heat_map_ax is None:
             self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
@@ -193,7 +198,6 @@ class Graphics:
 
         # needs updating on subsequent calls to simulate()
         # add 1 so we can show values for time zero and time final_step
-        self.animal_count_ax.set_xlim(0, final_step+1)
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
@@ -221,19 +225,25 @@ class Graphics:
     def _update_heat_map(self, herb_map, carn_map):
         """Update the 2D-view of the system."""
 
-        if self._img_axis is not None:
-            self._img_axis.set_data(sys_map)
+        if self.herb_heat_map_plot is not None:
+            self.herb_heat_map_plot.set_data(herb_map)
         else:
-            self._img_axis = self._map_ax.imshow(sys_map,
+            self.herb_heat_map_plot = self.herb_heat_map_ax.imshow(herb_map,
                                                  interpolation='nearest',
-                                                 vmin=-0.25, vmax=0.25)
-            plt.colorbar(self._img_axis, ax=self._map_ax,
+                                                 vmin=0, vmax=200)
+            plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
                          orientation='horizontal')
 
-    def _update_count_graph(self, year, carn_cunt, herb_count):
-        y_data = self._mean_line.get_ydata()
-        y_data[step] = mean
-        self._mean_line.set_ydata(y_data)
+        ##Add Carnivvore
+
+    def _update_count_graph(self, year, herb_count, carn_count):
+        y_data = self.herb_line.get_ydata()
+        y_data[year] = herb_count
+        self.herb_line.set_ydata(y_data)
+
+        y_data = self.carn_line.get_ydata()
+        y_data[year] = carn_count
+        self.carn_line.set_ydata(y_data)
 
     def _save_graphics(self, step):
         """Saves graphics to file if file name given."""

@@ -59,8 +59,9 @@ class BioSim:
         self.vis_years = vis_years
         self.img_years = img_years
 
-        if vis_years % img_years != 0 and vis_years is None and img_years is None:
-            raise ValueError('img_steps must be a multiple of vis_steps')
+        if vis_years is not None and img_years is not None:
+            if vis_years % img_years != 0:
+                raise ValueError('img_steps must be a multiple of vis_steps')
 
         self.step = 0
         self.final_step = None
@@ -103,8 +104,8 @@ class BioSim:
                 # hente ut properties til visualisering
                 self.step += 1
                 if self.step % self.vis_years == 0:
-                    self.graphics.update(self.step, )
-                print(self.last_year_simulated)
+                    self.graphics.update(self.step, self.num_animals_per_species, self.num_animals_per_species_per_cell)
+                #print(self.last_year_simulated)
         else:
             raise ValueError(f'num_years has to be an integer, not a {type(num_years)}')
 

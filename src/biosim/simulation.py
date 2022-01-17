@@ -8,6 +8,7 @@ Module implementing the simulation of the ecosystem through the BioSim class.
 
 from biosim.island import Island
 from biosim.graphics import Graphics
+import textwrap
 
 
 class BioSim:
@@ -52,7 +53,8 @@ class BioSim:
 
         img_dir and img_base must either be both None or both strings.
         """
-        self.island = Island(geogr=island_map)
+        self.island_geographie = textwrap.dedent(island_map)
+        self.island = Island(geogr=self.island_geographie)
         self.add_population(population=ini_pop)
         self.graphics = Graphics()
         self.seed = seed
@@ -84,7 +86,7 @@ class BioSim:
         """
         self.island.set_landscape_parameters_island(landscape=landscape, params=params)
 
-    def simulate(self, num_years, island_map):
+    def simulate(self, num_years):
         """
         Run simulation while visualizing the result.
 
@@ -95,7 +97,7 @@ class BioSim:
 
 
         self.final_step = self.step + num_years
-        self.graphics.setup(self.final_step, self.img_years, island_geographie=island_map)
+        self.graphics.setup(self.final_step, self.img_years, self.island_geographie)
 
         num_simulations = num_years
         if num_simulations//1 == num_simulations:

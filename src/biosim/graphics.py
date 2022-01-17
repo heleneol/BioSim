@@ -169,8 +169,7 @@ class Graphics:
 
         island_geographie = textwrap.dedent(island_geographie)
         map_rgb = [[self.rgb_value[column] for column in row] for row in island_geographie.splitlines()]
-        self.map_ax.imshow(map_rgb)
-
+        self.map_plot = self.map_ax.imshow(map_rgb)
 
 
         if self.map_plot is not None:

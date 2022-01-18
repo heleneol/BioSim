@@ -11,15 +11,17 @@ class Animals:
     Superclass for animals.
 
     Subclasses:
-    * :class:'animals.Herbivore'
-    * :class:'animals.Carnivore'
+    * :class:`animals.Herbivore`
+    * :class:`animals.Carnivore` *
 
     """
 
     @classmethod
     def set_parameters(cls, new_params):
         """
-        set class parameters.
+        Set class parameters. \n
+        Parametre DeltaPhiMax can only be set for Carnivores and must be :math:`\Delta \Phi_{max}`.
+        Parametre eta must be :math:`\eta >= 0`.
 
         :param new_params: new parameter values.
         :type new_params: dict
@@ -49,7 +51,7 @@ class Animals:
 
     def __init__(self, age=None, weight=None):
         """
-        Initializing animal objects.
+        Initializing animal objects. Objects get age, weight, fitness and apatite be default.
 
         :param age: age of animal
         :type age: float
@@ -75,14 +77,14 @@ class Animals:
     def update_fitness(self):
         r"""
         Function calculating the fitness :math:`(\Phi)` of animals based on weight and age.
-        .. math::
-            \Phi =
-            \left\{\begin{array}{lr}
-            0, & \text{for } & w <= 0
-            q^{+}(a, a_{\frac{1}{2}}, \phi_{age}) * q^{-}(w, w_{\frac{1}{2}}, \phi_{weight}) &  & \text{else}
-            \end{array}\right\}
 
-        Fitness will always be between 0 and 1.
+        If :math:`w <= 0`, :math:`\Phi = 0`
+
+        Else, :math:`\Phi =  q^{+}(a, a_{\frac{1}{2}}, \Phi_{age}) * q^{-}(w, w_{\frac{1}{2}}, \Phi_{weight})`
+
+        where: :math:`q^{\pm}(x, x_half, \Phi) = \frac{1}{1 + e^{\pm\Phi(x-x_{\frac{1}{2}})}}`
+
+        Fitness will always be :math:`0 <= \Phi <= 1`.
         """
         if self.weight <= 0:
             self.fitness = 0

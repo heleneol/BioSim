@@ -6,22 +6,49 @@ import textwrap
 import pytest
 
 
+@pytest.fixture
+def map_island():
+    geography = """\
+                    WWWWWWWWWWW
+                    WLLLHHHLLLW
+                    WLLLLLLLLLW
+                    WLDDDDLLDDW
+                    WLLLLLLLLLW
+                    WWWWWWWWWWW"""
+    geography = textwrap.dedent(geography)
+    return Island(geography)
 
-def test_creatmap():
+
+@pytest.fixture
+def ini_pops():
+    ini_pops = [{'loc': (2, 2),
+                    'pop': [{'species': 'Herbivore',
+                             'age': 5,
+                             'weight': 20}
+                            for _ in range(20)]},
+                   {'loc': (3, 3),
+                    'pop': [{'species': 'Herbivore',
+                             'age': 3,
+                             'weight': 20}
+                            for _ in range(15)]},
+                   {'loc': (2, 5),
+                    'pop': [{'species': 'Carnivore',
+                             'age': 2,
+                             'weight': 10}
+                            for _ in range(4)]},
+                   {'loc': (2, 2),
+                    'pop': [{'species': 'Carnivore',
+                             'age': 2,
+                             'weight': 10}
+                            for _ in range(6)]}]
+    return ini_pops
+
+
+def test_creatmap(map_island):
     """
     Tests if an Island is initialized and has the attribute self.map. With an empty geogr the len is zero
     """
-    geogr = """\
-                WWWWWWWWWWW
-                WLLLHHHLLLW
-                WLLLLLLLLLW
-                WLDDDDLLDDW
-                WLLLLLLLLLW
-                WWWWWWWWWWW"""
-
-    geogr = textwrap.dedent(geogr)
-    i = Island(geogr)
-    assert len(i.map) > 0
+    assert len(map_island.map) > 0
 
 
 def test_non_rectangular_shape():
@@ -78,7 +105,7 @@ def test_invalid_habitat_on_map():
         Island(geogr)
 
 
-def test_placing_population():
+def test_placing_population(ini_pops):
     """
     Test if ValueError is raised when a population is placed outside of the map.
     Also tests if a population is placed in lowland, and not in water.
@@ -123,44 +150,6 @@ def test_place_population_in_water():
                             for _ in range(200)]}]
     with pytest.raises(ValueError):
         i.place_population(populations)
-
-
-@pytest.fixture
-def map_island():
-    geography = """\
-                    WWWWWWWWWWW
-                    WLLLHHHLLLW
-                    WLLLLLLLLLW
-                    WLDDDDLLDDW
-                    WLLLLLLLLLW
-                    WWWWWWWWWWW"""
-    geography = textwrap.dedent(geography)
-    return Island(geography)
-
-
-@pytest.fixture
-def ini_pops():
-    ini_pops = [{'loc': (2, 2),
-                    'pop': [{'species': 'Herbivore',
-                             'age': 5,
-                             'weight': 20}
-                            for _ in range(20)]},
-                   {'loc': (3, 3),
-                    'pop': [{'species': 'Herbivore',
-                             'age': 3,
-                             'weight': 20}
-                            for _ in range(15)]},
-                   {'loc': (2, 5),
-                    'pop': [{'species': 'Carnivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(4)]},
-                   {'loc': (2, 2),
-                    'pop': [{'species': 'Carnivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(6)]}]
-    return ini_pops
 
 
 def test_set_animal_parameters(ini_pops, map_island):

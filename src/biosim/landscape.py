@@ -207,14 +207,16 @@ class Landscape:
                 migrators_herb.append(herb)
             else:
                 staying_herbs.append(herb)
-        self.herb_pop = staying_herbs
+
+        self.herb_pop = staying_herbs.copy()
 
         for carn in self.carn_pop:
             if carn.migrate() is True:
                 migrators_carn.append(carn)
             else:
                 staying_carns.append(carn)
-        self.carn_pop = staying_carns
+
+        self.carn_pop = staying_carns.copy()
 
         return migrators_herb, migrators_carn
 

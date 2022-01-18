@@ -1,4 +1,4 @@
-"""Tests for the Animal class provided in biosim/src/animals.py """
+"""Tests for the Animal superclass with associated subclasses."""
 
 import pytest
 import scipy.stats as stats
@@ -127,8 +127,8 @@ def test_fitness_no_weight(carnivore):
 def test_fitness_values_expected(carnivore):
     """
     Testing that the animal fitness is correctly calculated.
-    Using age = a_half and weight = weight_half. According to the formula given for fitness,
-    see update_fitness() in animals.py for formula, this will result in a fitness of 1/4 (q_pos x q_neg = 1/2 * 1/2)
+    Using age = a_half and weight = weight_half. This should return a fitness of 1/4 (q_pos x q_neg = 1/2 * 1/2),
+    see update_fitness() in animals.py for formula.
     """
     carnivore.update_age(years=carnivore.parameters['a_half'])
     carnivore.set_weight(new_weight=carnivore.parameters['w_half'])

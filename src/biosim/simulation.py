@@ -15,7 +15,7 @@ import warnings
 
 class BioSim:
     """
-    Class for simulating the ecosystem on the island.
+    Class for simulating the ecosystem on the :class:`island.Island`.
     """
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,

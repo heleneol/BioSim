@@ -108,12 +108,19 @@ class Animals:
         self.appetite = self.parameters['F']
 
     def gives_birth(self, pop_size):
-        """
-        Decides whether an animal gives birth. The probability of giving birth to an offspring in a year
-        is 0 if the weight is :math:``\\omega < \\xi(w_{birth} + \\sigma_{birth})``.
-        Else the probability is :math:``\\gamma \\times \\phi \\times \\(\\textit{pop_size} - 1)``.
+        r"""
+        Decides whether an animal gives birth.
+
+        If :math:`w < \zeta(w_{birth} + \sigma_{birth})`, :math:`p_{birth} = 0`,
+
+        also :math:`w < \xi * \textit{newborn's weight}` :math:`p_{birth} = 0`.
+
+        Else :math:`p_{birth} = \gamma * \Phi * (N - 1)`
+
+        where: N is the population size.
+
         If the animal gets an offspring, the animal's weight is updated with
-        :math:``\\xi \\times \\text{newborn's weight}``, and the fitness is updated accordingly.
+        :math:`\xi * \text{newborn's weight}`, and the fitness is updated accordingly.
 
         :param pop_size: number of animals of the same species in a cell.
         :return: newborn of class Herbivore or Carnivore, if animal is born.

@@ -23,15 +23,15 @@ def map_island():
 @pytest.fixture
 def ini_pops():
     ini_pops = [{'loc': (2, 2),
-                    'pop': [{'species': 'Herbivore',
-                             'age': 5,
-                             'weight': 20}
-                            for _ in range(20)]},
+                 'pop': [{'species': 'Herbivore',
+                          'age': 5,
+                          'weight': 20}
+                          for _ in range(20)]},
                    {'loc': (3, 3),
                     'pop': [{'species': 'Herbivore',
                              'age': 3,
                              'weight': 20}
-                            for _ in range(15)]},
+                             for _ in range(15)]},
                    {'loc': (2, 5),
                     'pop': [{'species': 'Carnivore',
                              'age': 2,
@@ -250,9 +250,9 @@ def test_island_migration_happens(map_island):
     # to ensure some herbivores migrate.
     ini_pop = [{'loc': (3, 4),
                 'pop': [{'species': 'Herbivore',
-                        'age': 5,
-                        'weight': 20}
-                        for _ in range(250)]}]
+                         'age': 5,
+                         'weight': 20}
+                         for _ in range(250)]}]
 
     map_island.place_population(ini_pop)
     before = map_island.get_number_herbs_per_cell()

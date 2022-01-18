@@ -1,4 +1,4 @@
-from src.biosim.island import Island
+from biosim.island import Island
 
 import textwrap
 import pytest

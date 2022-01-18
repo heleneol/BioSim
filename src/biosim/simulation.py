@@ -81,11 +81,11 @@ class BioSim:
                 else:
                     raise KeyError(f'Key {key} is not valid')
 
-        self.vis_years = vis_years
+        self.vis_years = vis_years if vis_years is not None else 1
         self.img_years = 1
 
         if vis_years is not None and img_years is not None:
-            if vis_years % img_years != 0:
+            if img_years % vis_years != 0:
                 raise ValueError('img_steps must be a multiple of vis_steps')
 
         self.step = 0

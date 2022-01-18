@@ -3,7 +3,7 @@
 import pytest
 import scipy.stats as stats
 
-from src.biosim.animals import *
+from biosim.animals import *
 
 # Overall parameters for probabilistic tests
 SEED = 12345678  # random seed for tests

@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.biosim.landscape import Lowland, Highland, Water, Desert
-from src.biosim.animals import *
+from biosim.landscape import Lowland, Highland, Water, Desert
+from biosim.animals import *
 
 import pytest
 import random

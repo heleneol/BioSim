@@ -316,11 +316,11 @@ class Island:
                     else:
                         migration_cell.register_migrants(migrator=carn)
 
-                for loc, cell in self.map.items():
-                    if cell.classname == 'Water':
-                        continue
-                    else:
-                        cell.add_migraters_to_pop()
+        for loc, cell in self.map.items():
+            if cell.classname == 'Water':
+                continue
+            else:
+                cell.add_migraters_to_pop()
 
     def annual_cycle_island(self):
         """

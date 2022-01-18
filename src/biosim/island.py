@@ -84,7 +84,8 @@ class Island:
                     island_map[loc] = landscape
                 else:
                     if letter == ' ':
-                        raise ValueError(f'There is a hole in the map at loc: {(row,column)}. Fill it with a valid habitat type:\n'
+                        raise ValueError(f'There is a hole in the map at loc: {(row,column)}.\n'
+                                         f'Fill it with a valid habitat type:\n'
                                          f'* L - Lowland\n'
                                          f'* H - Highland\n'
                                          f'* D - Desert\n'
@@ -335,7 +336,6 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
-
 
     def _clean_island_for_herbs(self):
         """

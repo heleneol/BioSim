@@ -12,15 +12,13 @@ import textwrap
 import warnings
 
 
-
 class BioSim:
     """
     Class for simulating the ecosystem on the :class:`island.Island`.
     """
     def __init__(self, island_map, ini_pop, seed,
                  vis_years=1, ymax_animals=None, cmax_animals=None, hist_specs=None,
-                 img_dir=None, img_base=None, img_fmt='png', img_years=None,
-                 log_file=None):
+                 img_dir=None, img_base=None, img_fmt='png', img_years=None):
 
         """
 
@@ -35,7 +33,6 @@ class BioSim:
         :param img_base: String with beginning of file name for figures
         :param img_fmt: String with file type for figures, e.g. 'png'
         :param img_years: years between visualizations saved to files (default: vis_years)
-        :param log_file: If given, write animal counts to this file
 
         If ymax_animals is None, the y-axis limit should be adjusted automatically.
         If cmax_animals is None, sensible, fixed default values should be used.
@@ -65,11 +62,11 @@ class BioSim:
         self.island_geographie = textwrap.dedent(island_map)
         self.island = Island(geogr=self.island_geographie)
         self.add_population(population=ini_pop)
-        self.graphics = Graphics(img_dir,img_name=img_base,img_fmt=img_fmt)
+        self.graphics = Graphics(img_dir, img_name=img_base, img_fmt=img_fmt)
         self.seed = seed
         self.ymax_animals = ymax_animals if ymax_animals is not None else 20000
         self.cmax_animals = {'Herbivore': 200,
-                            'Carnivore': 200}
+                             'Carnivore': 200}
         if cmax_animals is not None:
             for key, value in cmax_animals.items():
                 if key in self.cmax_animals.keys():
@@ -127,7 +124,7 @@ class BioSim:
         self.final_step = self.step + num_years
         if self.vis_years != 0:
             num_simulations = num_years
-            self.graphics.setup(final_step=self.final_step,img_step= self.img_years,
+            self.graphics.setup(final_step=self.final_step, img_step=self.img_years,
                                 vis_years=self.vis_years, island_geographie=self.island_geographie,
                                 ymax_animals=self.ymax_animals,
                                 hist_specs=self.hist_specs)
@@ -154,7 +151,6 @@ class BioSim:
                     self.step += 1
             else:
                 raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
-
 
     def add_population(self, population):
         """

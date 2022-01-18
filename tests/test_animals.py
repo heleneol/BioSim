@@ -9,6 +9,7 @@ from biosim.animals import *
 SEED = 12345678  # random seed for tests
 ALPHA = 0.01  # significance level for statistical tests
 
+
 @pytest.fixture
 def set_herbivore_parameters(request):
     """
@@ -280,7 +281,7 @@ def test_certain_death(mocker, herbivore):
     """
     mocker.patch('random.random', return_value=0)
     for _ in range(10):
-        assert herbivore.dies() # Trenger ikke is true her?
+        assert herbivore.dies()
 
 
 def test_return_herbivores_feeding(herbivore):

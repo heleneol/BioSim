@@ -1,3 +1,5 @@
+"""Tests for the Landscape superclass with associated subclasses."""
+
 import numpy as np
 
 from biosim.landscape import Lowland, Highland, Water, Desert

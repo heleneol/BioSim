@@ -177,124 +177,64 @@ def test_set_landscape_parameters(map_island):
     assert map_island.parameters['L'].parameters['f_max'] == fodder
 
 
-class test_get_information:
+def test_get_num_herbs(map_island, ini_pops):
     """
-    A test class for all the get-functions of the Island class.
+    Testing that the functions for getting the total number of a species on the island returns the correct total.
     """
-
-    def __init__(self, geography, ini_pops):
-
-        self.geography = textwrap.dedent(geography)
-        self.island = Island(geography)
-        self.ini_pops = ini_pops
-        self.island.place_population(populations=ini_pops)
-
-    def test_get_num_herbs(self):
-        """
-        Testing that the function get_num_herbs() returns the total amount of herbivores placed on the island.
-        """
-        total_herb = 0
-        for population in self.ini_pops:
-            total_herb += len(population['pop'])
-        assert self.island_test.get_number_of_herbs() == total_herb
-
-    def test_get_num_carnivores(self):
-        """
-        Testing that the function get_num_carns() returns the total amount of carnivores placed on the island.
-        """
-        total_carn = 0
-        for population in self.ini_pops:
-            total_carn += len(population['pop'])
-        assert self.island_test.get_number_of_carns() == total_carn
-
-    def test_get_number_herbs_per_cell():
-        """
-        Testing that the function get_number_herbs_per_cell() returns the amount of herbivores in each cell on the island.
-        """
-
-        #assert np.any(i.get_number_herbs_per_cell()) == num
+    map_island.place_population(ini_pops)
+    total_herb = 0
+    total_carn = 0
+    for population in ini_pops:
+        pop = population['pop']
+        for animal in pop:
+            if animal['species'] == 'Herbivore':
+                total_herb += 1
+            elif animal['species'] == 'Carnivore':
+                total_carn += 1
+    assert map_island.get_number_of_herbs() == total_herb
+    assert map_island.get_number_of_carns() == total_carn
 
 
-    def test_get_number_carns_per_cell():
-        """
-        Testing that the function get_number_carns_per_cell() returns the amount of carnivores in each cell on the island.
-        """
+def test_gives_animal_fitness(map_island, ini_pops):
+    """
+    Testing if get_'species'_fitness indeed returns a list of all the species' fitness.
+    """
+    before_herb = len(map_island.get_herbs_fitness())
+    before_carn = len(map_island.get_carns_fitness())
+    map_island.place_population(ini_pops)
+    after_herb = len(map_island.get_herbs_fitness())
+    after_carn = len(map_island.get_carns_fitness())
+
+    assert before_herb < after_herb
+    assert before_carn < after_carn
 
 
-    def test_gives_herbs_fitness(self, ini_pop):
-        """
-        Testing if get_herbs_fitness indeed returns a list of all the herbivores fitness.
-        """
+def test_get_species_age(map_island, ini_pops):
+    """
+    Testing if the get "species" age function indeed returns a list of ages of the species.
+    """
+    before_herb = len(map_island.get_herbs_age())
+    before_carn = len(map_island.get_carns_age())
+    map_island.place_population(ini_pops)
+    after_herb = len(map_island.get_herbs_age())
+    after_carn = len(map_island.get_carns_age())
 
-        total_herbivore = 0
-        before = len(self.island.get_herbs_fitness())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_herbs_fitness())
-
-        assert before < after
-        assert after == total_herbivore
-
-
-    def test_gives_carns_fitness(self):
-        """
-        Testing if get_carns_fitness indeed returns a list of all the carnivores fitness.
-        """
-        total_carnviore = 0
-        before = len(self.island.get_carns_fitness())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_carns_fitness())
-
-        assert before < after
-        assert after == total_carnviore
+    assert before_herb < after_herb
+    assert before_carn < after_carn
 
 
-    def test_get_herbs_age(self):
-        """
-        Testing if get_herbs_age indeed returns the Herbivore's true age.
-        """
-        total_herbivore = 0
-        before = len(self.island.get_herbs_age())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_herbs_age())
+def test_get_species_weight(map_island, ini_pops):
+    """
+    Testing if get "species" weight function indeed returns a list of the animals weight.
+    """
+    before_herb = len(map_island.get_herbs_weight())
+    before_carn = len(map_island.get_carns_weight())
+    map_island.place_population(ini_pops)
+    after_herb = len(map_island.get_herbs_weight())
+    after_carn = len(map_island.get_carns_weight())
 
-        assert after == total_herbivore
-
-
-    def test_get_carns_age(self):
-        """
-        Testing if get_carns_age indeed returns the Carnivore's true age.
-        """
-        total_carnviore = 0
-        before = len(self.island.get_carns_age())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_carns_age())
-
-        assert before < after
-        assert after == total_carnviore
-
-
-    def test_get_herbs_weight(self):
-        """
-        Testing if get_herbs_weight indeed returns the Herbivore's true weight.
-        """
-        total_herbivore = 0
-        before = len(self.island.get_herbs_weight())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_herbs_weight())
-
-        assert after == total_herbivore
-
-
-    def test_get_carns_weight(self):
-        """
-        Testing if get_carns_weight indeed returns the Carnivore's true weight.
-        """
-        total_carnviore = 0
-        before = len(self.island.get_carns_weight())
-        self.island.place_population(ini_pops)
-        after = len(self.island.get_carns_weight())
-
-        assert after == total_carnviore
+    assert before_herb < after_herb
+    assert before_carn < after_carn
 
 
 def test_island_migration():

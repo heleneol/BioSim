@@ -305,7 +305,6 @@ class Island:
         Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
         herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
         Lastly, in post migration the animals age, lose weight and some die.
-
         """
         for cell in self.map.values():
             cell.pre_migration_cycle()
@@ -314,6 +313,3 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
-
-
-

@@ -31,7 +31,7 @@ _MAGICK_BINARY = 'magick'
 
 # update this to the directory and file-name beginning
 # for the graphics files
-_DEFAULT_GRAPHICS_DIR = os.path.join('../..', 'data')
+_DEFAULT_GRAPHICS_DIR = os.path.join('..', 'results')
 _DEFAULT_GRAPHICS_NAME = 'image'
 _DEFAULT_IMG_FORMAT = 'png'
 _DEFAULT_MOVIE_FORMAT = 'mp4'
@@ -61,8 +61,12 @@ class Graphics:
 
         if img_dir is not None:
             self._img_base = os.path.join(img_dir, img_name)
+            if not os.path.isdir(img_dir):
+                os.mkdir(img_dir)
         else:
-            self._img_base = None
+            self._img_base = os.path.join(_DEFAULT_GRAPHICS_DIR,img_name)
+            if not os.path.isdir(_DEFAULT_GRAPHICS_DIR):
+                os.mkdir(_DEFAULT_GRAPHICS_DIR)
 
         self._img_fmt = img_fmt if img_fmt is not None else _DEFAULT_IMG_FORMAT
 
@@ -104,7 +108,7 @@ class Graphics:
         self.fig.canvas.flush_events()  # ensure every thing is drawn
         plt.pause(1e-5)  # pause required to pass control to GUI
 
-        # self._save_graphics(step)
+        self._save_graphics(year)
 
     def make_movie(self, movie_fmt=None):
         """

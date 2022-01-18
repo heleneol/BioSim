@@ -6,7 +6,7 @@ amount of years.
 
 ### More information
 * Documentation:
-* Mailing list: johannes.larsen.fjeldsa@nmbu.no
+* Mailing list: johannes.larsen.fjeldsa@nmbu.no & helene.drennan.olsen@nmbu.no
 
 #### Visualization of BioSim analysis objects
 
@@ -18,8 +18,15 @@ amount of years.
 
 ## Introduction
 
-#### Copyright
 
-:copyright: 2014-2021 by Johannes Fjeldså & Helene Drennan Olsen 
-## Authors
+#### License
+MIT License
+
+#### Copyright
+:copyright: 2022 by Johannes Fjeldså & Helene Drennan Olsen 
+
+#### Acknowledgments
+This open source software code was developed as a part of the evaluation in the course INF200 at NMBU
+
+#### Authors
 Helene Drennan Olsen & Johannes Fjeldså

@@ -59,7 +59,7 @@ class BioSim:
         self.island_geographie = textwrap.dedent(island_map)
         self.island = Island(geogr=self.island_geographie)
         self.add_population(population=ini_pop)
-        self.graphics = Graphics()
+        self.graphics = Graphics(img_dir,img_name=img_base,img_fmt=img_fmt)
         self.seed = seed
         self.ymax_animals = ymax_animals if ymax_animals is not None else 20000
         self.cmax_animals = {'Herbivore': 200,
@@ -82,7 +82,7 @@ class BioSim:
                     raise KeyError(f'Key {key} is not valid')
 
         self.vis_years = vis_years
-        self.img_years = img_years
+        self.img_years = 1
 
         if vis_years is not None and img_years is not None:
             if vis_years % img_years != 0:
@@ -196,3 +196,4 @@ class BioSim:
 
     def make_movie(self):
         """Create MPEG4 movie from visualization images saved."""
+        self.graphics.make_movie()

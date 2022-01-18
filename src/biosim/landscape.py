@@ -11,10 +11,11 @@ class Landscape:
     Superclass containing methods on population for different landscapes on the island.
 
     Subclasses:
-    * Lowland
-    * Highland
-    * Desert
-    * Water
+    * :class:`Lowland`
+    * :class:`Highland`
+    * :class:`Desert`
+    * :class:`Water`*
+
     """
 
     @classmethod
@@ -24,15 +25,14 @@ class Landscape:
 
         :param new_params: new parameter values.
         :type new_params: dict
+
         """
+        #if cls.classname is Desert or cls.classname is Water:
+        #    raise AttributeError(f'Fodder amount can only be changed in Highland or Lowland!')
 
         for key in new_params:
-            if key == 'f_max':
-                if type(cls) is Desert or type(cls) is Water:
-                    raise KeyError(f'{key} cannot be changed for Desert and Water!')
-
             if key not in cls.parameters:
-                raise KeyError('Invalid parameter name: ' + key)
+                raise KeyError(f'Invalid parameter name: {key}')
 
             elif new_params[key] < 0:
                 raise ValueError('The fodder parameter must be a non-negative number')
@@ -47,8 +47,10 @@ class Landscape:
         :type herb_pop: list
         :param carn_pop: list containing the carnivore population
         :type carn_pop: list
+
         """
         self.classname = self.__class__.__name__
+
         self.fodder = self.parameters['f_max']
         self.herb_pop = herb_pop if herb_pop is not None else []
         self.migrating_herbs = []
@@ -56,13 +58,15 @@ class Landscape:
         self.migrating_carns = []
         self.habitability = True if type(self) is not Water else False
 
-    def add_population(self, animals): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
+    def add_population(self, animals):
         """
         Adding population to landscape. Animals are added to either the herbivore or carnivore population based on the
-        given information.
+        given information. A population cannot be placed in watercells, and has to be of the species
+        herbivore or carnivore.
 
         :param animals: list containing dictionaries with animal information about species, age and weight.
         :type animals: list
+
         """
         if self.habitability is True:
             for animal in animals:
@@ -83,15 +87,17 @@ class Landscape:
 
         :return: the number of herbivores
         :rtype: int
+
         """
         return len(self.herb_pop)
 
     def get_num_carns(self):
         """
-        Return number of carnivores in Landscape.
+        Calculates number of carnivores in Landscape.
 
         :return: the number of carnivores
         :rtype: int
+
         """
         return len(self.carn_pop)
 
@@ -99,9 +105,10 @@ class Landscape:
         """
         Sorts the herbivore population by fitness.
 
-        :param decreasing: If True, herbivores are sorted by decreasing fitness. If False, they are sorted by
-        increasing fitness.
+        :param decreasing: True  :math:'\\longrightarrow' sorted by decreasing fitness.\n
+                           False :math:'\\longrightarrow' sorted by increasing fitness.
         :type decreasing: bool
+
         """
         if type(decreasing) is bool:
             self.herb_pop.sort(key=lambda animal: animal.fitness, reverse=decreasing)
@@ -109,13 +116,17 @@ class Landscape:
             raise ValueError(f'Decreasing has to be a bool! Not a {type(decreasing)}')
 
     def regrowth(self):
-        """Regrows fodder to f_max in Low- and Highlands."""
+        """
+        Regrows fodder to f_max in Low- and Highlands.
+
+        """
         self.fodder = self.parameters['f_max']
 
     def herbivores_eating(self):
         """
         Herbivores consume fodder by descending fitness. Landscape fodder is updated for each portion consumed by a
         herbivore. Feeding stops when there is no more fodder.
+
         """
         self.sort_herbs_by_fitness(decreasing=True)
         for herb in self.herb_pop:
@@ -128,9 +139,11 @@ class Landscape:
 
     def carnivores_eating(self):
         """
-        Carnivores, in random order, consume herbivores. The carnivore tries to kill one herbivore at a time, beginning
-        with the herbivore with lowest fitness. A carnivore tries to kill until it has attempted to kill each herbivore
-        in the cell or it no longer has an appetite.
+        Carnivores etat in random order and consume herbivores.
+        The carnivore tries to kill one herbivore at a time, beginning with the herbivore with lowest fitness.
+        A carnivore tries to kill until it has attempted to kill each herbivore
+        in the cell or it no longer has an appetite. Surviving herbivores is added back to the
+        herbivore population by the end of each carnivores' hunting season.
         """
         random.shuffle(self.carn_pop)
 
@@ -139,7 +152,6 @@ class Landscape:
             if len(self.herb_pop) > 0 and carn.appetite > 0:
                 self.sort_herbs_by_fitness(decreasing=False)
                 survivors = []
-
                 for herb in self.herb_pop:
                     if carn.carnivore_feeding(herb) is False:
                         survivors.append(herb)
@@ -151,6 +163,7 @@ class Landscape:
     def reproduction(self):
         """
         Function for reproduction in a population. It extends the populations with a list of newborns.
+
         """
         def newborn_pop(population):
             """
@@ -162,6 +175,7 @@ class Landscape:
 
             :return: list of newborn animal objects.
             :rtype: list
+
             """
             # noinspection PyPep8Naming
             pop_size = len(population)
@@ -182,6 +196,7 @@ class Landscape:
 
         :return: Lists of herbivores and carnivores wishing to migrate.
         :rtype: list
+
         """
         migrators_herb = []
         migrators_carn = []
@@ -209,6 +224,7 @@ class Landscape:
 
         :param migrator: Animal that is migrating.
         :type migrator: object
+
         """
         if type(migrator) is Herbivore:
             self.migrating_herbs.append(migrator)
@@ -220,6 +236,7 @@ class Landscape:
     def add_migraters_to_pop(self):
         """
         Adding migrators to the landscape population. Clears the lists of immigrating animals.
+
         """
         self.herb_pop.extend(self.migrating_herbs)
         self.migrating_herbs.clear()
@@ -229,6 +246,7 @@ class Landscape:
     def aging(self):
         """
         Aging the population.
+
         """
         for herb in self.herb_pop:
             herb.update_age()
@@ -238,6 +256,7 @@ class Landscape:
     def weight_loss(self):
         """
         Updates animal weight, due to annual weightloss, for the population.
+
         """
         for herb in self.herb_pop:
             herb.metabolism()
@@ -247,6 +266,7 @@ class Landscape:
     def population_death(self):
         """
         Updates the population due to annual death amongst animals.
+
         """
         surviving_herbs = []
         surviving_carns = []
@@ -262,6 +282,7 @@ class Landscape:
     def pre_migration_cycle(self):
         """
         Runs annual cycle up to migration.
+
         """
         self.regrowth()
         self.herbivores_eating()
@@ -271,6 +292,7 @@ class Landscape:
     def post_migration_cycle(self):
         """
         Runs annual cycle after migration.
+
         """
         self.aging()
         self.weight_loss()
@@ -279,6 +301,7 @@ class Landscape:
 class Lowland(Landscape):
     """
     Subclass representing Lowland landscape on the island.
+
     """
 
     parameters = {'f_max': 800}
@@ -287,6 +310,7 @@ class Lowland(Landscape):
 class Highland(Landscape):
     """
     Subclass representing Highland landscape on the island.
+
     """
     parameters = {'f_max': 300}
 
@@ -294,33 +318,13 @@ class Highland(Landscape):
 class Desert(Landscape):
     """
     Subclass representing Desert landscape on the island.
+
     """
     parameters = {'f_max': 0}
-
 
 class Water(Landscape):
     """
     Subclass representing Ocean landscape on the island.
+
     """
     parameters = {'f_max': 0}
-
-
-
-
-
-'''
-
-ini_pops = [Herbivore() for herb in range(100)]
-carnivores = [Carnivore() for carn in range(5)]
-
-l1 = Lowland(carn_pop=carnivores)
-
-# l1.carnivores_eating()
-
-herb_count = []
-carn_count = []
-for year in range(10):
-    herb_sum, carn_sum = l1.annual_cycle()
-    herb_count.append(herb_sum)
-    carn_count.append(carn_count)
-'''

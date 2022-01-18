@@ -7,6 +7,7 @@ from biosim.animals import Herbivore, Carnivore
 
 import textwrap
 import random
+import numpy as np
 
 
 class Island:
@@ -23,10 +24,11 @@ class Island:
 
     def __init__(self, geogr):
         """
-        Initializing island.
+        Initializing island with map made of :class:`landscape.Landscape` subclasses.
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
+
         """
         self.map = self.createmap(geogr)
 
@@ -35,10 +37,11 @@ class Island:
         Making the given map into a dictionary with location as keys and landscape-objects as value. The given map
         must have a rectangular-shape, and all border cells have to be water. All cells have to indicate a
         landscape-subclass of:
-         * L - Lowland
-         * H - Highland
-         * D - Desert
-         * W - Water
+
+         * L - :class:'landscape.Lowland'
+         * H - :class:'landscape.Highland'
+         * D - :class:'landscape.Desert'
+         * W - :class:'landscape.Water'
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
@@ -46,9 +49,6 @@ class Island:
         :return: dictionary of island map.
         :rtype: dict
 
-        raises
-        ----------
-        ValueError, is raised when habitat letter is erroneous on the map.
         """
         geogr = geogr.split(sep='\n') if geogr is not None else str
 
@@ -60,10 +60,10 @@ class Island:
         island_map = {}
         for row, string in enumerate(geogr, start=1):
             for column, letter in enumerate(string, start=1):
-                if row == 0 or row == len(geogr):
-                    if letter != "W":
+                if row == 1 or row == len(geogr):
+                    if letter != 'W':
                         raise ValueError('Cells at the border have to be water!')
-                if column == 0 or column == len(string):
+                if column == 1 or column == len(string):
                     if letter != 'W':
                         raise ValueError('Cells at the border have to be water!')
 
@@ -72,7 +72,18 @@ class Island:
                     landscape = type(self.parameters[letter])()
                     island_map[loc] = landscape
                 else:
-                    raise ValueError(f'The {letter} is an Invalid habitat type')
+                    if letter == ' ':
+                        raise ValueError(f'There is a hole in the map at loc: {(row,column)}. Fill it with a valid habitat type:\n'
+                                         f'* L - Lowland\n'
+                                         f'* H - Highland\n'
+                                         f'* D - Desert\n'
+                                         f'* W - Water')
+                    else:
+                        raise ValueError(f'The {letter} is an Invalid habitat type, change to:\n'
+                                         f'* L - Lowland\n'
+                                         f'* H - Highland\n'
+                                         f'* D - Desert\n'
+                                         f'* W - Water')
         return island_map
 
     def place_population(self, populations):
@@ -83,9 +94,6 @@ class Island:
         :param populations: A list containing dictionaries with population location and animal information.
         :type populations: list
 
-        raises
-        -----------
-        ValueError: if the location is not included in the map's keys
         """
         for population in populations:
             loc = population['loc']
@@ -96,10 +104,22 @@ class Island:
                 raise ValueError(f'The stated location {loc} is outside the map boundaries')
 
     def set_animal_parameters_island(self, species, params):
+        """
+        Setting animal parameters.
+
+        :param species: specifying which species to set the parameters for
+        :param params: new parameters to set for the species.
+        """
         species = self.sample_animals[species.lower()]
         species.set_parameters(new_params=params)
 
     def set_landscape_parameters_island(self, landscape, params):
+        """
+        Setting landscape parameters.
+
+        :param landscape: specifying which subclass of :class:`landscape.Landscape` to set the parameters for
+        :param params: new parameters to set for the landscape.
+        """
         landscape = self.parameters[landscape]
         landscape.set_parameters(new_params=params)
 
@@ -109,6 +129,7 @@ class Island:
 
         :return: number of herbivores on the island.
         :rtype: int
+
         """
         herb_count = 0
 
@@ -123,6 +144,7 @@ class Island:
 
         :return: number of carnivores on the island.
         :rtype: int
+
         """
         carn_count = 0
 
@@ -135,33 +157,117 @@ class Island:
         """
         Calculates the number of herbivores per cell on the map.
 
-        :return: dictionary with the location as key and count of herbivores as value
-        :rtype: dict
+        :return: 2D-array with herbivorecount per cell as values
+        :rtype: array
+
         """
-        herbs_per_cell = {}
+
+        map_dim = list(self.map.keys())[-1]
+        herb_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
-            herbs_per_cell[loc] = cell.get_num_herbs()
-        return herbs_per_cell
+            herb_matrix[loc[0]-1][loc[1]-1] = cell.get_num_herbs()
+        return herb_matrix
 
     def get_number_carns_per_cell(self):
         """
-        Getting the number of carnivores per cell on the map.
+        Calculates the number of carnivores per cell on the map.
 
-        :return: dictionary with the location as key and count of carnivores as value
-        :rtype: dict
+        :return: 2D-array with carnivorecount per cell as values
+        :rtype: array
+
         """
-        carns_per_cell = {}
+        map_dim = list(self.map.keys())[-1]
+        carn_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
-            carns_per_cell[loc] = cell.get_num_carns()
-        return carns_per_cell
+            carn_matrix[loc[0] - 1][loc[1] - 1] = cell.get_num_carns()
+        return carn_matrix
+
+    def get_herbs_fitness(self):
+        """
+        Makes list of alle the fitnessvalues for the islands herbivore population
+
+        :return: list with values for fitness
+        :rtype: list
+        """
+        herbivores_fitness = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_fitness.append(herb.fitness)
+        return herbivores_fitness
+
+    def get_carns_fitness(self):
+        """
+        Makes list of all the fitnessvalues for the islands carnivore population
+
+        :return: list with values for fitness
+        :rtype: list
+        """
+        carnivores_fitness = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_fitness.append(carn.fitness)
+        return carnivores_fitness
+
+    def get_herbs_age(self):
+        """
+        Makes list of all the age-values for the islands herbivore population
+
+        :return: list with values for age
+        :rtype: list
+        """
+        herbivores_age = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_age.append(herb.age)
+        return herbivores_age
+
+    def get_carns_age(self):
+        """
+        Makes list of all the age-values for the islands carnivore population
+
+        :return: list with values for age
+        :rtype: list
+        """
+        carnivores_age = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_age.append(carn.age)
+        return carnivores_age
+
+    def get_herbs_weight(self):
+        """
+        Makes list of all the weight-values for the islands herbivore population
+
+        :return: list with values for weight
+        :rtype: list
+        """
+        herbivores_weight = []
+        for cell in self.map.values():
+            for herb in cell.herb_pop:
+                herbivores_weight.append(herb.weight)
+        return herbivores_weight
+
+    def get_carns_weight(self):
+        """
+        Makes list of all the weight-values for the islands carnivore population
+
+        :return: list with values for weight
+        :rtype: list
+        """
+        carnivores_weight = []
+        for cell in self.map.values():
+            for carn in cell.carn_pop:
+                carnivores_weight.append(carn.weight)
+        return carnivores_weight
 
     def island_migration(self):
         """
-        X?
+        Function for implementing migration for all animals on the island.
 
-        Gets neighbouring cells and chooses one at random for the animal to emigrate to. If the chosen cell is water,
-        the animal stays put, else it is registered to the chosen cells migrant population. Lastly, it adds
-        the migrators to their cell's population.
+        Gets neighbouring cells and chooses one at random :math:`p = \frac{1}{4}` for the animal to emigrate to.
+        If the chosen cell is :class:`lanscape.Water`, the animal stays put, else it is registered to the chosen
+        cells migrant population. Lastly, it adds the migrators to their cell's population.
+
         """
         for loc, cell in self.map.items():
             if cell.classname == 'Water':
@@ -199,6 +305,7 @@ class Island:
         Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
         herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
         Lastly, in post migration the animals age, lose weight and some die.
+
         """
         for cell in self.map.values():
             cell.pre_migration_cycle()
@@ -209,68 +316,4 @@ class Island:
             cell.post_migration_cycle()
 
 
-geogr = """\
-           WWWWWWWWW
-           WLLLWHHHW
-           WHLHHHLLW
-           WHLLLDDDW
-           WLLLWDDDW
-           WWWWWWWWW"""
 
-
-i = Island(textwrap.dedent(geogr))
-
-'''
-#i.check_map(geogr)
-
-ini_pop = [{'loc': (2,2),
-              'pop': [{'species': 'Herbivore',
-                    'age': 5,
-                    'weight': 20}
-                    for _ in range(50)]}]
-
-
-i.place_population(populations=ini_pop)
-def print_herbs_per_cell(i):
-    print('HERBIVORES')
-    print('----------')
-    herbs_per_cell = i.get_number_herbs()
-    for loc, count in herbs_per_cell.items():
-        print(loc, ':', count)
-
-def print_carns_per_cell(i):
-    print('CARNIVORES')
-    print('----------')
-    carns_per_cell = i.get_number_carns()
-    for loc, count in carns_per_cell.items():
-        print(loc, ':', count)
-''''''
-for indx,year in enumerate(range(30), start=1):
-
-    print(f'Begining of year {indx}')
-    print('****************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.pre_migration_anual_cycle()
-
-    print('Pre migration')
-    print('*************')
-
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.island_migration()
-
-    print('Post migration')
-    print('*************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-
-    i.post_migration_anual_cycle()
-
-    print('End of year')
-    print('*************')
-    print_herbs_per_cell(i)
-    #print_carns_per_cell(i)
-'''

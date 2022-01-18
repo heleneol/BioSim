@@ -140,7 +140,8 @@ def test_add_population_water(herb_pop):
 
 def test_add_population_species(highland):
     """
-    Testing whether adding population with erroneous assigned species will raise a KeyError as expected.
+    Testing whether adding population with erroneous assigned species will
+    raise a KeyError as expected.
     """
     herb_pop = [{'age': 5,
                 'weight': 20}
@@ -213,8 +214,8 @@ def test_carnivores_eating():
 
 def test_reproduction():
     """
-    Testing both populations increase after the breeding season. Setting weight high and age low to ensure good fitness
-    and that feeding happens.
+    Testing both populations increase after the breeding season. Setting weight high
+    and age low to ensure good fitness and that feeding happens.
     """
     herb_pop = [Herbivore(age=1, weight=50) for _ in range(100)]
     carn_pop = [Carnivore(age=1, weight=50) for _ in range(5)]
@@ -246,7 +247,8 @@ def test_register_migrants():
 
 def test_add_migrators():
     """
-    Testing that the migrators are added to the population, and that the list of migrators is emptied.
+    Testing that the migrators are added to the population,
+    and that the list of migrators is emptied.
     """
     carn_pop = [Carnivore(age=1, weight=50) for _ in range(20)]
     h = Highland(carn_pop=carn_pop)
@@ -260,13 +262,14 @@ def test_add_migrators():
 def test_aging():
     """
     Testing whether a population ages.
-    Using a function for calculating mean age to compare the mean age after aging is bigger than before, or is equal
-    to 1 in the carnivore population's case
+    Using a function for calculating mean age to compare the mean age
+    after aging is bigger than before, or is equal to 1 in the carnivore population's case
     """
     def get_mean_age(population):
         return sum([animal.age for animal in population]) / len(population)
 
-    herb_pop = [Herbivore(age=age) for herb, age in zip(range(250), [random.randint(0, 6) for _ in range(250)])]
+    herb_pop = [Herbivore(age=age) for herb, age in zip(range(250),
+                                                        [random.randint(0, 6) for _ in range(250)])]
     carn_pop = [Carnivore(age=0) for _ in range(5)]
     low = Lowland(herb_pop, carn_pop)
     herb_age_before = get_mean_age(low.herb_pop)
@@ -286,14 +289,15 @@ def test_population_weightloss():
     herb_weight_before = get_mean_weight(h.herb_pop)
     carn_weight_before = get_mean_weight(h.carn_pop)
     h.weight_loss()
-    assert get_mean_weight(h.herb_pop) < herb_weight_before and get_mean_weight(h.carn_pop) < carn_weight_before
+    assert get_mean_weight(h.herb_pop) < herb_weight_before \
+           and get_mean_weight(h.carn_pop) < carn_weight_before
 
 
 def test_population_death_occurs():
     """
     Testing that some of the population die after annually.
-    Ensuring some animals are expected to die by setting the age high and weight low (bad fitness),
-    and setting the population to 100.
+    Ensuring some animals are expected to die by setting
+    the age high and weight low (bad fitness), and setting the population to 100.
     """
     carn_pop = generate_carn_pop(age=60, weight=2, num_carns=100)
     herb_pop = generate_herb_pop(age=60, weight=2, num_herbs=100)
@@ -306,8 +310,9 @@ def test_population_death_occurs():
 
 def test_animal_migration(lowland):
     """
-    Testing migration returns an empty migrator list if the number of animals in the population doesn't change after
-    running migration, and that it returns a list with animals if there is a change of population.
+    Testing migration returns an empty migrator list if the number of animals
+    in the population doesn't change after running migration,
+    and that it returns a list with animals if there is a change of population.
     """
     lowland.herb_pop = generate_herb_pop(age=5, weight=None, num_herbs=20)
     lowland.carn_pop = generate_carn_pop(age=5, weight=None, num_carns=10)

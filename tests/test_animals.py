@@ -144,7 +144,8 @@ def test_fitness_values_expected(carnivore):
 
 def test_regains_appetite(carnivore):
     """
-    Testing that the regain_appetite() function successfully sets the animal's appetite as parameter F.
+    Testing that the regain_appetite() function successfully
+    sets the animal's appetite as parameter F.
     """
     carnivore.appetite = 0
     carnivore.regain_appetite()
@@ -154,7 +155,8 @@ def test_regains_appetite(carnivore):
 def test_certain_birth(mocker, carnivore):
     """
     Testing to ensure birth happens when conditions for birth are met.
-    random.random is set to zero and weight at 1000 to ensure the conditions of birthing an offspring are met.
+    random.random is set to zero and weight at 1000 to ensure
+    the conditions of birthing an offspring are met.
     """
     num = 100
     carnivore.set_weight(new_weight=1000)
@@ -176,10 +178,12 @@ def test_no_birth(set_carnivore_parameters, carnivore):
         assert carnivore.gives_birth(pop_size=num) is False
 
 
-@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0, 'zeta': 100}], indirect=True)
+@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0,
+                                                       'zeta': 100}], indirect=True)
 def test_no_birth_zeta(set_herbivore_parameters, mocker, herbivore):
     """
-    Testing birth to an offspring does not occur if the mother's weight is lower than zeta * (w_birth + sigma_birth).
+    Testing birth to an offspring does not occur if the mother's weight
+    is lower than zeta * (w_birth + sigma_birth).
     """
     num = 100
     mocker.patch('random.random', return_value=0)
@@ -188,10 +192,12 @@ def test_no_birth_zeta(set_herbivore_parameters, mocker, herbivore):
         assert herbivore.gives_birth(pop_size=num) is False
 
 
-@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0, 'xi': 100}], indirect=True)
+@pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0,
+                                                       'xi': 100}], indirect=True)
 def test_no_birth_parentweight_too_low(set_herbivore_parameters, mocker, herbivore):
     """
-    Testing no birth to offspring occurs if the parent's weight < xi * newborn's weight.
+    Testing no birth to offspring occurs if
+    the parent's weight < xi * newborn's weight.
     """
     mocker.patch('random.random', return_value=0)
     num = 200
@@ -205,7 +211,8 @@ def test_no_birth_parentweight_too_low(set_herbivore_parameters, mocker, herbivo
 def test_certain_migration(set_carnivore_parameters, carnivore):
     """
     Testing migration does happen if the conditions are met.
-    Making sure the animal's fitness * mu > 1 by setting mu to 100 and the animal's fitness to 1.
+    Making sure the animal's fitness * mu > 1 by setting
+    mu to 100 and the animal's fitness to 1.
     """
     # Ensuring the carnivore's fitness is large enough.
     carnivore.fitness = 1
@@ -215,7 +222,8 @@ def test_certain_migration(set_carnivore_parameters, carnivore):
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 0}], indirect=True)
 def test_cartain_no_migration(set_carnivore_parameters, carnivore):
     """
-    Testing migration does not happen by setting mu to zero so random.random > animal's fitness * mu. The function
+    Testing migration does not happen by setting mu to zero so
+    random.random > animal's fitness * mu. The function
     should return False in this case.
     """
     assert carnivore.migrate() is False
@@ -254,8 +262,9 @@ def test_dies_z_test(set_carnivore_parameters, carnivore):
     """
     Binomial Z-test on the dies()-function with herbivores.
 
-    H0 = The number of times the function returns True, the animal dies, is statistically significant with the
-    probability exceeding the set significance level of 0.01 (ALPHA).
+    H0 = The number of times the function returns True, the animal dies,
+         is statistically significant with the probability exceeding the set
+         significance level of 0.01 (ALPHA).
     H1 = The function does not return True a statistically significant number of times. We cannot say H0 is true.
 
     Based on settinkilde.
@@ -288,8 +297,8 @@ def test_certain_death(mocker, herbivore):
 
 def test_return_herbivores_feeding(herbivore):
     """
-    Testing the herbivore's weight changes as expected after it eats an amount of fodder that is smaller than its
-    appetite.
+    Testing the herbivore's weight changes as expected after it eats
+    an amount of fodder that is smaller than its appetite.
     """
     herbivore.appetite = 8
     weight_before = herbivore.weight
@@ -300,7 +309,8 @@ def test_return_herbivores_feeding(herbivore):
 
 def test_herb_weightchange_fodder(herbivore):
     """
-    Testing the herbivore's weight changes as expected after it eats a known amount of fodder.
+    Testing the herbivore's weight changes as expected after
+    it eats a known amount of fodder.
     """
     weight_before = herbivore.weight
     herbivore.herbivore_feeding(landscape_fodder=herbivore.appetite)
@@ -318,7 +328,8 @@ def test_herb_fitnesschange_fodder(herbivore):
 
 def test_carn_nokill(herbivore, carnivore):
     """
-    Testing that the carnivore does not kill a herbivore if the herbivore's fitness exceeds the carnivore's fitness.
+    Testing that the carnivore does not kill a herbivore if the herbivore's fitness
+    exceeds the carnivore's fitness.
     """
     # Ensuring herbivore fitness > carnivore fitness
     carnivore.fitness = 0.5
@@ -329,8 +340,9 @@ def test_carn_nokill(herbivore, carnivore):
 @pytest.mark.parametrize('set_carnivore_parameters', [{'DeltaPhiMax': 0.5}], indirect=True)
 def test_certain_kill(set_carnivore_parameters, mocker, herbivore, carnivore):
     """
-    Testing the carnivore kills the herbivore using mocker to set random.random as 0 and ensuring
-    DeltaPhi > DeltaPhiMax, so that the prey probability is 1.
+    Testing the carnivore kills the herbivore using mocker to set
+    random.random as 0 and ensuring DeltaPhi > DeltaPhiMax,
+    so that the prey probability is 1.
     """
     carnivore.fitness = 1
     herbivore.fitness = 0.1
@@ -341,8 +353,10 @@ def test_certain_kill(set_carnivore_parameters, mocker, herbivore, carnivore):
 
 def test_nokill_preyprob(mocker, herbivore, carnivore):
     """
-    Testing carnivore does not kill herbivore if the random probability of kill does not exceed the prey probability.
-    Setting parameters so the prey probability (fitness carnivore - fitness herbivore) / DeltaPhiMax <= 1.
+    Testing carnivore does not kill herbivore if the random probability
+    of kill does not exceed the prey probability.
+    Setting parameters so the
+    prey probability (fitness carnivore - fitness herbivore) / DeltaPhiMax <= 1.
     """
     herbivore.fitness = 0.3
     carnivore.fitness = 0.8

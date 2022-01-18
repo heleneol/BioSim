@@ -20,8 +20,9 @@ class Animals:
     def set_parameters(cls, new_params):
         r"""
         Set class parameters. \n
-        Parametre DeltaPhiMax can only be set for Carnivores and must be :math:`\Delta \Phi_{max} > 0`.
-        Parametre eta must be :math:`\eta >= 0`.
+        Parameter DeltaPhiMax can only be set for Carnivores
+        and must be :math:`\Delta \Phi_{max} > 0`.
+        Parameter eta must be :math:`\eta >= 0`.
 
         :param new_params: new parameter values.
         :type new_params: dict
@@ -52,7 +53,8 @@ class Animals:
 
     def __init__(self, age=None, weight=None):
         """
-        Initializing animal objects. Objects get age, weight, fitness and apatite be default.
+        Initializing animal objects. Objects get age, weight,
+        fitness and apatite be default.
 
         :param age: age of animal
         :type age: float
@@ -133,7 +135,8 @@ class Animals:
 
         if random.random() < preg_prob:
             newborn = type(self)()
-            if self.weight < self.parameters['zeta'] * (self.parameters['w_birth'] + self.parameters['sigma_birth']):
+            if self.weight < self.parameters['zeta'] * \
+                    (self.parameters['w_birth'] + self.parameters['sigma_birth']):
                 return False
             elif self.weight < self.parameters['xi'] * newborn.weight:
                 return False
@@ -223,7 +226,8 @@ class Herbivore(Animals):
 
     def herbivore_feeding(self, landscape_fodder):
         r"""
-        Decides how much fodder each herbivore gets, and updates weight and fitness accordingly.
+        Decides how much fodder each herbivore gets,
+        and updates weight and fitness accordingly.
         Weight is updated with a factor of :math:`\beta * w_{portion}`
 
         :param landscape_fodder: amount of fodder available for herbivore.
@@ -266,7 +270,8 @@ class Carnivore(Animals):
 
         If :math:`\Phi_{carn} <= \Phi_{herb}`, :math:`p_{kill}=0`,
 
-        also if :math:`0 < \Delta \Phi < \Delta \Phi_{max}`, :math:`p_{kill} = \frac{\Delta \Phi}{\Delta \Phi_{max}}`
+        also if :math:`0 < \Delta \Phi < \Delta \Phi_{max}`,
+        :math:`p_{kill} = \frac{\Delta \Phi}{\Delta \Phi_{max}}`
 
         where: :math:`\Delta \Phi = \Phi_{carn} - \Phi_{herb}`
 

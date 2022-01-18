@@ -1,5 +1,6 @@
 """
-Module implementing the landscape on the island, using the Landscape superclass.
+Module implementing the landscape on the island,
+using the Landscape superclass.
 """
 import random
 
@@ -8,7 +9,8 @@ from biosim.animals import Herbivore, Carnivore
 
 class Landscape:
     """
-    Superclass containing methods on population for different landscapes on the island.
+    Superclass containing methods on population for different
+    landscapes on the island.
 
     Subclasses:
     * :class:`Lowland`
@@ -57,11 +59,13 @@ class Landscape:
 
     def add_population(self, animals):
         """
-        Adding population to landscape. Animals are added to either the herbivore or carnivore population based on the
-        given information. A population cannot be placed in watercells, and has to be of the species
-        herbivore or carnivore.
+        Adding population to landscape. Animals are added to either
+        the herbivore or carnivore population based on the
+        given information. A population cannot be placed in watercells,
+        and has to be of the species herbivore or carnivore.
 
-        :param animals: list containing dictionaries with animal information about species, age and weight.
+        :param animals: list containing dictionaries with
+                        animal information about species, age and weight.
         :type animals: list
 
         """
@@ -102,8 +106,10 @@ class Landscape:
         """
         Sorts the herbivore population by fitness.
 
-        :param decreasing: True  :math:`\longrightarrow` sorted by decreasing fitness.\n
-                           False :math:`\longrightarrow` sorted by increasing fitness.
+        :param decreasing: True
+                           :math:`\longrightarrow` sorted by decreasing fitness.\n
+                           False
+                           :math:`\longrightarrow` sorted by increasing fitness.
         :type decreasing: bool
 
         """
@@ -121,8 +127,9 @@ class Landscape:
 
     def herbivores_eating(self):
         """
-        Herbivores consume fodder by descending fitness. Landscape fodder is updated for each portion consumed by a
-        herbivore. Feeding stops when there is no more fodder.
+        Herbivores consume fodder by descending fitness.
+        Landscape fodder is updated for each portion consumed by a herbivore.
+        Feeding stops when there is no more fodder.
 
         """
         self.sort_herbs_by_fitness(decreasing=True)
@@ -137,7 +144,8 @@ class Landscape:
     def carnivores_eating(self):
         """
         Carnivores etat in random order and consume herbivores.
-        The carnivore tries to kill one herbivore at a time, beginning with the herbivore with lowest fitness.
+        The carnivore tries to kill one herbivore at a time,
+        beginning with the herbivore with lowest fitness.
         A carnivore tries to kill until it has attempted to kill each herbivore
         in the cell or it no longer has an appetite. Surviving herbivores is added back to the
         herbivore population by the end of each carnivores' hunting season.
@@ -159,13 +167,14 @@ class Landscape:
 
     def reproduction(self):
         """
-        Function for reproduction in a population. It extends the populations with a list of newborns.
+        Function for reproduction in a population.
+        It extends the populations with a list of newborns.
 
         """
         def newborn_pop(population):
             """
-            Generates a list of newborn animal objects based on whether animals in the population get an offspring
-            or not.
+            Generates a list of newborn animal objects based on
+            whether animals in the population get an offspring or not.
 
             :param population: A list of animal objects.
             :type population: list
@@ -188,8 +197,8 @@ class Landscape:
 
     def animal_migration(self):
         """
-        The function returns lists of animals that wish to migrate, and updates the landscapes population to animals
-        that are staying put.
+        The function returns lists of animals that wish to migrate,
+        and updates the landscapes population to animals that are staying put.
 
         :return: Lists of herbivores and carnivores wishing to migrate.
         :rtype: list
@@ -234,7 +243,8 @@ class Landscape:
 
     def add_migraters_to_pop(self):
         """
-        Adding migrators to the landscape population. Clears the lists of immigrating animals.
+        Adding migrators to the landscape population.
+        Clears the lists of immigrating animals.
 
         """
         self.herb_pop.extend(self.migrating_herbs)

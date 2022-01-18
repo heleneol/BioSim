@@ -45,9 +45,11 @@ class Island:
 
     def createmap(self, geogr=None):
         """
-        Making the given map into a dictionary with location as keys and landscape-objects as value. The given map
-        must have a rectangular-shape, and all border cells have to be water. All cells have to indicate a
-        landscape-subclass of:
+        Making the given map into a dictionary with location as keys
+        and landscape-objects as value.
+        The given map must have a rectangular-shape,
+        and all border cells have to be water.
+        All cells have to indicate a landscape-subclass of:
 
          * L - Lowland
          * H - Highland
@@ -100,10 +102,11 @@ class Island:
 
     def place_population(self, populations):
         """
-        Places a population on the map based on its stated location. The location has to be within the given
-        map-geography.
+        Places a population on the map based on its stated location.
+        The location has to be within the given map-geography.
 
-        :param populations: A list containing dictionaries with population location and animal information.
+        :param populations: A list containing dictionaries with
+                            population location and animal information.
         :type populations: list
 
         Example
@@ -117,6 +120,7 @@ class Island:
                                     for _ in range(200)]}]
 
             Island().place_population(herbivores)
+
         """
         for population in populations:
             loc = population['loc']
@@ -132,6 +136,7 @@ class Island:
 
         :param species: specifying which species to set the parameters for
         :param params: new parameters to set for the species.
+
         """
         species = self.sample_animals[species.lower()]
         species.set_parameters(new_params=params)
@@ -140,7 +145,8 @@ class Island:
         """
         Setting landscape parameters.
 
-        :param landscape: specifying which subclass of :class:`landscape.Landscape` to set the parameters for
+        :param landscape: specifying which subclass
+                          of :class:`landscape.Landscape` to set the parameters for
         :param params: new parameters to set for the landscape.
         """
         landscape = self.parameters[landscape]
@@ -163,11 +169,10 @@ class Island:
 
     def get_number_of_carns(self):
         """
-        Calculates the number of carnviores in total on the island.
+        Calculates the number of carnivores in total on the island.
 
         :return: number of carnivores on the island.
         :rtype: int
-
         """
         carn_count = 0
 
@@ -287,9 +292,12 @@ class Island:
         """
         Function for implementing migration for all animals on the island.
 
-        Gets neighbouring cells and chooses one at random :math:`p = \frac{1}{4}` for the animal to emigrate to.
-        If the chosen cell is :class:`lanscape.Water`, the animal stays put, else it is registered to the chosen
-        cells migrant population. Lastly, it adds the migrators to their cell's population.
+        Gets neighbouring cells and chooses one at random :math:`p = \frac{1}{4}`
+        for the animal to emigrate to.
+        If the chosen cell is :class:`lanscape.Water`, the animal stays put,
+        else it is registered to the chosen
+        cells migrant population. Lastly, it adds the migrators to
+        their cell's population.
 
         """
         for loc, cell in self.map.items():
@@ -325,8 +333,10 @@ class Island:
 
     def annual_cycle_island(self):
         """
-        Method running the annual cycle of the ecosystem on the island. In pre migration all cells regrow fodder,
-        herbivores eat, carnivores eat and the breeding season plays out. Then the migrating animals migrate.
+        Method running the annual cycle of the ecosystem on the island.
+        In pre migration all cells regrow fodder,
+        herbivores eat, carnivores eat and the breeding season plays out.
+        Then the migrating animals migrate.
         Lastly, in post migration the animals age, lose weight and some die.
         """
         for cell in self.map.values():

@@ -114,8 +114,8 @@ class BioSim:
 
     def simulate(self, num_years):
         """
-        Run simulations with or without graphics (see vis_years contraints). Passes graphics parametres
-        to the graphics module in order to visulaize.
+        Run simulations with or without graphics (see vis_years constraints).
+        Passes graphics parameters to the graphics module in order to visualize.
 
         :param num_years: number of years to simulate, must be integer.
         :type num_years: int
@@ -143,7 +143,7 @@ class BioSim:
             else:
                 raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
         else:
-            warnings.warn("Warning: Simulation running without graphics due to vis_years is set to 0")
+            warnings.warn("Warning: Simulation running without graphics due to vis_years is 0")
             num_simulations = num_years
             if num_simulations // 1 == num_simulations:
                 while self.step < self.final_step:

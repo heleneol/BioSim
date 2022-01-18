@@ -47,14 +47,15 @@ def ini_pops():
 
 def test_creatmap(map_island):
     """
-    Tests if an Island is initialized and has the attribute self.map. With an empty geogr the len is zero
+    Tests if an Island is initialized and has the attribute self.map
+    with an empty geogr the len is zero.
     """
     assert len(map_island.map) > 0
 
 
 def test_non_rectangular_shape():
     """
-    Tests what happens if the island geography is non-rectangular
+    Tests what happens if the island geography is non-rectangular.
     """
     geogr = """\
                 WWWW
@@ -180,7 +181,8 @@ def test_set_landscape_parameters(map_island):
 
 def test_get_num_herbs(map_island, ini_pops):
     """
-    Testing that the functions for getting the total number of a species on the island returns the correct total.
+    Testing that the functions for getting the total number of a species
+    on the island returns the correct total.
     """
     map_island.place_population(ini_pops)
     total_herb = 0
@@ -241,9 +243,10 @@ def test_get_species_weight(map_island, ini_pops):
 def test_island_migration_happens(map_island):
     """
     Testing migration happens on the island.
-    A large herbivore population, ini_pop, is placed on one cell on the island. The function
-    get_number_herbs_per_cell is used to get the population-by-cell-matrix before and
-    after the island migration function is called. These matrices should not be equal to another if
+    A large herbivore population, ini_pop, is placed on one cell on the island.
+    The function get_number_herbs_per_cell is used to get the
+    population-by-cell-matrix before and after the island migration function is called.
+    These matrices should not be equal to another if
     some of the herbivore population has migrated to other cells.
     """
     # Setting ini_pop population to 250, and placing them near the middle of the island

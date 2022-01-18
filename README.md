@@ -9,15 +9,14 @@ amount of years.
 * Mailing list: johannes.larsen.fjeldsa@nmbu.no & helene.drennan.olsen@nmbu.no
 
 #### Visualization of BioSim analysis objects
+Visualization of simulations is handled through the graphics module. 
+It can be accessed as a movie if BioSim objects methode make_movie() is called.
 
 
-## Contents
+#### Contents
 - src: The source code biosim Python package
 - examples: Some examples for using the package
 - tests: A testsuite
-
-## Introduction
-
 
 #### License
 MIT License

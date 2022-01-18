@@ -1,5 +1,5 @@
 """
-Island with single lowland cell, showing syntaxt for making BioSim object.
+Small island of lowland and highland cells, showing syntaxt for making BioSim object.
 showing how to save graphics to results directory. For tips on syntaxt
 see eg_1.py
 """

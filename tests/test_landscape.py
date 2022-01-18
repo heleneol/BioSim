@@ -70,7 +70,6 @@ def test_input_param_landscape():
     Testing that input of new parameter values is possible.
     """
     new_params = {'f_max': 300}
-
     Highland.set_parameters(new_params)
     assert Highland.parameters['f_max'] == 300
 
@@ -84,15 +83,6 @@ def test_param_mistake_landscape():
 
     with pytest.raises(ValueError):
         Highland.set_parameters({'f_max': -40})
-
-# Forkaste?
-def test_no_pop_generated():
-    """
-    Testing an empty landscape with no population input returns empty populations.
-    """
-    low = Lowland()
-    assert low.herb_pop == []
-    assert low.carn_pop == []
 
 
 def test_pop_generated():
@@ -108,7 +98,7 @@ def test_pop_generated():
     assert len(h.herb_pop) == number_herb
     assert len(h.carn_pop) == number_carn
 
-# Hvilken vil vi ha?
+
 def test_landscape_construction():
     """
     Testing that creating landscapes with a given list of animal objects works.
@@ -132,8 +122,7 @@ def test_habitability_true():
     herb_pop = generate_herb_pop(None, None, 10)
     d = Desert(herb_pop)
     w = Water(herb_pop)
-    assert d.habitability is True
-    assert w.habitability is False
+    assert d.habitability is True and w.habitability is False
 
 
 def test_add_population_water():

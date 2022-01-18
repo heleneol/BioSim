@@ -12,7 +12,7 @@ ALPHA = 0.01  # significance level for statistical tests
 @pytest.fixture
 def set_herbivore_parameters(request):
     """
-    Fixture setting class parameters on Herbivore, based on H. E. Plesser's biolab/bacteria.py
+    Fixture setting class parameters for Herbivore, based on H. E. Plesser's biolab/bacteria.py
 
     The fixture sets Herbivore parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
@@ -33,7 +33,7 @@ def set_herbivore_parameters(request):
 @pytest.fixture
 def set_carnivore_parameters(request):
     """
-    Fixture setting class parameters on Carnivore, based on H. E. Plesser's biolab/bacteria.py.
+    Fixture setting class parameters for Carnivore, based on H. E. Plesser's biolab/bacteria.py.
 
     The fixture sets Carnivore parameters when called for setup,
     and resets them when called for teardown. This ensures that modified
@@ -53,11 +53,13 @@ def set_carnivore_parameters(request):
 
 @pytest.fixture
 def carnivore():
+    """ Fixture fixing a carnivore."""
     return Carnivore()
 
 
 @pytest.fixture
 def herbivore():
+    """ Fixture fixing a herbivore."""
     return Herbivore()
 
 
@@ -134,7 +136,7 @@ def test_fitness_values_expected(carnivore):
     q_pos = 1 / (1 + (math.exp(carnivore.parameters['phi_age'] * (carnivore.age - carnivore.parameters['a_half']))))
     q_neg = 1 / (1 + (math.exp((-1) * carnivore.parameters['phi_weight'] * (carnivore.weight - carnivore.parameters['w_half']))))
 
-    assert carnivore.fitness == q_pos * q_neg
+    assert carnivore.fitness == q_pos * q_neg and q_pos * q_neg == 1/4
 
 
 def test_regains_appetite(carnivore):
@@ -149,9 +151,7 @@ def test_regains_appetite(carnivore):
 def test_certain_birth(mocker, carnivore):
     """
     Testing to ensure birth happens when conditions for birth are met.
-    Mocker ensures random.random returns the value zero. Weight is set at 1000 to ensure it always surpasses
-    xi*newborn.weight and zeta*(w_birth + sigma_birth).
-    With these conditions the function should not return False (False meaning no offspring).
+    random.random is set to zero and weight at 1000 to ensure the conditions of birthing an offspring are met.
     """
     num = 100
     carnivore.set_weight(new_weight=1000)
@@ -165,7 +165,7 @@ def test_certain_birth(mocker, carnivore):
 def test_no_birth(set_carnivore_parameters, carnivore):
     """
     If gamma is set to zero, the birth probability (gamma * fitness * (num - 1)), will be zero.
-    Hence, gives_birth() will return None.
+    Hence, gives_birth() will return False.
     """
     num = 100
 
@@ -189,8 +189,6 @@ def test_no_birth_zeta(set_herbivore_parameters, mocker, herbivore):
 def test_no_birth_parentweight_too_low(set_herbivore_parameters, mocker, herbivore):
     """
     Testing no birth to offspring occurs if the parent's weight < xi * newborn's weight.
-    Setting parameters so random.random < gamma * fitness * (N-1). The animal's weight and xi are set so weight will
-    always be lower than xi * newborn's weight.
     """
     mocker.patch('random.random', return_value=0)
     num = 200
@@ -204,19 +202,20 @@ def test_no_birth_parentweight_too_low(set_herbivore_parameters, mocker, herbivo
 def test_certain_migration(set_carnivore_parameters, carnivore):
     """
     Testing migration does happen if the conditions are met.
-    Making sure the animal's fitness * mu > 1 by setting mu to 100 and the animal's fitness to 1. Migration should,
-    with these conditions, always happen.
+    Making sure the animal's fitness * mu > 1 by setting mu to 100 and the animal's fitness to 1.
     """
     # Ensuring the carnivore's fitness is large enough.
     carnivore.fitness = 1
-    for _ in range(10):
-        assert carnivore.migrate() is True
+    assert carnivore.migrate() is True
 
 
 @pytest.mark.parametrize('set_carnivore_parameters', [{'mu': 0}], indirect=True)
 def test_cartain_no_migration(set_carnivore_parameters, carnivore):
-    for _ in range(10):
-        assert carnivore.migrate() is False
+    """
+    Testing migration does not happen by setting mu to zero so random.random > animal's fitness * mu. The function
+    should return False in this case.
+    """
+    assert carnivore.migrate() is False
 
 
 def test_animal_aging(herbivore, carnivore):
@@ -236,10 +235,9 @@ def test_animal_metabolism(herbivore, carnivore):
     h_weight_before = herbivore.weight
     c_weight_before = carnivore.weight
 
-    for _ in range(10):
-        herbivore.metabolism()
-        carnivore.metabolism()
-        assert herbivore.weight < h_weight_before and carnivore.weight < c_weight_before
+    herbivore.metabolism()
+    carnivore.metabolism()
+    assert herbivore.weight < h_weight_before and carnivore.weight < c_weight_before
 
 
 def test_death_by_too_low_weight(carnivore):
@@ -263,6 +261,7 @@ def test_dies_z_test(set_carnivore_parameters, carnivore):
     random.seed(SEED)
     num = 100
     carnivore.fitness = 0.01
+    # Setting fitness so low that probability of death ≈ omega
     p = carnivore.parameters['omega']
     n = sum(carnivore.dies() for _ in range(num))  # True == 1, False == 0
 

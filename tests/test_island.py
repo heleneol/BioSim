@@ -1,15 +1,11 @@
+"""Tests for the Island class provided in biosim/src/island.py """
+
 from biosim.island import Island
 
 import textwrap
 import pytest
 import numpy as np
 
-
-ini_herbs = [{'loc': (2, 2),
-              'pop': [{'species': 'Herbivore',
-                       'age': 5,
-                       'weight': 20}
-                      for _ in range(2)]}]
 
 
 def test_creatmap():

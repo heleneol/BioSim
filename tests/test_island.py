@@ -1,9 +1,10 @@
-"""Tests for the Island class provided in biosim/src/island.py """
+"""Tests for the Island class"""
 
 from biosim.island import Island
 
 import textwrap
 import pytest
+import numpy as np
 
 
 @pytest.fixture
@@ -237,12 +238,26 @@ def test_get_species_weight(map_island, ini_pops):
     assert before_carn < after_carn
 
 
-def test_island_migration():
+def test_island_migration_happens(map_island):
     """
+    Testing migration happens on the island.
+    A large herbivore population, ini_pop, is placed on one cell on the island. The function
+    get_number_herbs_per_cell is used to get the population-by-cell-matrix before and
+    after the island migration function is called. These matrices should not be equal to another if
+    some of the herbivore population has migrated to other cells.
+    """
+    # Setting ini_pop population to 250, and placing them near the middle of the island
+    # to ensure some herbivores migrate.
+    ini_pop = [{'loc': (3, 4),
+                'pop': [{'species': 'Herbivore',
+                        'age': 5,
+                        'weight': 20}
+                        for _ in range(250)]}]
 
-    """
+    map_island.place_population(ini_pop)
+    before = map_island.get_number_herbs_per_cell()
+    map_island.island_migration()
+    after = map_island.get_number_herbs_per_cell()
+    print(after)
 
-
-def test_only_migrates_once():
-    """
-    """
+    assert np.array_equal(before, after) is False

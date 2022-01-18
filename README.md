@@ -17,9 +17,10 @@ It can be accessed as a movie if BioSim objects methode make_movie() is called.
 - src: The source code biosim Python package
 - examples: Some examples for using the package
 - tests: A testsuite
+- 
 
 #### License
-MIT License
+MIT License 
 
 #### Copyright
 :copyright: 2022 by Johannes Fjeldså & Helene Drennan Olsen 

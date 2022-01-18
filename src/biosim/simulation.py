@@ -88,7 +88,7 @@ class BioSim:
                     raise KeyError(f'Key {key} is not valid')
 
         self.vis_years = vis_years if vis_years is not None else 1
-        self.img_years = 1
+        self.img_years = img_years if img_years is not None else vis_years
 
         if vis_years is not None and img_years is not None:
             if img_years % vis_years != 0:

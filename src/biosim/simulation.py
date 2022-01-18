@@ -136,6 +136,8 @@ class BioSim:
                                              animal_fitness_per_species=self.animal_fitness_per_species,
                                              animal_age_per_species=self.animal_age_per_species,
                                              animal_weight_per_species=self.animal_weight_per_species)
+            else:
+                raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
         else:
             warnings.warn("Warning: Simulation running without graphics due to vis_years is set to 0")
             num_simulations = num_years
@@ -143,23 +145,9 @@ class BioSim:
                 while self.step < self.final_step:
                     self.island.annual_cycle_island()
                     self.step += 1
+            else:
+                raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
 
-
-        num_simulations = num_years
-        if num_simulations//1 == num_simulations:
-            while self.step < self.final_step:
-                self.island.annual_cycle_island()
-
-                self.step += 1
-                if self.step % self.vis_years == 0:
-                    self.graphics.update(year=self.step, species_count=self.num_animals_per_species,
-                                         animal_matrix=self.num_animals_per_species_per_cell,
-                                         animal_fitness_per_species = self.animal_fitness_per_species,
-                                         animal_age_per_species = self.animal_age_per_species,
-                                         animal_weight_per_species= self.animal_weight_per_species,
-                                         cmax_animals=self.cmax_animals)
-        else:
-            raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
 
     def add_population(self, population):
         """

@@ -4,7 +4,6 @@ from biosim.island import Island
 
 import textwrap
 import pytest
-import numpy as np
 
 
 
@@ -126,49 +125,56 @@ def test_place_population_in_water():
         i.place_population(populations)
 
 
-geography = """\
-                WWWWWWWWWWW
-                WLLLHHHLLLW
-                WLLLLLLLLLW
-                WLDDDDLLDDW
-                WLLLLLLLLLW
-                WWWWWWWWWWW"""
+@pytest.fixture
+def map_island():
+    geography = """\
+                    WWWWWWWWWWW
+                    WLLLHHHLLLW
+                    WLLLLLLLLLW
+                    WLDDDDLLDDW
+                    WLLLLLLLLLW
+                    WWWWWWWWWWW"""
 
-ini_pops = [{'loc': (2, 2),
-                'pop': [{'species': 'Herbivore',
-                         'age': 5,
-                         'weight': 20}
-                        for _ in range(20)]},
-               {'loc': (3, 3),
-                'pop': [{'species': 'Herbivore',
-                         'age': 3,
-                         'weight': 20}
-                        for _ in range(15)]},
-               {'loc': (2, 5),
-                'pop': [{'species': 'Carnivore',
-                         'age': 2,
-                         'weight': 10}
-                        for _ in range(4)]},
-               {'loc': (2, 2),
-                'pop': [{'species': 'Carnivore',
-                         'age': 2,
-                         'weight': 10}
-                        for _ in range(6)]}]
+    return Island(geography)
 
 
-def test_set_animal_parameters():
+@pytest.fixture
+def ini_pops():
+    ini_pops = [{'loc': (2, 2),
+                    'pop': [{'species': 'Herbivore',
+                             'age': 5,
+                             'weight': 20}
+                            for _ in range(20)]},
+                   {'loc': (3, 3),
+                    'pop': [{'species': 'Herbivore',
+                             'age': 3,
+                             'weight': 20}
+                            for _ in range(15)]},
+                   {'loc': (2, 5),
+                    'pop': [{'species': 'Carnivore',
+                             'age': 2,
+                             'weight': 10}
+                            for _ in range(4)]},
+                   {'loc': (2, 2),
+                    'pop': [{'species': 'Carnivore',
+                             'age': 2,
+                             'weight': 10}
+                            for _ in range(6)]}]
+    return ini_pops
+
+
+def test_set_animal_parameters(ini_pops, map_island):
     """
     Testing it is possible to set parameters for animals.
     """
     beta = 0.85
     omega = 0.6
-    i = Island(geography)
-    i.place_population(ini_pops)
-    i.set_animal_parameters_island('Herbivore', {'beta': beta, 'omega': omega})
+    map_island.place_population(ini_pops)
+    map_island.set_animal_parameters_island('Herbivore', {'beta': beta, 'omega': omega})
 
-    assert i.sample_animals['herbivore']
-    assert i.sample_animals['herbivore'].parameters['beta'] == beta
-    assert i.sample_animals['herbivore'].parameters['omega'] == omega
+    assert map_island.map.sample_animals['herbivore']
+    assert map_island.map.sample_animals['herbivore'].parameters['beta'] == beta
+    assert map_island.map.sample_animals['herbivore'].parameters['omega'] == omega
 
 
 def test_set_landscape_parameters():
@@ -227,12 +233,12 @@ class test_get_information:
         """
 
 
-    def test_gives_herbs_fitness(self):
+    def test_gives_herbs_fitness(self, ini_pop):
         """
         Testing if get_herbs_fitness indeed returns a list of all the herbivores fitness.
         """
 
-        total_herbivore =
+        total_herbivore = 0
         before = len(self.island.get_herbs_fitness())
         self.island.place_population(ini_pops)
         after = len(self.island.get_herbs_fitness())
@@ -245,7 +251,7 @@ class test_get_information:
         """
         Testing if get_carns_fitness indeed returns a list of all the carnivores fitness.
         """
-        total_carnviore =
+        total_carnviore = 0
         before = len(self.island.get_carns_fitness())
         self.island.place_population(ini_pops)
         after = len(self.island.get_carns_fitness())
@@ -258,7 +264,7 @@ class test_get_information:
         """
         Testing if get_herbs_age indeed returns the Herbivore's true age.
         """
-        total_herbivore =
+        total_herbivore = 0
         before = len(self.island.get_herbs_age())
         self.island.place_population(ini_pops)
         after = len(self.island.get_herbs_age())
@@ -266,12 +272,11 @@ class test_get_information:
         assert after == total_herbivore
 
 
-
     def test_get_carns_age(self):
         """
         Testing if get_carns_age indeed returns the Carnivore's true age.
         """
-        total_carnviore =
+        total_carnviore = 0
         before = len(self.island.get_carns_age())
         self.island.place_population(ini_pops)
         after = len(self.island.get_carns_age())
@@ -284,7 +289,7 @@ class test_get_information:
         """
         Testing if get_herbs_weight indeed returns the Herbivore's true weight.
         """
-        total_herbivore =
+        total_herbivore = 0
         before = len(self.island.get_herbs_weight())
         self.island.place_population(ini_pops)
         after = len(self.island.get_herbs_weight())
@@ -296,7 +301,7 @@ class test_get_information:
         """
         Testing if get_carns_weight indeed returns the Carnivore's true weight.
         """
-        total_carnviore =
+        total_carnviore = 0
         before = len(self.island.get_carns_weight())
         self.island.place_population(ini_pops)
         after = len(self.island.get_carns_weight())

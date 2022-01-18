@@ -96,7 +96,7 @@ class BioSim:
         Set parameters for animal species.
 
         :param species: String, name of animal species
-        :param params: Dict with valid parameter specification for species
+        :param params: Dict with valid parameter specification for species.`
         """
         self.island.set_animal_parameters_island(species=species, params=params)
 
@@ -111,9 +111,10 @@ class BioSim:
 
     def simulate(self, num_years):
         """
-        Run simulation while visualizing the result.
+        Run simulations with or without graphics (see vis_years contraints). Passes graphics parametres
+        to the graphics module in order to visulaize.
 
-        :param num_years: number of years to simulate
+        :param num_years: number of years to simulate, must be integer.
         :type num_years: int
 
         """

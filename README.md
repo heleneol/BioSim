@@ -5,7 +5,7 @@ creation of a BioSim object. The animals then feed, procreate, migrate, age and 
 amount of years. 
 
 ### More information
-* Documentation:
+* Documentation: run 'make html' in shell inside ./docs
 * Mailing list: johannes.larsen.fjeldsa@nmbu.no & helene.drennan.olsen@nmbu.no
 
 #### Visualization of BioSim analysis objects

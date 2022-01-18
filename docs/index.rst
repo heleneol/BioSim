@@ -7,7 +7,7 @@ Welcome to Biosim's documentation!
 ==================================
 BioSim is a small Python package developed for examination purposes in the INF200 subject at the Norwegian University of Life Sciences.
 
-* visualize matrices using :func:`matplotlib.pyplot.imshow`
+* visualize matrices using :module:`matplotlib.pyplot`
 * create a video from saved graphics files using `FFmpeg <http://ffmpeg.org>`_
 * provide a :class:`simulation` that provides a user interface to the simulated system
 * document code with `Sphinx <http://sphinx-doc.org>`_
@@ -20,8 +20,7 @@ The package simulates a population dynamics simulation on a fictional island cal
    :caption: Contents:
 
    animals
-
-
+   graphics
 
 Indices and tables
 ==================

@@ -55,6 +55,12 @@ class BioSim:
         where img_number are consecutive image numbers starting from 0.
 
         img_dir and img_base must either be both None or both strings.
+
+        example
+        -------
+        ::
+
+            sim = BioSim(island_map = geogr, ini_pop = population img_dir='results')
         """
         self.island_geographie = textwrap.dedent(island_map)
         self.island = Island(geogr=self.island_geographie)
@@ -96,7 +102,7 @@ class BioSim:
         Set parameters for animal species.
 
         :param species: String, name of animal species
-        :param params: Dict with valid parameter specification for species
+        :param params: Dict with valid parameter specification for species.`
         """
         self.island.set_animal_parameters_island(species=species, params=params)
 
@@ -111,9 +117,10 @@ class BioSim:
 
     def simulate(self, num_years):
         """
-        Run simulation while visualizing the result.
+        Run simulations with or without graphics (see vis_years contraints). Passes graphics parametres
+        to the graphics module in order to visulaize.
 
-        :param num_years: number of years to simulate
+        :param num_years: number of years to simulate, must be integer.
         :type num_years: int
 
         """

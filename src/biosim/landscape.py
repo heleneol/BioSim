@@ -14,7 +14,7 @@ class Landscape:
     * :class:`Lowland`
     * :class:`Highland`
     * :class:`Desert`
-    * :class:`Water`*
+    * :class:`Water`
 
     """
 

@@ -48,12 +48,15 @@ class Graphics:
 
     def __init__(self, img_dir=None, img_name=None, img_fmt=None):
         """
+        Graphic objects for visualization support of the BioSim package.
+
         :param img_dir: directory for image files; no images if None
         :type img_dir: str
         :param img_name: beginning of name for image files
         :type img_name: str
         :param img_fmt: image file format suffix
         :type img_fmt: str
+
         """
 
         if img_name is None:
@@ -73,8 +76,8 @@ class Graphics:
         self._img_ctr = 0
         self._img_step = 1
 
-
-        # the following will be initialized by _setup_graphics
+        # the following atributes will be changed in setup function and
+        # is used to make graphs
         self.fig = None
         self.year_ax = None
         self.animal_count_ax = None
@@ -85,7 +88,6 @@ class Graphics:
         self.fitness_hist_ax = None
         self.age_hist_ax = None
         self.weight_hist_ax = None
-        self.img_axis = None
         self.herb_line = None
         self.carn_line = None
 
@@ -94,9 +96,20 @@ class Graphics:
         """
         Updates graphics with current data and save to file if necessary.
 
-        :param step: current time step
-        :param sys_map: current system status (2d array)
-        :param sys_mean: current mean value of system
+        :param year: current time stamp
+        :type year: int
+        :param species_count: Dictionary containing animal count per species
+        :type species_count: dict
+        :param animal_matrix: Dictionary containing one 2d-array per species with animal count per cell as value
+        :type animal_matrix: dict
+        :param animal_fitness_per_species: Dictionary containing one list per species with animals fitness-values
+        :type animal_fitness_per_species: dict
+        :param animal_age_per_species: Dictionary containing one list per species with animals age-values
+        :type animal_age_per_species: dict
+        :param animal_age_per_species: Dictionary containing one list per species with animals weight-values
+        :type animal_age_per_species: dict
+        :param cmax_animals: Dictionary containing a max value for colorscale of heatmap per specis
+        :type cmax_animals: dict
         """
         self._update_year_count(year)
         self._update_count_graph(year, species_count['Herbivore'], species_count['Carnivore'])
@@ -159,7 +172,17 @@ class Graphics:
         the final time step has changed.
 
         :param final_step: last time step to be visualised (upper limit of x-axis)
+        :type final_step: int
         :param img_step: interval between saving image to file
+        :type img_step: int
+        :param vis_years: intervall between updtaing graph with :meth:`update()`
+        :type vis_years: int
+        :param island_geographie: multiline textstring containing letters as indicators for colorvalues in map_rgb
+        :type island_geographie: str
+        :param ymax_animals: if set by user it givves the max for y-axis of animal count graph, default 20 000
+        :type ymax_animals: int
+        :param hist_specs: hist_specs is a dictionary with one entry per property for which a histogram shall be shown.
+        :type hist_specs: dict
         """
 
         self._img_step = img_step
@@ -272,7 +295,12 @@ class Graphics:
         self.fig.tight_layout(pad=3.0)
 
     def _update_herb_heat_map(self, herb_map, cmax_animals):
-        """Update the 2D-view of the system."""
+        """
+        Updates the heat map showing the density of herbivores.
+
+        :param herb_map: 2d-array per species with herbivore count per cell as value
+        :type herb_map: array
+        """
 
         if self.herb_heat_map_plot is not None:
             self.herb_heat_map_plot.set_data(herb_map)
@@ -284,6 +312,12 @@ class Graphics:
                          orientation='vertical', shrink=0.75)
 
     def _update_carn_heat_map(self, carn_map, cmax_animals):
+        """
+        Updates the heat map showing the density of carnivores.
+
+        :param herb_map: 2d-array per species with carnivore count per cell as value
+        :type herb_map: array
+        """
         if self.carn_heat_map_plot is not None:
             self.carn_heat_map_plot.set_data(carn_map)
         else:
@@ -294,6 +328,16 @@ class Graphics:
                          orientation='vertical', shrink=0.75)
 
     def _update_count_graph(self, year, herb_count, carn_count):
+        """
+        Updates the line for the animal count on the island for both species.
+
+        :param year: what step in the simulation we are in, givves the x-coordinate
+        :type year: int
+        :param herb_count: the total numbers of herbivores on the island
+        :type herb_count: int
+        :param carn_count: the total numbers of carnivores on the island
+        :type carn_count: int
+        """
         y_data = self.herb_line.get_ydata()
         y_data[year] = herb_count
         self.herb_line.set_ydata(y_data)
@@ -303,9 +347,22 @@ class Graphics:
         self.carn_line.set_ydata(y_data)
 
     def _update_year_count(self, year):
+        """
+        Updates the year counter in the graphics.
+
+        :param year: what step in the simulation we are in, givves the x-coordinate
+        :type year: int
+        """
         self.txt.set_text(self.count_template.format(year))
 
     def _update_fitness_hist(self, animall_fitness_per_species):
+        """
+        Updates the fitness histogram for both species. The histogram is showing the distrubution of fitness-values.
+
+        :param animal_fitness_per_species: Dictionary containing one list per species with animals fitness-values
+        :type animal_fitness_per_species: dict
+        """
+
         self.fitness_hist_ax.clear()
         self.fitness_hist_ax.hist(animall_fitness_per_species['Herbivore'], self.fitness_bins,
                                   histtype=u'step', color='blue')
@@ -313,6 +370,12 @@ class Graphics:
                                   histtype=u'step', color='red')
 
     def _update_age_hist(self, animal_age_per_species):
+        """
+        Updates the age histogram for both species. The histogram is showing the distrubution of age-values.
+
+        :param animal_age_per_species: Dictionary containing one list per species with animals age-values
+        :type animal_age_per_species: dict
+        """
         self.age_hist_ax.clear()
         self.age_hist_ax.hist(animal_age_per_species['Herbivore'], self.age_bins,
                               histtype=u'step', color='blue')
@@ -320,6 +383,12 @@ class Graphics:
                               histtype=u'step', color='red')
 
     def _update_weight_hist(self, animal_weight_per_species):
+        """
+        Updates the weight histogram for both species. The histogram is showing the distrubution of weight-values.
+
+        :param animal_age_per_species: Dictionary containing one list per species with animals weight-values
+        :type animal_age_per_species: dict
+        """
         self.weight_hist_ax.clear()
         self.weight_hist_ax.hist(animal_weight_per_species['Herbivore'], self.weight_bins,
                                  histtype=u'step', color='blue')

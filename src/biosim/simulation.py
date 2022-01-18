@@ -55,6 +55,12 @@ class BioSim:
         where img_number are consecutive image numbers starting from 0.
 
         img_dir and img_base must either be both None or both strings.
+
+        example
+        -------
+        ::
+
+            sim = BioSim(island_map = geogr, ini_pop = population img_dir='results')
         """
         self.island_geographie = textwrap.dedent(island_map)
         self.island = Island(geogr=self.island_geographie)

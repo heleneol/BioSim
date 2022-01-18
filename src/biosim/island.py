@@ -5,7 +5,6 @@ Module implementing the island itself.
 from biosim.landscape import Lowland, Highland, Desert, Water
 from biosim.animals import Herbivore, Carnivore
 
-import textwrap
 import random
 import numpy as np
 
@@ -23,12 +22,24 @@ class Island:
                   'W': Water()}
 
     def __init__(self, geogr):
-        """
+        r"""
         Initializing island with map made of :class:`landscape.Landscape` subclasses.
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
 
+        Example
+        -------
+        ::
+
+            geographie =   \
+                            WWW
+                            WLW
+                            WWW
+            island  = Island(geogr = geographie)
+
+            note: geographie str must be inside tripple bracketes
+            -----
         """
         self.map = self.createmap(geogr)
 
@@ -94,6 +105,17 @@ class Island:
         :param populations: A list containing dictionaries with population location and animal information.
         :type populations: list
 
+        Example
+        -------
+        ::
+
+            herbivores = [{'loc': (2, 2),
+                           'pop': [{'species': 'Herbivore',
+                                    'age': 5,
+                                    'weight': 20}
+                                    for _ in range(200)]}]
+
+            Island().place_population(herbivores)
         """
         for population in populations:
             loc = population['loc']

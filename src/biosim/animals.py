@@ -18,7 +18,7 @@ class Animals:
 
     @classmethod
     def set_parameters(cls, new_params):
-        """
+        r"""
         Set class parameters. \n
         Parametre DeltaPhiMax can only be set for Carnivores and must be :math:`\Delta \Phi_{max} > 0`.
         Parametre eta must be :math:`\eta >= 0`.
@@ -146,7 +146,7 @@ class Animals:
             return False
 
     def migrate(self):
-        """
+        r"""
         Function determines if animals migrate or not.
         An animal moves with a probability of :math:`p_{move} = \mu * \Phi`.
 
@@ -173,7 +173,7 @@ class Animals:
         self.update_fitness()
 
     def metabolism(self):
-        """
+        r"""
         Updates animal weight which is due to annual weightloss,
         :math:`w_{loss} = \eta * w`, and updates fitness accordingly.
 

@@ -134,8 +134,10 @@ def test_fitness_values_expected(carnivore):
     carnivore.set_weight(new_weight=carnivore.parameters['w_half'])
     carnivore.update_fitness()
 
-    q_pos = 1 / (1 + (math.exp(carnivore.parameters['phi_age'] * (carnivore.age - carnivore.parameters['a_half']))))
-    q_neg = 1 / (1 + (math.exp((-1) * carnivore.parameters['phi_weight'] * (carnivore.weight - carnivore.parameters['w_half']))))
+    q_pos = 1 / (1 + (math.exp(carnivore.parameters['phi_age'] *
+                               (carnivore.age - carnivore.parameters['a_half']))))
+    q_neg = 1 / (1 + (math.exp((-1) * carnivore.parameters['phi_weight'] *
+                               (carnivore.weight - carnivore.parameters['w_half']))))
 
     assert carnivore.fitness == q_pos * q_neg and q_pos * q_neg == 1/4
 

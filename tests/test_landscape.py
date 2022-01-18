@@ -1,7 +1,5 @@
 """Tests for the Landscape superclass with associated subclasses."""
 
-import numpy as np
-
 from biosim.landscape import Lowland, Highland, Water, Desert
 from biosim.animals import *
 
@@ -75,6 +73,7 @@ def herb_pop():
                 for _ in range(150)]
     return herb_pop
 
+
 @pytest.fixture
 def highland():
     return Highland()
@@ -113,11 +112,11 @@ def test_landscape_construction():
     number_carn = 10
     herb_pop = [Herbivore(age=5) for _ in range(number_herb)]
     carn_pop = [Carnivore(age=2) for _ in range(number_carn)]
-    L = Lowland(herb_pop, carn_pop)
-    H = Highland(herb_pop, carn_pop)
-    D = Desert(herb_pop, carn_pop)
+    low = Lowland(herb_pop, carn_pop)
+    h = Highland(herb_pop, carn_pop)
+    d = Desert(herb_pop, carn_pop)
 
-    for landscape in (L, H, D):
+    for landscape in (low, h, d):
         assert landscape.get_num_herbs() == number_herb and landscape.get_num_carns() == number_carn
 
 
@@ -269,10 +268,10 @@ def test_aging():
 
     herb_pop = [Herbivore(age=age) for herb, age in zip(range(250), [random.randint(0, 6) for _ in range(250)])]
     carn_pop = [Carnivore(age=0) for _ in range(5)]
-    L = Lowland(herb_pop, carn_pop)
-    herb_age_before = get_mean_age(L.herb_pop)
-    L.aging()
-    assert get_mean_age(L.herb_pop) > herb_age_before and get_mean_age(L.carn_pop) == 1
+    low = Lowland(herb_pop, carn_pop)
+    herb_age_before = get_mean_age(low.herb_pop)
+    low.aging()
+    assert get_mean_age(low.herb_pop) > herb_age_before and get_mean_age(low.carn_pop) == 1
 
 
 def test_population_weightloss():

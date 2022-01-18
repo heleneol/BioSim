@@ -67,7 +67,7 @@ class Graphics:
             if not os.path.isdir(img_dir):
                 os.mkdir(img_dir)
         else:
-            self._img_base = os.path.join(_DEFAULT_GRAPHICS_DIR,img_name)
+            self._img_base = os.path.join(_DEFAULT_GRAPHICS_DIR, img_name)
             if not os.path.isdir(_DEFAULT_GRAPHICS_DIR):
                 os.mkdir(_DEFAULT_GRAPHICS_DIR)
 
@@ -315,8 +315,8 @@ class Graphics:
         """
         Updates the heat map showing the density of carnivores.
 
-        :param herb_map: 2d-array per species with carnivore count per cell as value
-        :type herb_map: array
+        :param carn_map: 2d-array per species with carnivore count per cell as value
+        :type carn_map: array
         """
         if self.carn_heat_map_plot is not None:
             self.carn_heat_map_plot.set_data(carn_map)

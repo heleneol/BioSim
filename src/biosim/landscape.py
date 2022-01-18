@@ -27,9 +27,6 @@ class Landscape:
         :type new_params: dict
 
         """
-        #if cls.classname is Desert or cls.classname is Water:
-        #    raise AttributeError(f'Fodder amount can only be changed in Highland or Lowland!')
-
         for key in new_params:
             if key not in cls.parameters:
                 raise KeyError(f'Invalid parameter name: {key}')
@@ -105,8 +102,8 @@ class Landscape:
         """
         Sorts the herbivore population by fitness.
 
-        :param decreasing: True  :math:'\\longrightarrow' sorted by decreasing fitness.\n
-                           False :math:'\\longrightarrow' sorted by increasing fitness.
+        :param decreasing: True  :math:`\longrightarrow` sorted by decreasing fitness.\n
+                           False :math:`\longrightarrow` sorted by increasing fitness.
         :type decreasing: bool
 
         """
@@ -300,6 +297,7 @@ class Landscape:
         self.weight_loss()
         self.population_death()
 
+
 class Lowland(Landscape):
     """
     Subclass representing Lowland landscape on the island.
@@ -323,6 +321,7 @@ class Desert(Landscape):
 
     """
     parameters = {'f_max': 0}
+
 
 class Water(Landscape):
     """

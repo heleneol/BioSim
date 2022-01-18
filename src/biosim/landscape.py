@@ -102,8 +102,8 @@ class Landscape:
         """
         Sorts the herbivore population by fitness.
 
-        :param decreasing: True  :math:'\\longrightarrow' sorted by decreasing fitness.\n
-                           False :math:'\\longrightarrow' sorted by increasing fitness.
+        :param decreasing: True  :math:`\longrightarrow` sorted by decreasing fitness.\n
+                           False :math:`\longrightarrow` sorted by increasing fitness.
         :type decreasing: bool
 
         """

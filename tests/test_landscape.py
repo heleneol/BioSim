@@ -74,18 +74,6 @@ def test_input_param_landscape():
     Highland.set_parameters(new_params)
     assert Highland.parameters['f_max'] == 300
 
-"""
-def test_param_wrong_landscape():
-
-    Testing that errors are raised when trying to insert fodder in Desert and Water habitat.
-    
-    with pytest.raises(KeyError):
-        Desert.set_parameters({'f_max': 20})
-
-    with pytest.raises(KeyError):
-        Water.set_parameters({'f_max': 40}) 
-    """
-
 
 def test_param_mistake_landscape():
     """
@@ -94,15 +82,10 @@ def test_param_mistake_landscape():
     with pytest.raises(KeyError):
         Highland.set_parameters({'fmax': 20})
 
-
-def test_value_error_fodder():
-    """
-    Testing whether ValueError is raised when f_max is a negative amount of fodder.
-    """
     with pytest.raises(ValueError):
         Highland.set_parameters({'f_max': -40})
 
-
+# Forkaste?
 def test_no_pop_generated():
     """
     Testing an empty landscape with no population input returns empty populations.
@@ -144,7 +127,7 @@ def test_landscape_construction():
 
 def test_habitability_true():
     """
-    Testing habitability is true when landscape is not Water.
+    Testing habitability.
     """
     herb_pop = generate_herb_pop(None, None, 10)
     d = Desert(herb_pop)
@@ -179,15 +162,19 @@ def test_add_population_species():
         h.add_population(herb_pop)
 
 
-#def test_add_population_expected():
-#    """
-#    Testing whether population is added as expected
-#    """
-#    carn_pop = generate_carn_pop(5, 20, 30)
-#
-#    low = Lowland()
-#    low.add_population(carn_pop)
-    ##? Se landscape construction
+def test_add_population_expected():
+    """
+    Testing whether population is added as expected
+    """
+    num = 30
+    carn_pop = [{'species': 'Carnivore',
+                 'age': 5,
+                 'weight': 20}
+                for _ in range(num)]
+
+    low = Lowland()
+    low.add_population(animals=carn_pop)
+    assert len(low.carn_pop) == num
 
 
 def test_sort_herbs_by_fitness():
@@ -258,9 +245,6 @@ def test_reproduction():
         carn_count = h.get_num_carns()
         assert herb_count >= herb_count_old and carn_count >= carn_count_old
         herb_count_old, carn_count_old = herb_count, carn_count
-
-
-# def test_reproduction_statisticly
 
 
 def test_register_migrants():

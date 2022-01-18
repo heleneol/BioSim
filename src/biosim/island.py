@@ -13,7 +13,6 @@ import numpy as np
 class Island:
     """
     Class representing the entire island.
-
     """
     sample_animals = {'herbivore': Herbivore(),
                       'carnivore': Carnivore()}
@@ -235,7 +234,7 @@ class Island:
 
     def island_migration(self):
         """
-        X?
+        Function for implementing migration for all animals on the island.
 
         Gets neighbouring cells and chooses one at random for the animal to emigrate to. If the chosen cell is water,
         the animal stays put, else it is registered to the chosen cells migrant population. Lastly, it adds

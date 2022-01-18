@@ -11,15 +11,6 @@ ini_herbs = [{'loc': (2, 2),
                        'weight': 20}
                       for _ in range(2)]}]
 
-geography = """\
-                WWWWWWWWWWW
-                WLLLHHHLLLW
-                WLLLLLLLLLW
-                WLDDDDLLDDW
-                WLLLLLLLLLW
-                WWWWWWWWWWW"""
-geography = textwrap.dedent(geography)
-
 
 def test_creatmap():
     """
@@ -164,165 +155,192 @@ def test_set_landscape_parameters():
     assert i.parameters['L']
     assert i.parameters['L'].parameters['f_max'] == fodder
 
+geography = """\
+                WWWWWWWWWWW
+                WLLLHHHLLLW
+                WLLLLLLLLLW
+                WLDDDDLLDDW
+                WLLLLLLLLLW
+                WWWWWWWWWWW"""
 
-def test_set_desert_parameters():
+ini_pops = [{'loc': (2, 2),
+                'pop': [{'species': 'Herbivore',
+                         'age': 5,
+                         'weight': 20}
+                        for _ in range(20)]},
+               {'loc': (3, 3),
+                'pop': [{'species': 'Herbivore',
+                         'age': 3,
+                         'weight': 20}
+                        for _ in range(15)]},
+               {'loc': (2, 5),
+                'pop': [{'species': 'Carnivore',
+                         'age': 2,
+                         'weight': 10}
+                        for _ in range(4)]},
+               {'loc': (2, 2),
+                'pop': [{'species': 'Carnivore',
+                         'age': 2,
+                         'weight': 10}
+                        for _ in range(6)]}]
+
+class test_get_information:
     """
-    Testing AttributeError when trying to change f_max for Desert-landscape
-    """
-
-
-def test_get_num_herbs():
-    """
-    Testing that the function get_num_herbs() returns the total amount of herbivores placed on the island.
-    """
-    num = 3
-    number = 10
-
-    ini_herbies = [{'loc': (2, 2),
-                    'pop': [{'species': 'Herbivore',
-                            'age': 5,
-                             'weight': 20}
-                            for _ in range(num)]},
-                   {'loc': (3, 3),
-                    'pop': [{'species': 'Herbivore',
-                            'age': 3,
-                             'weight': 20}
-                            for _ in range(number)]}]
-
-    i = Island(geography)
-    i.place_population(ini_herbies)
-
-    assert i.get_number_of_herbs() == num + number
-
-
-def test_get_num_carnivores():
-    """
-    Testing that the function get_num_carns() returns the total amount of carnivores placed on the island.
-    """
-    num = 5
-    number = 4
-
-    ini_carnies = [{'loc': (2, 5),
-                    'pop': [{'species': 'Carnivore',
-                            'age': 2,
-                             'weight': 10}
-                            for _ in range(num)]},
-                   {'loc': (3, 4),
-                    'pop': [{'species': 'Carnivore',
-                            'age': 5,
-                             'weight': 30}
-                            for _ in range(number)]}]
-
-    i = Island(geography)
-    i.place_population(ini_carnies)
-
-    assert i.get_number_of_carns() == num + number
-
-
-def test_get_number_herbs_per_cell():
-    """
-    Testing that the function get_number_herbs_per_cell() returns the amount of herbivores in each cell on the island.
-    """
-    num = 4
-    number = 5
-
-    ini_herbies = [{'loc': (2, 2),
-                    'pop': [{'species': 'Herbivore',
-                            'age': 5,
-                             'weight': 20}
-                            for _ in range(num)]},
-                   {'loc': (3, 3),
-                    'pop': [{'species': 'Herbivore',
-                            'age': 3,
-                             'weight': 20}
-                            for _ in range(number)]}]
-
-    i = Island(geography)
-    i.place_population(ini_herbies)
-
-    #assert np.any(i.get_number_herbs_per_cell()) == num
-
-
-def test_get_number_carns_per_cell():
-    """
-    Testing that the function get_number_carns_per_cell() returns the amount of carnivores in each cell on the island.
+    A test class for all the get-functions of the Island class.
     """
 
+    def __init__(self, geography, ini_pops):
 
-def test_gives_herbs_fitness():
-    """
-    Testing if get_herbs_fitness indeed returns a list of all the herbivores fitness.
-    """
-    i = Island(geography)
-    num = 9
-    number = 10
-    ini_herbies = [{'loc': (2, 5),
-                    'pop': [{'species': 'Herbivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(num)]},
-                   {'loc': (2, 2),
-                    'pop': [{'species': 'Herbivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(number)]},
-                   ]
-    before = len(i.get_herbs_fitness())
-    i.place_population(ini_herbies)
-    after = len(i.get_herbs_fitness())
+        self.geography = textwrap.dedent(geography)
+        self.island = Island(geography)
+        self.ini_pops = ini_pops
+        self.island.place_population(populations=ini_pops)
 
-    assert before < after
-    assert after == num + number
+    def test_get_num_herbs(self):
+        """
+        Testing that the function get_num_herbs() returns the total amount of herbivores placed on the island.
+        """
+        total_herb = 0
+        for population in self.ini_pops:
+            total_herb += len(population['pop'])
+        assert self.island_test.get_number_of_herbs() == total_herb
 
+    def test_get_num_carnivores(self):
+        """
+        Testing that the function get_num_carns() returns the total amount of carnivores placed on the island.
+        """
+        ini_carnies = [{'loc': (2, 5),
+                        'pop': [{'species': 'Carnivore',
+                                'age': 2,
+                                 'weight': 10}
+                                for _ in range(num)]},
+                       {'loc': (3, 4),
+                        'pop': [{'species': 'Carnivore',
+                                'age': 5,
+                                 'weight': 30}
+                                for _ in range(number)]}]
 
-def test_gives_carns_fitness():
-    """
-    Testing if get_carns_fitness indeed returns a list of all the carnivores fitness.
-    """
-    i = Island(geography)
-    num = 5
-    number = 4
-    ini_carnies = [{'loc': (2, 5),
-                    'pop': [{'species': 'Carnivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(num)]},
-                   {'loc': (2, 2),
-                    'pop': [{'species': 'Carnivore',
-                             'age': 2,
-                             'weight': 10}
-                            for _ in range(number)]},
-                   ]
-    before = len(i.get_carns_fitness())
-    i.place_population(ini_carnies)
-    after = len(i.get_carns_fitness())
+        i = Island(geography)
+        i.place_population(ini_carnies)
 
-    assert before < after
-    assert after == num + number
+        assert i.get_number_of_carns() == self.num + self.number
 
 
-def test_get_herbs_age():
-    """
-    Testing if get_herbs_age indeed returns the Herbivore's true age.
-    """
+    def test_get_number_herbs_per_cell():
+        """
+        Testing that the function get_number_herbs_per_cell() returns the amount of herbivores in each cell on the island.
+        """
+        ini_herbies = [{'loc': (2, 2),
+                        'pop': [{'species': 'Herbivore',
+                                'age': 5,
+                                 'weight': 20}
+                                for _ in range(num)]},
+                       {'loc': (3, 3),
+                        'pop': [{'species': 'Herbivore',
+                                'age': 3,
+                                 'weight': 20}
+                                for _ in range(number)]}]
+
+        i = Island(geography)
+        i.place_population(ini_herbies)
+
+        #assert np.any(i.get_number_herbs_per_cell()) == num
 
 
-def test_get_carns_age():
-    """
-    Testing if get_carns_age indeed returns the Carnivore's true age.
-    """
+    def test_get_number_carns_per_cell():
+        """
+        Testing that the function get_number_carns_per_cell() returns the amount of carnivores in each cell on the island.
+        """
 
 
-def test_get_herbs_weight():
-    """
-    Testing if get_herbs_weight indeed returns the Herbivore's true weight.
-    """
+    def test_gives_herbs_fitness():
+        """
+        Testing if get_herbs_fitness indeed returns a list of all the herbivores fitness.
+        """
+        i = Island(geography)
+        ini_herbies = [{'loc': (2, 5),
+                        'pop': [{'species': 'Herbivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(num)]},
+                       {'loc': (2, 2),
+                        'pop': [{'species': 'Herbivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(number)]},
+                       ]
+        before = len(i.get_herbs_fitness())
+        i.place_population(ini_herbies)
+        after = len(i.get_herbs_fitness())
+
+        assert before < after
+        assert after == num + number
 
 
-def test_get_carns_weight():
-    """
-    Testing if get_carns_weight indeed returns the Carnivore's true weight.
-    """
+    def test_gives_carns_fitness():
+        """
+        Testing if get_carns_fitness indeed returns a list of all the carnivores fitness.
+        """
+        i = Island(geography)
+        ini_carnies = [{'loc': (2, 5),
+                        'pop': [{'species': 'Carnivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(num)]},
+                       {'loc': (2, 2),
+                        'pop': [{'species': 'Carnivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(number)]},
+                       ]
+        before = len(i.get_carns_fitness())
+        i.place_population(ini_carnies)
+        after = len(i.get_carns_fitness())
+
+        assert before < after
+        assert after == num + number
+
+
+    def test_get_herbs_age():
+        """
+        Testing if get_herbs_age indeed returns the Herbivore's true age.
+        """
+        i = Island(geography)
+        ini_herbies = [{'loc': (2, 5),
+                        'pop': [{'species': 'Herbivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(num)]},
+                       {'loc': (2, 2),
+                        'pop': [{'species': 'Herbivore',
+                                 'age': 2,
+                                 'weight': 10}
+                                for _ in range(number)]},
+                       ]
+        before = len(i.get_herbs_age())
+        i.place_population(ini_herbies)
+        after = len(i.get_herbs_age())
+
+        assert before < after
+        assert after == num + number
+
+
+    def test_get_carns_age():
+        """
+        Testing if get_carns_age indeed returns the Carnivore's true age.
+        """
+
+
+    def test_get_herbs_weight():
+        """
+        Testing if get_herbs_weight indeed returns the Herbivore's true weight.
+        """
+
+
+    def test_get_carns_weight():
+        """
+        Testing if get_carns_weight indeed returns the Carnivore's true weight.
+        """
 
 
 def test_island_migration():
@@ -332,4 +350,5 @@ def test_island_migration():
 
 
 def test_only_migrates_once():
-
+    """
+    """

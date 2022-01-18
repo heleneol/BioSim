@@ -124,19 +124,13 @@ def test_fitness_values():
     Using age = a_half and weight = weight_half. According to the formula given for fitness,
     see update_fitness() in animals.py for formula, this will result in a fitness of 1/4 (q_pos x q_neg = 1/2 * 1/2)
     """
-    carn = Carnivore(age=20, weight=10)
-    #herb.update_age(years=herb.parameters['a_half'])
-    #herb.set_weight(new_weight=herb.parameters['w_half'])
-
-    #q_pos = 1 / (1 + (math.exp(herb.parameters['phi_age'] * (herb.age - herb.parameters['a_half']))))
-    #q_neg = 1 / (1 + (math.exp((-1) * herb.parameters['phi_weight'] * (herb.weight - herb.parameters['w_half']))))
+    carn = Carnivore()
 
     q_pos = 1 / (1 + (math.exp(carn.parameters['phi_age'] * (carn.age - carn.parameters['a_half']))))
     q_neg = 1 / (1 + (math.exp((-1) * carn.parameters['phi_weight'] * (carn.weight - carn.parameters['w_half']))))
 
-    for _ in range(20):
-        carn.update_fitness()
-        assert carn.fitness == q_pos * q_neg
+    carn.update_fitness()
+    assert carn.fitness == q_pos * q_neg
 
 
 def test_regains_appetite():
@@ -180,7 +174,7 @@ def test_no_birth(set_carnivore_parameters):
 @pytest.mark.parametrize('set_herbivore_parameters', [{'gamma': 100.0, 'zeta': 100}], indirect=True)
 def test_no_birth_zeta(set_herbivore_parameters, mocker):
     """
-    Testing birth to an offspring does not occur if the mother's weight is lower than zeta * (w_birth + sigma_birth)'
+    Testing birth to an offspring does not occur if the mother's weight is lower than zeta * (w_birth + sigma_birth).
     """
     herb = Herbivore()
     num = 100

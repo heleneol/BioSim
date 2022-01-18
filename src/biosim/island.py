@@ -335,3 +335,11 @@ class Island:
 
         for cell in self.map.values():
             cell.post_migration_cycle()
+
+
+    def _clean_island_for_herbs(self):
+        """
+        Help function for test_island_migration_happens_once in test_island.py
+        """
+        for cell in self.map.values():
+            cell.herb_pop.clear()

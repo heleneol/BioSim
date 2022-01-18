@@ -263,14 +263,29 @@ def test_island_migration_happens(map_island):
 
 
 def test_island_migration_happens_once(map_island):
+    """
+    Testing an animal only migrates once per year.
+    Forcing migration with low age and large weight,
+    so that the animal has to be in a neighbouring cell.
+    Checking animal count in neighbouring cells and confirming the cell's
+    combined herb_pop = 1.
+    Resetting map-populations before running it again.
+    """
     ini_pop = [{'loc': (3, 4),
                 'pop': [{'species': 'Herbivore',
                         'age': 0,
                         'weight': 100}]}]
-    map_island.place_population(ini_pop)
-
-    before = map_island.get_number_herbs_per_cell()
-    map_island.island_migration()
-    after = map_island.get_number_herbs_per_cell()
-
-
+    map_island.set_animal_parameters_island('Herbivore', {'mu': 1.5})
+    loc = (3, 4)
+    neighbors = [map_island.map[(loc[0] - 1, loc[1])],
+                 map_island.map[(loc[0] + 1, loc[1])],
+                 map_island.map[(loc[0], loc[1] + 1)],
+                 map_island.map[(loc[0], loc[1] - 1)]]
+    for test in range(10):
+        map_island._clean_island_for_herbs()
+        map_island.place_population(ini_pop)
+        map_island.island_migration()
+        herb_count = 0
+        for cell in neighbors:
+            herb_count += len(cell.herb_pop)
+        assert herb_count == 1

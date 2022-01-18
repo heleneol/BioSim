@@ -134,7 +134,7 @@ def map_island():
                     WLDDDDLLDDW
                     WLLLLLLLLLW
                     WWWWWWWWWWW"""
-
+    geography = textwrap.dedent(geography)
     return Island(geography)
 
 
@@ -172,21 +172,20 @@ def test_set_animal_parameters(ini_pops, map_island):
     map_island.place_population(ini_pops)
     map_island.set_animal_parameters_island('Herbivore', {'beta': beta, 'omega': omega})
 
-    assert map_island.map.sample_animals['herbivore']
-    assert map_island.map.sample_animals['herbivore'].parameters['beta'] == beta
-    assert map_island.map.sample_animals['herbivore'].parameters['omega'] == omega
+    assert map_island.sample_animals['herbivore']
+    assert map_island.sample_animals['herbivore'].parameters['beta'] == beta
+    assert map_island.sample_animals['herbivore'].parameters['omega'] == omega
 
 
-def test_set_landscape_parameters():
+def test_set_landscape_parameters(map_island):
     """
     Testing it is possible to set parameters for the landscape.
     """
     fodder = 700
-    i = Island(geography)
-    i.set_landscape_parameters_island('L', {'f_max': fodder})
+    map_island.set_landscape_parameters_island('L', {'f_max': fodder})
 
-    assert i.parameters['L']
-    assert i.parameters['L'].parameters['f_max'] == fodder
+    assert map_island.parameters['L']
+    assert map_island.parameters['L'].parameters['f_max'] == fodder
 
 
 class test_get_information:

@@ -258,6 +258,19 @@ def test_island_migration_happens(map_island):
     before = map_island.get_number_herbs_per_cell()
     map_island.island_migration()
     after = map_island.get_number_herbs_per_cell()
-    print(after)
 
     assert np.array_equal(before, after) is False
+
+
+def test_island_migration_happens_once(map_island):
+    ini_pop = [{'loc': (3, 4),
+                'pop': [{'species': 'Herbivore',
+                        'age': 0,
+                        'weight': 100}]}]
+    map_island.place_population(ini_pop)
+
+    before = map_island.get_number_herbs_per_cell()
+    map_island.island_migration()
+    after = map_island.get_number_herbs_per_cell()
+
+

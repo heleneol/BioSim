@@ -11,10 +11,10 @@ class Landscape:
     Superclass containing methods on population for different landscapes on the island.
 
     Subclasses:
-    * Lowland
-    * Highland
-    * Desert
-    * Water
+    * :class:`Lowland`
+    * :class:`Highland`
+    * :class:`Desert`
+    * :class:`Water`*
 
     """
 
@@ -58,10 +58,11 @@ class Landscape:
         self.migrating_carns = []
         self.habitability = True if type(self) is not Water else False
 
-    def add_population(self, animals): # denne må revideres, ikke spørr etter species og sjekk opp bruk av append, kontra extend
+    def add_population(self, animals):
         """
         Adding population to landscape. Animals are added to either the herbivore or carnivore population based on the
-        given information.
+        given information. A population cannot be placed in watercells, and has to be of the species
+        herbivore or carnivore.
 
         :param animals: list containing dictionaries with animal information about species, age and weight.
         :type animals: list
@@ -92,7 +93,7 @@ class Landscape:
 
     def get_num_carns(self):
         """
-        Return number of carnivores in Landscape.
+        Calculates number of carnivores in Landscape.
 
         :return: the number of carnivores
         :rtype: int
@@ -138,10 +139,11 @@ class Landscape:
 
     def carnivores_eating(self):
         """
-        Carnivores, in random order, consume herbivores. The carnivore tries to kill one herbivore at a time, beginning
-        with the herbivore with lowest fitness. A carnivore tries to kill until it has attempted to kill each herbivore
-        in the cell or it no longer has an appetite.
-
+        Carnivores etat in random order and consume herbivores.
+        The carnivore tries to kill one herbivore at a time, beginning with the herbivore with lowest fitness.
+        A carnivore tries to kill until it has attempted to kill each herbivore
+        in the cell or it no longer has an appetite. Surviving herbivores is added back to the
+        herbivore population by the end of each carnivores' hunting season.
         """
         random.shuffle(self.carn_pop)
 

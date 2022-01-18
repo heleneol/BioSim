@@ -11,8 +11,8 @@ class Animals:
     Superclass for animals.
 
     Subclasses:
-    * :class:`animals.Herbivore`
-    * :class:`animals.Carnivore` *
+    * :class:`Herbivore`
+    * :class:`Carnivore` *
 
     """
 
@@ -20,7 +20,7 @@ class Animals:
     def set_parameters(cls, new_params):
         """
         Set class parameters. \n
-        Parametre DeltaPhiMax can only be set for Carnivores and must be :math:`\Delta \Phi_{max}`.
+        Parametre DeltaPhiMax can only be set for Carnivores and must be :math:`\Delta \Phi_{max} > 0`.
         Parametre eta must be :math:`\eta >= 0`.
 
         :param new_params: new parameter values.
@@ -147,7 +147,7 @@ class Animals:
     def migrate(self):
         """
         Function determines if animals migrate or not.
-        An animal moves with a probability of :math:``\\mu \\times \\phi``.
+        An animal moves with a probability of :math:`p_{move} = \mu * \Phi`.
 
         :return: True, if animal migrates.
                  False, if animal does not migrate.
@@ -162,6 +162,7 @@ class Animals:
     def update_age(self, years=None):
         """
         Updates age of animal, and updates fitness accordingly.
+        If years is none the animal will age 1 year else it will age with given amount
 
         :param years: number of years the animal ages.
         :type years: int or None
@@ -172,17 +173,20 @@ class Animals:
 
     def metabolism(self):
         """
-        Updates animal weight which is due to annual weightloss, :math:``\\eta \\times \\textit{weight}``,
-        and updates fitness accordingly.
+        Updates animal weight which is due to annual weightloss,
+        :math:`w_{loss} = \eta * w`, and updates fitness accordingly.
 
         """
         self.weight -= self.parameters['eta'] * self.weight
         self.update_fitness()
 
     def dies(self):
-        """
-        Decides whether an animal dies. An animal dies with certainty if their weight is 0,
-        or with a probability of :math:``\\omega(1-\\phi)``.
+        r"""
+        Decides whether an animal dies.
+
+        If :math:`w = 0`, :math:`p_{death} = 1`,
+
+        else, :math:`p_{death} = \omega(1-\Phi)`
 
         :return: True, if animal dies. False, if animal does not die.
         :rtype: bool
@@ -217,9 +221,9 @@ class Herbivore(Animals):
                   'DeltaPhiMax': None}
 
     def herbivore_feeding(self, landscape_fodder):
-        """
+        r"""
         Decides how much fodder each herbivore gets, and updates weight and fitness accordingly.
-        Weight is updated with a factor of :math:``\\beta \\times \\text{fodderamount}``
+        Weight is updated with a factor of :math:`\beta * w_{portion}`
 
         :param landscape_fodder: amount of fodder available for herbivore.
         :type landscape_fodder: float
@@ -256,8 +260,16 @@ class Carnivore(Animals):
                   'DeltaPhiMax': 10.0}
 
     def carnivore_feeding(self, herb):
-        """
-        Decides how much food each carnivore gets, and updates their weight and fitness accordingly.
+        r"""
+        Decides weather or not a carnivore killes a herbivore.
+
+        If :math:`\Phi_{carn} <= \Phi_{herb}`, :math:`p_{kill}=0`,
+
+        also if :math:`0 < \Delta \Phi < \Delta \Phi_{max}`, :math:`p_{kill} = \frac{\Delta \Phi}{\Delta \Phi_{max}}`
+
+        where: :math:`\Delta \Phi = \Phi_{carn} - \Phi_{herb}`
+
+        If a kill is confirmed the carnivores appetite, weight and fitness is updated.
 
         :param herb: A herbivore in the same cell as the carnivore.
         :type herb: object

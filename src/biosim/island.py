@@ -24,7 +24,7 @@ class Island:
 
     def __init__(self, geogr):
         """
-        Initializing island.
+        Initializing island with map made of :class:`landscape.Landscape` subclasses.
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str
@@ -48,10 +48,6 @@ class Island:
 
         :return: dictionary of island map.
         :rtype: dict
-
-        raises
-        ----------
-        ValueError, is raised when habitat letter is erroneous on the map.
 
         """
         geogr = geogr.split(sep='\n') if geogr is not None else str
@@ -98,10 +94,6 @@ class Island:
         :param populations: A list containing dictionaries with population location and animal information.
         :type populations: list
 
-        raises
-        -----------
-        ValueError: if the location is not included in the map's keys
-
         """
         for population in populations:
             loc = population['loc']
@@ -125,7 +117,7 @@ class Island:
         """
         Setting landscape parameters.
 
-        :param landscape: specifying which landscape to set the parameters for
+        :param landscape: specifying which subclass of :class:`landscape.Landscape` to set the parameters for
         :param params: new parameters to set for the landscape.
         """
         landscape = self.parameters[landscape]
@@ -166,7 +158,7 @@ class Island:
         Calculates the number of herbivores per cell on the map.
 
         :return: 2D-array with herbivorecount per cell as values
-        :rtype:
+        :rtype: array
 
         """
 
@@ -181,7 +173,7 @@ class Island:
         Calculates the number of carnivores per cell on the map.
 
         :return: 2D-array with carnivorecount per cell as values
-        :rtype:
+        :rtype: array
 
         """
         map_dim = list(self.map.keys())[-1]
@@ -191,6 +183,12 @@ class Island:
         return carn_matrix
 
     def get_herbs_fitness(self):
+        """
+        Makes list of alle the fitnessvalues for the islands herbivore population
+
+        :return: list with values for fitness
+        :rtype: list
+        """
         herbivores_fitness = []
         for cell in self.map.values():
             for herb in cell.herb_pop:
@@ -198,6 +196,12 @@ class Island:
         return herbivores_fitness
 
     def get_carns_fitness(self):
+        """
+        Makes list of all the fitnessvalues for the islands carnivore population
+
+        :return: list with values for fitness
+        :rtype: list
+        """
         carnivores_fitness = []
         for cell in self.map.values():
             for carn in cell.carn_pop:
@@ -205,6 +209,12 @@ class Island:
         return carnivores_fitness
 
     def get_herbs_age(self):
+        """
+        Makes list of all the age-values for the islands herbivore population
+
+        :return: list with values for age
+        :rtype: list
+        """
         herbivores_age = []
         for cell in self.map.values():
             for herb in cell.herb_pop:
@@ -212,6 +222,12 @@ class Island:
         return herbivores_age
 
     def get_carns_age(self):
+        """
+        Makes list of all the age-values for the islands carnivore population
+
+        :return: list with values for age
+        :rtype: list
+        """
         carnivores_age = []
         for cell in self.map.values():
             for carn in cell.carn_pop:
@@ -219,6 +235,12 @@ class Island:
         return carnivores_age
 
     def get_herbs_weight(self):
+        """
+        Makes list of all the weight-values for the islands herbivore population
+
+        :return: list with values for weight
+        :rtype: list
+        """
         herbivores_weight = []
         for cell in self.map.values():
             for herb in cell.herb_pop:
@@ -226,6 +248,12 @@ class Island:
         return herbivores_weight
 
     def get_carns_weight(self):
+        """
+        Makes list of all the weight-values for the islands carnivore population
+
+        :return: list with values for weight
+        :rtype: list
+        """
         carnivores_weight = []
         for cell in self.map.values():
             for carn in cell.carn_pop:
@@ -236,9 +264,9 @@ class Island:
         """
         Function for implementing migration for all animals on the island.
 
-        Gets neighbouring cells and chooses one at random for the animal to emigrate to. If the chosen cell is water,
-        the animal stays put, else it is registered to the chosen cells migrant population. Lastly, it adds
-        the migrators to their cell's population.
+        Gets neighbouring cells and chooses one at random :math:`p = \frac{1}{4}` for the animal to emigrate to.
+        If the chosen cell is :class:`lanscape.Water`, the animal stays put, else it is registered to the chosen
+        cells migrant population. Lastly, it adds the migrators to their cell's population.
 
         """
         for loc, cell in self.map.items():

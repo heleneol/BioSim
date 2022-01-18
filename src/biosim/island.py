@@ -49,10 +49,10 @@ class Island:
         must have a rectangular-shape, and all border cells have to be water. All cells have to indicate a
         landscape-subclass of:
 
-         * L - :class:'landscape.Lowland'
-         * H - :class:'landscape.Highland'
-         * D - :class:'landscape.Desert'
-         * W - :class:'landscape.Water'
+         * L - Lowland
+         * H - Highland
+         * D - Desert
+         * W - Water
 
         :param geogr: Multi-line string specifying island geography
         :type geogr: str

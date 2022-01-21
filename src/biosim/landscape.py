@@ -73,12 +73,15 @@ class Landscape:
             for animal in animals:
                 age = animal['age']
                 weight = animal['weight']
-                if animal['species'] == 'Herbivore':
-                    self.herb_pop.append(Herbivore(age=age, weight=weight))
-                elif animal['species'] == 'Carnivore':
-                    self.carn_pop.append(Carnivore(age=age, weight=weight))
+                if weight <= 0:
+                    raise ValueError('Animal weight has to be a positive number')
                 else:
-                    raise KeyError('Species must be either Herbivore or Carnivore')
+                    if animal['species'] == 'Herbivore':
+                        self.herb_pop.append(Herbivore(age=age, weight=weight))
+                    elif animal['species'] == 'Carnivore':
+                        self.carn_pop.append(Carnivore(age=age, weight=weight))
+                    else:
+                        raise KeyError('Species must be either Herbivore or Carnivore')
         else:
             raise ValueError('Population cannot be placed in water')
 

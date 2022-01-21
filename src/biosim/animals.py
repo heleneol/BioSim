@@ -70,8 +70,6 @@ class Animals:
 
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
         self.weight = weight if weight is not None else random_weight
-        if self.weight < 0:
-            raise ValueError('Animal weight has to be a positive number')
 
         self.update_fitness()
 

@@ -14,6 +14,7 @@
 """
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import numpy as np
 import subprocess
 import os
@@ -79,6 +80,7 @@ class Graphics:
         # the following atributes will be changed in setup function and
         # is used to make graphs
         self.fig = None
+        self.legend_ax = None
         self.year_ax = None
         self.animal_count_ax = None
         self.herb_heat_map_ax = None
@@ -192,6 +194,7 @@ class Graphics:
             self.fig = plt.figure()
 
 
+
         # Add left subplot for images created with imshow().
         # We cannot create the actual ImageAxis object before we know
         # the size of the image, so we delay its creation.
@@ -211,30 +214,49 @@ class Graphics:
                                       facecolor=self.rgb_value[landscapename[0]]))
             self.map_legend.text(0.35, ix * 0.2, landscapename, transform=self.map_legend.transAxes)
 
+
+        patchcolor= {'Herbivore':'blue',
+                     'Carnivore':'red'}
+        self.legend_ax = self.fig.add_axes([0.75, 0.45, 0.3, 0.3])
+        self.legend_ax.axis('off')
+        for ix, species in enumerate(('Herbivore', 'Carnivore')):
+            self.legend_ax.add_patch(plt.Rectangle((0., ix*0.25), 0.2, 0.1,
+                                     edgecolor='none',
+                                     facecolor=patchcolor[species]))
+            self.legend_ax.text(0.25, ix*0.25, species, fontsize=10)
+
+
         # add subplot for yearcount
         if self.year_ax is None:
-            self.year_ax = self.fig.add_axes([0.45, 0.85, 0.1, 0.1])
+            self.year_ax = self.fig.add_axes([0.5, 0.85, 0.1, 0.1])
             self.year_ax.axis('off')
             self.count_template = 'year: {:5d}'
             self.txt = self.year_ax.text(0.5, 0.5, self.count_template.format(0),
                                          horizontalalignment='center',
                                          verticalalignment='center',
-                                         transform=self.year_ax.transAxes)
+                                         transform=self.year_ax.transAxes,
+                                         fontsize= 12 )
 
         # Add subplot for animal count per species
         if self.animal_count_ax is None:
             self.animal_count_ax = self.fig.add_subplot(3, 3, 3)
             self.animal_count_ax.set_ylim(0, ymax_animals)
 
+        self.animal_count_ax.set_title('Animals on the Island')
+        self.animal_count_ax.set_ylabel('Animal count', fontsize=6)
+        self.animal_count_ax.set_xlabel('Year', fontsize=6)
         self.animal_count_ax.set_xlim(0, final_step + 1)
 
         if self.herb_heat_map_ax is None:
-            self.herb_heat_map_ax = self.fig.add_subplot(3, 3, 4)
-            self.herb_heat_map_ax.set_title('Herbivore distribution')
+            self.herb_heat_map_ax = self.fig.add_axes([0.075, 0.35, 0.30, 0.30])
+            self.herb_heat_map_ax.set_title('Herbivore Distribution')
 
         if self.carn_heat_map_ax is None:
-            self.carn_heat_map_ax = self.fig.add_subplot(3, 3, 6)
-            self.carn_heat_map_ax.set_title('Carnivore distribution')
+            self.carn_heat_map_ax = self.fig.add_axes([0.425, 0.35, 0.30, 0.30])
+            self.carn_heat_map_ax.set_title('Carnivore Distribution')
+
+
+
 
         fitness_specs = hist_specs['fitness']
         fitness_min = 0
@@ -242,9 +264,8 @@ class Graphics:
         fitness_steps = int((fitness_max - fitness_min)/fitness_specs['delta'])
         if self.fitness_hist_ax is None:
             self.fitness_hist_ax = self.fig.add_subplot(3, 3, 7)
-            self.fitness_hist_ax.set_title('Fitness hist.')
-            self.fitness_hist_ax.set_ylim(0, 2000)
             self.fitness_bins = np.linspace(fitness_min, fitness_max, fitness_steps)
+
 
         age_specs = hist_specs['age']
         age_min = 0
@@ -252,7 +273,6 @@ class Graphics:
         age_steps = int((age_max - age_min) / age_specs['delta'])
         if self.age_hist_ax is None:
             self.age_hist_ax = self.fig.add_subplot(3, 3, 8)
-            self.age_hist_ax.title.set_text('Age hist.')
             self.age_bins = np.linspace(age_min, age_max, age_steps)
 
         weight_specs = hist_specs['weight']
@@ -261,7 +281,6 @@ class Graphics:
         weight_steps = int((weight_max - weight_min) / weight_specs['delta'])
         if self.weight_hist_ax is None:
             self.weight_hist_ax = self.fig.add_subplot(3, 3, 9)
-            self.weight_hist_ax.set_title('Weight hist.')
             self.weight_bins = np.linspace(weight_min, weight_max, weight_steps)
 
         if vis_years > 1:
@@ -271,7 +290,7 @@ class Graphics:
 
         if self.herb_line is None:
             herb_plot = self.animal_count_ax.plot(np.arange(0, final_step+1),
-                                                  np.full(final_step+1, np.nan), linestyle, color='blue')
+                                                  np.full(final_step+1, np.nan), linestyle, color='blue',)
             self.herb_line = herb_plot[0]
         else:
             x_data, y_data = self.herb_line.get_data()
@@ -291,6 +310,8 @@ class Graphics:
                 y_new = np.full(x_new.shape, np.nan)
                 self.carn_line.set_data(np.hstack((x_data, x_new)),
                                         np.hstack((y_data, y_new)))
+
+
         warnings.filterwarnings('ignore')
         self.fig.tight_layout(pad=3.0)
 
@@ -305,7 +326,9 @@ class Graphics:
         if self.herb_heat_map_plot is not None:
             self.herb_heat_map_plot.set_data(herb_map)
         else:
-            self.herb_heat_map_plot = self.herb_heat_map_ax.imshow(herb_map,
+            self.herb_heat_map_ax.clear()
+            self.herb_heat_map_ax.set_title('Herbivore Distribution')
+            self.herb_heat_map_plot = self.herb_heat_map_ax.imshow(herb_map, cmap='rainbow',
                                                                    interpolation='nearest',
                                                                    vmin=0, vmax=cmax_animals['Herbivore'])
             plt.colorbar(self.herb_heat_map_plot, ax=self.herb_heat_map_ax,
@@ -321,7 +344,9 @@ class Graphics:
         if self.carn_heat_map_plot is not None:
             self.carn_heat_map_plot.set_data(carn_map)
         else:
-            self.carn_heat_map_plot = self.carn_heat_map_ax.imshow(carn_map,
+            self.carn_heat_map_ax.clear()
+            self.carn_heat_map_ax.set_title('Carnivore Distribution')
+            self.carn_heat_map_plot = self.carn_heat_map_ax.imshow(carn_map, cmap = 'rainbow',
                                                                    interpolation='nearest',
                                                                    vmin=0, vmax=cmax_animals['Carnivore'])
             plt.colorbar(self.carn_heat_map_plot, ax=self.carn_heat_map_ax,
@@ -341,7 +366,6 @@ class Graphics:
         y_data = self.herb_line.get_ydata()
         y_data[year] = herb_count
         self.herb_line.set_ydata(y_data)
-
         y_data = self.carn_line.get_ydata()
         y_data[year] = carn_count
         self.carn_line.set_ydata(y_data)
@@ -364,6 +388,9 @@ class Graphics:
         """
 
         self.fitness_hist_ax.clear()
+        self.fitness_hist_ax.set_title('Fitness Distribution')
+        self.fitness_hist_ax.set_ylabel('Animal count', fontsize=6)
+        self.fitness_hist_ax.set_xlabel('Fitness', fontsize=6)
         self.fitness_hist_ax.hist(animall_fitness_per_species['Herbivore'], self.fitness_bins,
                                   histtype=u'step', color='blue')
         self.fitness_hist_ax.hist(animall_fitness_per_species['Carnivore'], self.fitness_bins,
@@ -377,6 +404,9 @@ class Graphics:
         :type animal_age_per_species: dict
         """
         self.age_hist_ax.clear()
+        self.age_hist_ax.title.set_text('Age Distribution')
+        self.age_hist_ax.set_ylabel('Animal count', fontsize=6)
+        self.age_hist_ax.set_xlabel(r'Age', fontsize=6)
         self.age_hist_ax.hist(animal_age_per_species['Herbivore'], self.age_bins,
                               histtype=u'step', color='blue')
         self.age_hist_ax.hist(animal_age_per_species['Carnivore'], self.age_bins,
@@ -390,6 +420,9 @@ class Graphics:
         :type animal_age_per_species: dict
         """
         self.weight_hist_ax.clear()
+        self.weight_hist_ax.set_title('Weight Distribution')
+        self.weight_hist_ax.set_ylabel('Animal count', fontsize=6)
+        self.weight_hist_ax.set_xlabel(r'Weight', fontsize=6)
         self.weight_hist_ax.hist(animal_weight_per_species['Herbivore'], self.weight_bins,
                                  histtype=u'step', color='blue')
         self.weight_hist_ax.hist(animal_weight_per_species['Carnivore'], self.weight_bins,

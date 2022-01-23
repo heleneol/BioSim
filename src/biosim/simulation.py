@@ -94,6 +94,7 @@ class BioSim:
         self.step = 0
         self.final_step = None
 
+
     def set_animal_parameters(self, species, params):
         """
         Set parameters for animal species.
@@ -140,6 +141,8 @@ class BioSim:
                                              animal_fitness_per_species=self.animal_fitness_per_species,
                                              animal_age_per_species=self.animal_age_per_species,
                                              animal_weight_per_species=self.animal_weight_per_species)
+
+
             else:
                 raise ValueError(f'Num_years has to be an integer, not a {type(num_years)}')
         else:

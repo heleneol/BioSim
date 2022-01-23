@@ -69,9 +69,10 @@ class Animals:
             raise ValueError('Animal age has to be an integer >= 0')
 
         random_weight = random.gauss(self.parameters['w_birth'], self.parameters['sigma_birth'])
-        self.weight = weight if weight is not None else random_weight
-        if self.weight < 0:
+        if weight is not None and weight <= 0:
             raise ValueError('Animal weight has to be a positive number')
+
+        self.weight = weight if weight is not None else random_weight
 
         self.update_fitness()
 

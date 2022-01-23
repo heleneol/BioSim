@@ -301,7 +301,6 @@ class Graphics:
         :param herb_map: 2d-array per species with herbivore count per cell as value
         :type herb_map: array
         """
-
         if self.herb_heat_map_plot is not None:
             self.herb_heat_map_plot.set_data(herb_map)
         else:

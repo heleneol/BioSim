@@ -208,6 +208,8 @@ class Landscape:
         migrators_carn = []
         staying_herbs = []
         staying_carns = []
+
+
         for herb in self.herb_pop:
             if herb.migrate() is True:
                 migrators_herb.append(herb)
@@ -225,6 +227,8 @@ class Landscape:
         self.carn_pop = staying_carns.copy()
 
         return migrators_herb, migrators_carn
+
+
 
     def register_migrants(self, migrator):
         """
@@ -285,7 +289,7 @@ class Landscape:
         for carn in self.carn_pop:
             if carn.dies() is not True:
                 surviving_carns.append(carn)
-        self.herb_pop = surviving_herbs  # .copy() ??
+        self.herb_pop = surviving_herbs
         self.carn_pop = surviving_carns
 
     def pre_migration_cycle(self):

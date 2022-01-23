@@ -55,6 +55,5 @@ if __name__ == '__main__':
                  img_dir='results',
                  img_base='sample')
     sim.simulate(400)
-    sim.make_movie()
 
     input('Press ENTER')

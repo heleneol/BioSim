@@ -189,7 +189,6 @@ class Island:
         :rtype: array
 
         """
-
         map_dim = list(self.map.keys())[-1]
         herb_matrix = np.zeros(map_dim)
         for loc, cell in self.map.items():
@@ -301,7 +300,7 @@ class Island:
 
         """
         for loc, cell in self.map.items():
-            if cell.habitability == 'False':
+            if cell.habitability is False:
                 continue
             else:
                 neighbours = [self.map[(loc[0]-1, loc[1])],
@@ -310,23 +309,17 @@ class Island:
                               self.map[(loc[0], loc[1]-1)]]
 
                 migrators_herb, migrators_carn = cell.animal_migration()
+                for migrators in [migrators_herb, migrators_carn]:
+                    for animal in migrators:
+                        migration_cell = random.choice(neighbours)
+                        if migration_cell.habitability is False:
+                            cell.register_migrants(migrator=animal)
+                        else:
+                            migration_cell.register_migrants(migrator=animal)
 
-                for herb in migrators_herb:
-                    migration_cell = random.choice(neighbours)
-                    if migration_cell.classname == 'Water':
-                        cell.migrating_herbs.append(herb)
-                    else:
-                        migration_cell.register_migrants(migrator=herb)
 
-                for carn in migrators_carn:
-                    migration_cell = random.choice(neighbours)
-                    if migration_cell.classname == 'Water':
-                        cell.migrating_carns.append(carn)
-                    else:
-                        migration_cell.register_migrants(migrator=carn)
-
-        for loc, cell in self.map.items():
-            if cell.classname == 'Water':
+        for cell in self.map.values():
+            if cell.habitability is False:
                 continue
             else:
                 cell.add_migraters_to_pop()

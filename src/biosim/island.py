@@ -301,7 +301,7 @@ class Island:
 
         """
         for loc, cell in self.map.items():
-            if cell.classname == 'Water':
+            if cell.habitability == 'False':
                 continue
             else:
                 neighbours = [self.map[(loc[0]-1, loc[1])],

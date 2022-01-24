@@ -150,6 +150,7 @@ class BioSim:
             num_simulations = num_years
             if num_simulations // 1 == num_simulations:
                 while self.step < self.final_step:
+                    print(self.year)
                     self.island.annual_cycle_island()
                     self.step += 1
             else:

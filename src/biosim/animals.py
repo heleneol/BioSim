@@ -287,6 +287,7 @@ class Carnivore(Animals):
         """
         if self.fitness <= herb.fitness:
             return False
+
         delta_phi = self.fitness - herb.fitness
         if 0 < delta_phi < self.parameters['DeltaPhiMax']:
             prey_prob = delta_phi / self.parameters['DeltaPhiMax']
